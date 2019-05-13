@@ -23,6 +23,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// CalculatePostLambdaPsy
+Rcpp::List CalculatePostLambdaPsy(Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec constraint);
+RcppExport SEXP _bpgmm_CalculatePostLambdaPsy(SEXP hparamSEXP, SEXP CxyListSEXP, SEXP thetaYListSEXP, SEXP constraintSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type hparam(hparamSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type CxyList(CxyListSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type constraint(constraintSEXP);
+    rcpp_result_gen = Rcpp::wrap(CalculatePostLambdaPsy(hparam, CxyList, thetaYList, constraint));
+    return rcpp_result_gen;
+END_RCPP
+}
 // get_Z_mat
 arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n);
 RcppExport SEXP _bpgmm_get_Z_mat(SEXP ZOneDimSEXP, SEXP mSEXP, SEXP nSEXP) {
@@ -39,6 +53,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_bpgmm_CalculateCxy", (DL_FUNC) &_bpgmm_CalculateCxy, 7},
+    {"_bpgmm_CalculatePostLambdaPsy", (DL_FUNC) &_bpgmm_CalculatePostLambdaPsy, 4},
     {"_bpgmm_get_Z_mat", (DL_FUNC) &_bpgmm_get_Z_mat, 3},
     {NULL, NULL, 0}
 };

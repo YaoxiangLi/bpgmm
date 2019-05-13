@@ -5,6 +5,10 @@ CalculateCxy <- function(m, n, hparam, thetaYList, ZOneDim, qVec, X) {
     .Call(`_bpgmm_CalculateCxy`, m, n, hparam, thetaYList, ZOneDim, qVec, X)
 }
 
+CalculatePostLambdaPsy <- function(hparam, CxyList, thetaYList, constraint) {
+    .Call(`_bpgmm_CalculatePostLambdaPsy`, hparam, CxyList, thetaYList, constraint)
+}
+
 get_Z_mat <- function(ZOneDim, m, n) {
     .Call(`_bpgmm_get_Z_mat`, ZOneDim, m, n)
 }

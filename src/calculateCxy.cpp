@@ -24,21 +24,11 @@ List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
   List A(m);
   arma::vec nVec(m);
 
-  for(int k=0; k<nVec.n_elem; ++k) {
+  for(int k=0; k<m; ++k) {
     nVec(k) = sum(Zmat.row(k));
-    arma::vec v;
-    v = alpha1;
-    std::cout << arma::vec(1);
-    // std::cout << arma::vec(3, 1);
+    arma::vec alpha1_vec(1);
 
-    A(k) =  diagmat(join_cols(v, arma::ones(qVec(k)) * alpha2));
-    // std::cout << arma::vec(1) alpha1;
-
-    // std::cout << arma::ones(qVec(k)) * alpha2;
-
-    // std::cout << join_cols(arma::vec(alpha1), arma::ones(qVec(k)) * alpha2);
-    // std::cout << join_cols(v, arma::ones(qVec(k)) * alpha2);
-
+    A(k) =  diagmat(join_cols(alpha1_vec.fill(alpha1), arma::ones(qVec(k)) * alpha2));
   };
 
 
@@ -61,20 +51,26 @@ List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
     arma::mat y_k = Y(k);
     arma::vec m_k = M(k);
     arma::mat lambda_k = lambda(k);
+    arma::vec one_vec(1);
 
     for (int i=0; i<n; ++i) {
       if(i == 0){
         Cxxkk =  Zmat(k,i) * (X.col(i) * trans(X.col(i)));
         Cxykk =  Zmat(k,i) * (X.col(i) * trans(y_k.col(i)));
         Cyykk =  Zmat(k,i) * (y_k.col(i) * trans(y_k.col(i)));
-        Cxtytkk =  Zmat(k,i) * (X.col(i) * trans(join_cols(arma::vec(1), y_k.col(i))));
-        std::cout << X.col(i)  << std::endl;
-        std::cout << trans(join_cols(arma::vec(1), y_k.col(i)))  << std::endl;
-        std::cout << X.col(i) * trans(join_cols(arma::vec(1), y_k.col(i)))  << std::endl;
+        Cxtytkk =  Zmat(k,i) * (X.col(i) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
+        // std::cout << X.col(i)  << std::endl;
+        // std::cout << one_vec.fill(1)  << std::endl;
+        // std::cout << y_k.col(i)  << std::endl;
 
-        Cytytkk =  Zmat(k,i) * (join_cols(arma::vec(1), y_k.col(i)) * trans(join_cols(arma::vec(1), y_k.col(i))));
+        // std::cout << one_vec.fill(1)  << std::endl;
 
-        std::cout << Cytytkk  << std::endl;
+        // std::cout << trans(join_cols(Rcpp::rep(1,1), y_k.col(i)))  << std::endl;
+        // std::cout << X.col(i) * trans(join_cols(one_vec.fill(1), y_k.col(i)))  << std::endl;
+
+        Cytytkk =  Zmat(k,i) * (join_cols(one_vec.fill(1), y_k.col(i)) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
+
+        // std::cout << Cytytkk  << std::endl;
         Cxmykk =  Zmat(k,i) * ((X.col(i) - m_k) * trans(y_k.col(i)));
 
         // std::cout << lambda_k  << arma::endl;
@@ -85,8 +81,8 @@ List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
         Cxxkk = Cxxkk + Zmat(k,i) * (X.col(i) * trans(X.col(i)));
         Cxykk = Cxykk + Zmat(k,i) * (X.col(i) * trans(y_k.col(i)));
         Cyykk = Cyykk +  Zmat(k,i) * (y_k.col(i) * trans(y_k.col(i)));
-        Cxtytkk = Cxtytkk + Zmat(k,i) * (X.col(i) * trans(join_cols(arma::vec(1), y_k.col(i))));
-        Cytytkk = Cytytkk + Zmat(k,i) * (join_cols(arma::vec(1), y_k.col(i)) * trans(join_cols(arma::vec(1), y_k.col(i))));
+        Cxtytkk = Cxtytkk + Zmat(k,i) * (X.col(i) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
+        Cytytkk = Cytytkk + Zmat(k,i) * (join_cols(one_vec.fill(1), y_k.col(i)) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
         Cxmykk = Cxmykk + Zmat(k,i) * ((X.col(i) - m_k) * trans(y_k.col(i)));
         CxL1kk = CxL1kk + Zmat(k,i) * (X.col(i) -  (lambda_k * y_k.col(i)));
       }
@@ -96,8 +92,8 @@ List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
     Cyyk.push_back(Cyykk);
     Cxtytk.push_back(Cxtytkk);
     Cytytk.push_back(Cytytkk);
-    CxL1k.push_back(Cxmykk);
-    Cxmyk.push_back(CxL1kk);
+    Cxmyk.push_back(Cxmykk);
+    CxL1k.push_back(CxL1kk);
 
 
   }

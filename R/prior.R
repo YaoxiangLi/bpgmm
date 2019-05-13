@@ -1,4 +1,4 @@
-#' Generate PriorThetaY list
+#' @title PriorThetaY list
 #' @importFrom gtools rdirichlet
 #' @importFrom mvtnorm rmvnorm
 #' @import stats

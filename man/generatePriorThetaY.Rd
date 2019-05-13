@@ -2,10 +2,10 @@
 % Please edit documentation in R/prior.R
 \name{generatePriorThetaY}
 \alias{generatePriorThetaY}
-\title{Generate PriorThetaY list}
+\title{PriorThetaY list}
 \usage{
 generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
 }
 \description{
-Generate PriorThetaY list
+PriorThetaY list
 }
