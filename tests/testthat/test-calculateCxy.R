@@ -1,7 +1,6 @@
 context("Utils - bpgmm calculateCxy")
 
-test_that("calculateCxy is correctly ", {
-
+test_that("calculateCxy is working correctly", {
   # R version of calculateCxy
   r_CalculateCxy <-  function(m, n, hparam, thetaYList, ZOneDim, qVec, X){
 
@@ -77,11 +76,7 @@ test_that("calculateCxy is correctly ", {
   qVec = c(2,2,2)
   ZOneDim = c(1,2,3,1,2,2,3)
   constraint = c(1,1,1)
-  hparam <- new("Hparam",alpha1 = 3,
-                alpha2 = 2,
-                delta  = 3,
-                ggamma = 4,
-                bbeta  = 5)
+  hparam <- new("Hparam",alpha1 = 3, alpha2 = 2, delta  = 3, ggamma = 4, bbeta  = 5)
   thetaYList = generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
   X = matrix(rnorm(p * n, 0, 1), p, n)
   res   = CalculateCxy(m, n, hparam, thetaYList, ZOneDim, qVec, X)

@@ -9,6 +9,9 @@ test_that("Vector is correctly transformed to adjacency matrix", {
 
   expect_equal(getZmat(ZOneDim1,3,6),Zmat1)
   expect_equal(getZmat(ZOneDim2,3,6),Zmat2)
+
+  expect_equal(get_Z_mat(ZOneDim1,3,6),Zmat1)
+  expect_equal(get_Z_mat(ZOneDim2,3,6),Zmat2)
 })
 
 

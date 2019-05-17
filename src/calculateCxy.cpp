@@ -7,10 +7,13 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
-                  arma::vec ZOneDim,
-                  arma::vec qVec,
-                  arma::mat X){
+Rcpp::List CalculateCxy(int m,
+                        int n,
+                        Rcpp::S4 hparam,
+                        Rcpp::S4 thetaYList,
+                        arma::vec ZOneDim,
+                        arma::vec qVec,
+                        arma::mat X){
 
   double alpha1 = hparam.slot("alpha1");
   double alpha2 = hparam.slot("alpha2");
@@ -30,7 +33,6 @@ List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
 
     A(k) =  diagmat(join_cols(alpha1_vec.fill(alpha1), arma::ones(qVec(k)) * alpha2));
   };
-
 
   List Cxxk;
   List Cxyk;
@@ -59,22 +61,8 @@ List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
         Cxykk =  Zmat(k,i) * (X.col(i) * trans(y_k.col(i)));
         Cyykk =  Zmat(k,i) * (y_k.col(i) * trans(y_k.col(i)));
         Cxtytkk =  Zmat(k,i) * (X.col(i) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
-        // std::cout << X.col(i)  << std::endl;
-        // std::cout << one_vec.fill(1)  << std::endl;
-        // std::cout << y_k.col(i)  << std::endl;
-
-        // std::cout << one_vec.fill(1)  << std::endl;
-
-        // std::cout << trans(join_cols(Rcpp::rep(1,1), y_k.col(i)))  << std::endl;
-        // std::cout << X.col(i) * trans(join_cols(one_vec.fill(1), y_k.col(i)))  << std::endl;
-
         Cytytkk =  Zmat(k,i) * (join_cols(one_vec.fill(1), y_k.col(i)) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
-
-        // std::cout << Cytytkk  << std::endl;
         Cxmykk =  Zmat(k,i) * ((X.col(i) - m_k) * trans(y_k.col(i)));
-
-        // std::cout << lambda_k  << arma::endl;
-        // std::cout << y_k.col(i)  << arma::endl;
         CxL1kk = Zmat(k,i) * (X.col(i) -  (lambda_k * y_k.col(i)));
 
       }else{
@@ -94,8 +82,6 @@ List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
     Cytytk.push_back(Cytytkk);
     Cxmyk.push_back(Cxmykk);
     CxL1k.push_back(CxL1kk);
-
-
   }
 
   arma::mat sumCxmyk;
@@ -104,26 +90,14 @@ List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
   for (int k=0; k<m; ++k) {
       arma::mat cxmyk_k = Cxmyk[k];
       arma::mat cyyk_k = Cyyk[k];
-
-    if(k == 0){
+    if (k == 0) {
       sumCxmyk = cxmyk_k;
       sumCyyk  = cyyk_k + diagmat( arma::ones(qVec(k))) * alpha2;
-    }else{
+    } else {
       sumCxmyk = sumCxmyk + cxmyk_k;
       sumCyyk  = sumCyyk + cyyk_k + diagmat(arma::ones(qVec(k))) * alpha2;
     }
-
-
   }
-
-
-
-  // Obtaining namespace of getZmat function
-  // Rcpp::Environment pkg = Rcpp::Environment::namespace_env("bpgmm");
-
-  // Picking up getZmat() function from bpgmm package utils
-  // Rcpp::Function f = pkg["getZmat"];
-  // mat Zmat = f(Named("ZOneDim", ZOneDim), Named("m", m), Named("n", n));
 
   List res = Rcpp::List::create(Named("A")        = A,
                                 Named("nVec")     = nVec,
@@ -139,37 +113,3 @@ List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList,
 
   return(res);
 }
-
-
-/*** R
-# ZOneDim1 <- c(1,2,3,1,2,2)
-# ZOneDim2 <- c(1,1,3,1,2,2)
-#
-# Zmat1 <- matrix(c(1,0,0,0,1,0,0,0,1,1,0,0,0,1,0,0,1,0),3,6)
-# Zmat2 <- matrix(c(1,0,0,1,0,0,0,0,1,1,0,0,0,1,0,0,1,0),3,6)
-#
-# testthat::expect_equal(get_Z_mat(ZOneDim1,3,6),Zmat1)
-# testthat::expect_equal(get_Z_mat(ZOneDim2,3,6),Zmat2)
-
-
-
-# m = 3
-# n = 6
-# p = 10
-# muBar =  rnorm(p)
-# alpha1 = 4
-# alpha2 = 5
-# bbeta = 1
-# qVec = c(2,2,2)
-# ZOneDim = c(1,2,3,1,2,2)
-# constraint = c(1,1,1)
-# hparam <- new("Hparam",alpha1 = 1,
-#               alpha2 = 1,
-#               delta  = 1,
-#               ggamma = 1,
-#               bbeta  = 1)
-# thetaYList = generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
-# X = matrix(rep(1, n * p), p, n)
-# microbenchmarkCore::microbenchmark(CalculateCxy(m, n, hparam, thetaYList, ZOneDim, qVec, X))
-# res = CalculateCxy(m, n, hparam, thetaYList, ZOneDim, qVec, X)
-*/

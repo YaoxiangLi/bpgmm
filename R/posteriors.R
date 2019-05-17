@@ -1,8 +1,8 @@
 updatePostZ = function(m, n, thetaYList){
 
-  tao = thetaYList@tao
-  psy = thetaYList@psy
-    M = thetaYList@M
+  tao    = thetaYList@tao
+  psy    = thetaYList@psy
+  M      = thetaYList@M
   lambda = thetaYList@lambda
 
 
@@ -10,8 +10,8 @@ updatePostZ = function(m, n, thetaYList){
   ## evaluate density
   dMat = matrix(NA, m, n)
 
-  for(k in 1:m){
-    for(i in 1:n){
+  for(k in 1:m) {
+    for(i in 1:n) {
       dMat[k,i] = dmvnorm(X[,i], mean = M[[k]], sigma = psy[[k]] +  lambda[[k]]%*%t(lambda[[k]])
                           ,log = T)
     }
@@ -42,11 +42,11 @@ updatePostThetaY = function(m, n,hparam, thetaYList, ZOneDim, qVec, constraint){
 
   alpha1 = hparam@alpha1
   alpha2 = hparam@alpha2
-  bbeta = hparam@bbeta
+  bbeta  = hparam@bbeta
   lambda = thetaYList@lambda
-  Y = thetaYList@Y
-  M = thetaYList@M
-  psy = thetaYList@psy
+  Y      = thetaYList@Y
+  M      = thetaYList@M
+  psy    = thetaYList@psy
 
   ## post for Theta = {tao, M, Lambda, psy}
   CxyList = CalculateCxy(m, n, hparam,thetaYList, ZOneDim, qVec)
@@ -98,7 +98,6 @@ updatePostThetaY = function(m, n,hparam, thetaYList, ZOneDim, qVec, constraint){
   }
 
   new("ThetaYList", tao=tao, psy=psy, M=M, lambda=lambda, Y=Y)
-  # return(list(tao=tao, psy=psy, M=M, lambda=lambda, Y=Y))
 }
 
 
@@ -116,13 +115,19 @@ CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, constr
   A = CxyList$A
   nVec = CxyList$nVec
 
+  Y      = thetaYList@Y
+  M      = thetaYList@M
+  psy    = thetaYList@psy
+  delta  = hparam@delta
+  bbeta  = hparam@bbeta
+
   ##
   lambda = list()
   if(constraint[1] == T & constraint[2] == T & constraint[3] == T){
     ##model 1
     for(k in 1:m){
       if(k == 1){
-        lambda[[k]] = rmvnorm(1, mean = c(sumCxmyk %*% solve(sumCyyk)),
+        lambda[[k]] = mvtnorm::rmvnorm(1, mean = c(sumCxmyk %*% solve(sumCyyk)),
                               sigma = kronecker(solve(sumCyyk), psy[[k]])
         )
         lambda[[k]] = matrix(lambda[[k]], p, qVec[k])
@@ -135,7 +140,7 @@ CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, constr
     # post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
     tildaLambda = list()
     for(k in 1:m){
-      tildaLambda[[k]] = cbind(t(M[[k]]), lambda[[k]])
+      tildaLambda[[k]] = cbind(as.matrix(M[[k]]), lambda[[k]])
     }
 
     ## post psy
@@ -146,7 +151,7 @@ CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, constr
     for(k in 1:m){
       shapePara = shapePara + p/2 * (nVec[k] + qVec[k] + 2 * delta - 1)
       ratePara = ratePara + 1/2 * diag(Cxxk[[k]] - 2 * Cxtytk[[k]] %*% t(tildaLambda[[k]])
-                                       + tildaLambda[[k]]%*%(Cytytk[[k]] + A[[k]])%*%t(tildaLambda[[k]] )
+                                       + tildaLambda[[k]]%*%(Cytytk[[k]] + A[[k]])%*%t(tildaLambda[[k]])
                                        + 2 * bbeta * diag(rep(1,p)))
 
     }

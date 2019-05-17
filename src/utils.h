@@ -8,6 +8,16 @@
 
 arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n);
 
+arma::vec updatePostThetaY(int m, int n, Rcpp::S4 thetaYList);
+
+Rcpp::S4 updatePostZ(int m,
+                     int n,
+                     Rcpp::S4 hparam,
+                     Rcpp::S4 thetaYList,
+                     arma::vec ZOneDim,
+                     arma::vec qVec,
+                     arma::vec constraint);
+
 Rcpp::List CalculateCxy(int m, int n, Rcpp::S4 hparam, Rcpp::S4 thetaYList,
                   arma::vec ZOneDim,
                   arma::vec qVec,

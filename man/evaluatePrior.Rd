@@ -7,5 +7,5 @@
 evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint)
 }
 \description{
-evaluate Prior
+evaluate prior value for parameter Theta and Y.
 }

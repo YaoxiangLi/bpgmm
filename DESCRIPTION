@@ -19,6 +19,7 @@ Author: Xiang Lu <Xiang_Lu at urmc.rochester.edu>,
 Maintainer: Yaoxiang Li <yl814@georgetown.edu>
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
+SystemRequirements: C++11
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

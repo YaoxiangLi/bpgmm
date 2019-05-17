@@ -6,6 +6,13 @@
 \usage{
 generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
 }
+\arguments{
+\item{m}{the number of cluster.}
+
+\item{n}{sample size.}
+
+\item{p}{number of covariates.}
+}
 \description{
-PriorThetaY list
+generate prior value for parameter Theta and Y.
 }

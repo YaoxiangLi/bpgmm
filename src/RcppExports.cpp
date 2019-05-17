@@ -7,15 +7,15 @@
 using namespace Rcpp;
 
 // CalculateCxy
-List CalculateCxy(int m, int n, S4 hparam, S4 thetaYList, arma::vec ZOneDim, arma::vec qVec, arma::mat X);
+Rcpp::List CalculateCxy(int m, int n, Rcpp::S4 hparam, Rcpp::S4 thetaYList, arma::vec ZOneDim, arma::vec qVec, arma::mat X);
 RcppExport SEXP _bpgmm_CalculateCxy(SEXP mSEXP, SEXP nSEXP, SEXP hparamSEXP, SEXP thetaYListSEXP, SEXP ZOneDimSEXP, SEXP qVecSEXP, SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< S4 >::type hparam(hparamSEXP);
-    Rcpp::traits::input_parameter< S4 >::type thetaYList(thetaYListSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type hparam(hparamSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type ZOneDim(ZOneDimSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
@@ -24,16 +24,48 @@ BEGIN_RCPP
 END_RCPP
 }
 // CalculatePostLambdaPsy
-Rcpp::List CalculatePostLambdaPsy(Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec constraint);
-RcppExport SEXP _bpgmm_CalculatePostLambdaPsy(SEXP hparamSEXP, SEXP CxyListSEXP, SEXP thetaYListSEXP, SEXP constraintSEXP) {
+void CalculatePostLambdaPsy(int m, int p, Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec qVec, arma::vec constraint);
+RcppExport SEXP _bpgmm_CalculatePostLambdaPsy(SEXP mSEXP, SEXP pSEXP, SEXP hparamSEXP, SEXP CxyListSEXP, SEXP thetaYListSEXP, SEXP qVecSEXP, SEXP constraintSEXP) {
 BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
     Rcpp::traits::input_parameter< Rcpp::S4 >::type hparam(hparamSEXP);
     Rcpp::traits::input_parameter< Rcpp::List >::type CxyList(CxyListSEXP);
     Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type constraint(constraintSEXP);
-    rcpp_result_gen = Rcpp::wrap(CalculatePostLambdaPsy(hparam, CxyList, thetaYList, constraint));
+    CalculatePostLambdaPsy(m, p, hparam, CxyList, thetaYList, qVec, constraint);
+    return R_NilValue;
+END_RCPP
+}
+// updatePostThetaY
+arma::vec updatePostThetaY(int m, int n, Rcpp::S4 thetaYList);
+RcppExport SEXP _bpgmm_updatePostThetaY(SEXP mSEXP, SEXP nSEXP, SEXP thetaYListSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
+    rcpp_result_gen = Rcpp::wrap(updatePostThetaY(m, n, thetaYList));
+    return rcpp_result_gen;
+END_RCPP
+}
+// updatePostZ
+Rcpp::S4 updatePostZ(int m, int n, Rcpp::S4 hparam, Rcpp::S4 thetaYList, arma::vec ZOneDim, arma::vec qVec, arma::vec constraint);
+RcppExport SEXP _bpgmm_updatePostZ(SEXP mSEXP, SEXP nSEXP, SEXP hparamSEXP, SEXP thetaYListSEXP, SEXP ZOneDimSEXP, SEXP qVecSEXP, SEXP constraintSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type hparam(hparamSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type ZOneDim(ZOneDimSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type constraint(constraintSEXP);
+    rcpp_result_gen = Rcpp::wrap(updatePostZ(m, n, hparam, thetaYList, ZOneDim, qVec, constraint));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -53,7 +85,9 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_bpgmm_CalculateCxy", (DL_FUNC) &_bpgmm_CalculateCxy, 7},
-    {"_bpgmm_CalculatePostLambdaPsy", (DL_FUNC) &_bpgmm_CalculatePostLambdaPsy, 4},
+    {"_bpgmm_CalculatePostLambdaPsy", (DL_FUNC) &_bpgmm_CalculatePostLambdaPsy, 7},
+    {"_bpgmm_updatePostThetaY", (DL_FUNC) &_bpgmm_updatePostThetaY, 3},
+    {"_bpgmm_updatePostZ", (DL_FUNC) &_bpgmm_updatePostZ, 7},
     {"_bpgmm_get_Z_mat", (DL_FUNC) &_bpgmm_get_Z_mat, 3},
     {NULL, NULL, 0}
 };

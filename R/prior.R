@@ -1,8 +1,12 @@
+
 #' @title PriorThetaY list
+#' @description generate prior value for parameter Theta and Y.
 #' @importFrom gtools rdirichlet
 #' @importFrom mvtnorm rmvnorm
 #' @import stats
-#'
+#' @param m the number of cluster.
+#' @param n sample size.
+#' @param p number of covariates.
 #' @export
 generatePriorThetaY = function(m,
                                n,
@@ -50,28 +54,27 @@ generatePriorThetaY = function(m,
   }
 
   new("ThetaYList",
-      tao = tao,
-      psy = psy,
-      M = M,
+      tao    = tao,
+      psy    = psy,
+      M      = M,
       lambda = lambda,
-      Y = Y)
-
-  # return(list(
-  #   tao    = tao,
-  #   psy    = psy,
-  #   M      = M,
-  #   lambda = lambda,
-  #   Y      = Y
-  # ))
+      Y      = Y)
 }
 
 #' evaluate Prior
-#'
-#'
+#' @description evaluate prior value for parameter Theta and Y.
+#' @importFrom gtools ddirichlet
+#' @importFrom mvtnorm dmvnorm
+#' @import stats
 #' @export
-
-evaluatePrior = function(m,p, muBar,hparam, thetaYList, ZOneDim,qVec, constraint){
-  ## product of  2.2, 2.3, 2.6, 2.7, 2.8, 2.9, all in log scale
+evaluatePrior = function(m,
+                         p,
+                         muBar,
+                         hparam,
+                         thetaYList,
+                         ZOneDim,
+                         qVec,
+                         constraint){
 
   ggamma = hparam@ggamma
   alpha1 = hparam@alpha1
@@ -105,14 +108,15 @@ evaluatePrior = function(m,p, muBar,hparam, thetaYList, ZOneDim,qVec, constraint
   return(totalVal)
 
 }
-
+#' @description generate prior value for parameter Psi
+#' @import stats
 #' @export
-#'
-#'
-#'
-generatePriorPsi = function(p, m, delta, bbeta, constraint){
+generatePriorPsi = function(p,
+                            m,
+                            delta,
+                            bbeta,
+                            constraint){
   psy = list()
-
 
   if(constraint[2] == T & constraint[3] == T){
 
@@ -148,14 +152,17 @@ generatePriorPsi = function(p, m, delta, bbeta, constraint){
   return(psy)
 }
 
-#'
-#'
-#'
+#' @description evaluate prior value for parameter Psi
+#' @import stats
 #' @export
-evaluatePriorPsi = function(psy, p, m, delta, bbeta, constraint){
+evaluatePriorPsi = function(psy,
+                            p,
+                            m,
+                            delta,
+                            bbeta,
+                            constraint){
+
   psyeval = 0
-
-
   if(constraint[2] == T & constraint[3] == T){
 
     for(i in 1:m){
@@ -188,8 +195,15 @@ evaluatePriorPsi = function(psy, p, m, delta, bbeta, constraint){
   return(psyeval)
 }
 
+#' @description evaluate prior value for parameter Lambda
+#' @importFrom mvtnorm rmvnorm
 #' @export
-generatePriorLambda = function(p, m, alpha2, qVec,psy, constraint){
+generatePriorLambda = function(p,
+                               m,
+                               alpha2,
+                               qVec,
+                               psy,
+                               constraint){
 
   lambda = list()
   if(constraint[1] == T){
@@ -216,15 +230,22 @@ generatePriorLambda = function(p, m, alpha2, qVec,psy, constraint){
   return(lambda)
 }
 
-
+#' @description evaluate prior value for parameter Lambda
+#' @importFrom mvtnorm dmvnorm
 #' @export
-evaluatePriorLambda = function(p, m, alpha2, qVec,psy, lambda, constraint){
+evaluatePriorLambda = function(p,
+                               m,
+                               alpha2,
+                               qVec,
+                               psy,
+                               lambda,
+                               constraint){
 
   evallambda = 0
   if(constraint[1] == T){
     for(k in 1:m){
       if(k == 1){
-        # qk = qVec[k]
+        qk = qVec[k]
         for(j in 1:qk){
           evallambda = evallambda + mvtnorm::dmvnorm(lambda[[k]][,j], rep(0,p), 1/alpha2 * psy[[k]], log = T)
         }
