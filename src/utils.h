@@ -23,7 +23,7 @@ Rcpp::List CalculateCxy(int m, int n, Rcpp::S4 hparam, Rcpp::S4 thetaYList,
                   arma::vec qVec,
                   arma::mat X);
 
-Rcpp::List CalculatePostLambdaPsy(Rcpp::S4 hparam,
+void CalculatePostLambdaPsy(Rcpp::S4 hparam,
                                   Rcpp::List CxyList,
                                   Rcpp::S4 thetaYList,
                                   arma::vec constraint);
