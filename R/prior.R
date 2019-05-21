@@ -42,7 +42,8 @@ generatePriorThetaY = function(m,
   lambda = generatePriorLambda(p, m, alpha2, qVec, psy, constraint)
 
 
-  Zmat = getZmat(ZOneDim, m, n)
+  # Zmat = getZmat(ZOneDim, m, n)
+  Zmat = get_Z_mat(ZOneDim, m, n)
 
   # post Y
   Y = list()

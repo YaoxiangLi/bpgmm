@@ -170,7 +170,7 @@ void CalculatePostLambdaPsy(int m,
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = 1/2 * arma::diagvec(ratePara_k);
+      // ratePara_k = arma::diagvec(ratePara_k) / 2;
       ratePara_vec += arma::diagvec(ratePara_k) / 2;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
@@ -301,7 +301,7 @@ void CalculatePostLambdaPsy(int m,
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = 1/2 * arma::diagvec(ratePara_k);
+      // ratePara_k = arma::diagvec(ratePara_k) / 2;
       ratePara_vec += arma::diagvec(ratePara_k) / 2;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
@@ -475,7 +475,7 @@ void CalculatePostLambdaPsy(int m,
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = 1/2 * arma::diagvec(ratePara_k);
+      // ratePara_k = arma::diagvec(ratePara_k) / 2;
       ratePara_vec += arma::diagvec(ratePara_k) / 2;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
@@ -511,14 +511,306 @@ void CalculatePostLambdaPsy(int m,
     // return(res);
 
   } else if (constraint[0] == 1 & constraint[1] == 0 & constraint[2] == 0) {
-
-
-
-
-
     std::cout << "Model 4" << std::endl;
+    arma::mat sumVar;
+    arma::mat B;
+
+    for (int k=0; k<m; ++k) {
+      arma::mat psy_k = psy[k];
+      // double qVec_k = qVec[k];
+      // std::cout << "psy_k: " << std::endl << psy_k << std::endl;
+      // std::cout << "qVec: " << std::endl << qVec << std::endl;
+
+      // std::cout << "qVec_k: " << std::endl << qVec_k << std::endl;
+      // std::cout << "psy_k.i(): " << std::endl << psy_k.i() << std::endl;
+      Rcpp::NumericMatrix Cxmyk_k = Cxmyk[k];
+      Rcpp::NumericMatrix Cyyk_k = Cyyk[k];
+
+      arma::mat Cxmyk_ka = Rcpp::as<arma::mat>(Cxmyk_k);
+      arma::mat Cyyk_ka = Rcpp::as<arma::mat>(Cyyk_k);
+
+      arma::mat alpha2_eye(qVec[k], qVec[k], arma::fill::eye);
+      alpha2_eye = alpha2 * alpha2_eye;
+      // std::cout << "alpha2_eye: " << std::endl << alpha2_eye << std::endl;
+      // std::cout << "Cyyk_ka: " << std::endl << Cyyk_ka << std::endl;
+
+      // std::cout << "Cyyk_k + alpha2_eye: " << std::endl << Cyyk_ka + alpha2_eye << std::endl;
+      // std::cout << "psy_k.i(): " << std::endl << psy_k.i() << std::endl;
+
+      Rcpp::NumericMatrix sumVar_plus = kronecker(Cyyk_ka + alpha2_eye, psy_k.i());
+      arma::mat sumVar_plusa = Rcpp::as<arma::mat>(sumVar_plus);
+      // std::cout << "sumVar_plusa: " << std::endl << sumVar_plusa << std::endl;
+      if (k == 0) {
+        sumVar = sumVar_plusa;
+        B = psy_k.i() * Cxmyk_ka;
+      } else {
+        sumVar += sumVar_plusa;
+        B += psy_k.i() * Cxmyk_ka;
+
+      }
+      // std::cout << "sumVar: " << std::endl << sumVar << std::endl;
+      // std::cout << "B: " << std::endl << B << std::endl;
+
+    }
+
+    arma::mat lambdaVar = sumVar.i();
+    Rcpp::NumericVector c_B = c(B);
+    arma::vec c_Ba = Rcpp::as<arma::vec>(c_B);
+
+    // std::cout << "B: " << std::endl << B << std::endl;
+    // std::cout << "c_Ba: " << std::endl << c_Ba << std::endl;
+    // std::cout << "lambdaVar: " << std::endl << lambdaVar.n_rows << lambdaVar.n_cols << std::endl;
+
+    arma::mat lambdaMean = trans(c_Ba) * lambdaVar;
+    // std::cout << "lambdaMean: " << std::endl << lambdaMean << std::endl;
+    // std::cout << "lambdaMean: " << std::endl << lambdaMean.n_rows << lambdaMean.n_cols << std::endl;
+
+    for (int k=0; k<m; ++k) {
+      if (k == 0) {
+        lambda[k] = rmvnorm(Named("n", 1),
+                            Named("mean", lambdaMean),
+                            Named("sigma", lambdaVar));
+        Rcpp::NumericMatrix lambdak = lambda[k];
+        // std::cout << lambdak << std::endl;
+        lambda[k] = matrix(lambdak, p, qVec[k]);
+
+      } else{
+        lambda[k] = lambda[0];
+      }
+    }
+
+    // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
+
+    List tildaLambda(m);
+    for (int k=0; k<m; ++k) {
+      Rcpp::NumericMatrix lambda_k = lambda[k];
+      Rcpp::NumericVector m_k = M[k];
+      // std::cout << "lambda_k" << lambda_k << std::endl;
+      // std::cout << "m_k: " << m_k << std::endl;
+
+      arma::vec m_ka = m_k;
+      // std::cout << "m_ka: "       << std::endl << m_ka << std::endl;
+      arma::mat lambda_ka = Rcpp::as<arma::mat>(lambda_k);
+      // std::cout << "lambda_ka: "  << std::endl << lambda_ka << std::endl;
+      lambda_ka.insert_cols(0, m_ka);
+      // std::cout << "lambda_ka: "  << std::endl << lambda_ka << std::endl;
+      tildaLambda[k] = lambda_ka;
+    }
+
+    // Post psy
+
+    List post_psy(m);
+
+    double shapePara = 0;
+    arma::vec ratePara_vec(p, arma::fill::zeros);
+    // std::cout << "ratePara_vec: "  << std::endl << ratePara_vec << std::endl;
+
+    for (int k=0; k<m; ++k) {
+
+      // double nVec_k = nVec[k];
+      // double qVec_k = qVec[k];
+
+
+      // std::cout << "nVec[k]: "  << std::endl << nVec[k] << std::endl;
+      // std::cout << "qVec[k]: "  << std::endl << qVec[k] << std::endl;
+      // std::cout << "delta: "  << std::endl << delta << std::endl;
+
+
+      shapePara = (nVec[k] + qVec[k] + 2 * delta - 1) / 2 + 1;
+      // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
+
+      Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
+      Rcpp::NumericMatrix Cxtytk_k = Cxtytk[k];
+      Rcpp::NumericMatrix Cytytk_k = Cytytk[k];
+
+      Rcpp::NumericMatrix tildaLambda_k = tildaLambda[k];
+      Rcpp::NumericMatrix A_k = A[k];
+
+      // std::cout << "Cxxk[k]: " << std::endl << Cxxk_k << std::endl;
+      // std::cout << "Cxtytk_k: " << std::endl << Cxtytk_k << std::endl;
+      // std::cout << "tildaLambda_k: " << std::endl << tildaLambda_k << std::endl;
+
+      arma::mat Cxxk_ka = Rcpp::as<arma::mat>(Cxxk_k);
+      arma::mat Cxtytk_ka = Rcpp::as<arma::mat>(Cxtytk_k);
+      arma::mat Cytytk_ka = Rcpp::as<arma::mat>(Cytytk_k);
+
+      arma::mat tildaLambda_ka = Rcpp::as<arma::mat>(tildaLambda_k);
+      arma::mat A_ka = Rcpp::as<arma::mat>(A_k);
+      arma::mat bbeta_eye(p, p, arma::fill::eye);
+
+      bbeta_eye = 2 * bbeta * bbeta_eye;
+      // std::cout << "Cxxk[k]: (p * p)" << std::endl << Cxxk_k << std::endl;
+      // std::cout << "Cxtytk_ka: (p * m)" << std::endl << Cxtytk_ka << std::endl;
+      // std::cout << "tildaLambda_ka: (m * p)" << std::endl << trans(tildaLambda_ka) << std::endl;
+      // std::cout << "A_ka" << std::endl <<  A_ka << std::endl;
+      // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
+
+      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
+      // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
+
+      ratePara_k = arma::diagvec(ratePara_k) / 2;
+      arma::vec scalePara = 1 / ratePara_k;
+      // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
+      // std::cout << "scalePara: " << std::endl << scalePara << std::endl;
+
+      arma::vec invpsy(p);
+      for (int j=0; j<p; ++j) {
+
+        // std::cout << "arma::vec: " << std::endl << arma::randg( 1, distr_param(shapePara, scalePara[j]) ) << std::endl;
+
+        invpsy[j] = sum(arma::randg( 1, distr_param(shapePara, scalePara[j]) ));;
+        // std::cout << "invpsy[j]: " << std::endl << invpsy[j] << std::endl;
+
+      }
+
+      //
+
+      // std::cout << "diagmat(1/invpsy): " << std::endl << diagmat(1/invpsy) << std::endl;
+
+
+      post_psy(k) = diagmat(1/invpsy);
+
+
+
+    }
+
+    // for (int k=0; k<m; ++k) {
+    //   arma::mat post_psyk = post_psy(k);
+    //
+    //   std::cout << "post_psy(k): " << std::endl << post_psyk << std::endl;
+    //
+    // }
+
+    // List res = Rcpp::List::create(Named("lambda") = lambda,
+    //                               Named("psy")    = post_psy);
+    //
+    // return(res);
+
   } else if (constraint[0] == 0 & constraint[1] == 1 & constraint[2] == 1) {
     std::cout << "Model 5" << std::endl;
+    for (int k=0; k<m; ++k) {
+
+      Rcpp::NumericVector mean_vec = c(sumCxmyk * sumCyyk.i());
+      // std::cout << sumCxmyk << std::endl;
+      // std::cout << sumCyyk.i() << std::endl;
+      // std::cout << mean_vec << std::endl;
+
+      Rcpp::NumericMatrix sigma_mat = kronecker(sumCyyk.i(), psy[k]);
+      // std::cout << sigma_mat << std::endl;
+
+
+      lambda[k] = rmvnorm(Named("n", 1),
+                          Named("mean", mean_vec),
+                          Named("sigma", sigma_mat));
+      Rcpp::NumericMatrix lambdak = lambda[k];
+      // std::cout << lambdak << std::endl;
+      lambda[k] = matrix(lambdak, p, qVec[k]);
+    }
+
+    // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
+
+    List tildaLambda(m);
+    for (int k=0; k<m; ++k) {
+      Rcpp::NumericMatrix lambda_k = lambda[k];
+      Rcpp::NumericVector m_k = M[k];
+      // std::cout << "lambda_k" << lambda_k << std::endl;
+      // std::cout << "m_k: " << m_k << std::endl;
+
+      arma::vec m_ka = m_k;
+      // std::cout << "m_ka: "       << std::endl << m_ka << std::endl;
+      arma::mat lambda_ka = Rcpp::as<arma::mat>(lambda_k);
+      // std::cout << "lambda_ka: "  << std::endl << lambda_ka << std::endl;
+      lambda_ka.insert_cols(0, m_ka);
+      // std::cout << "lambda_ka: "  << std::endl << lambda_ka << std::endl;
+      tildaLambda[k] = lambda_ka;
+    }
+
+    // Post psy
+
+    List post_psy(m);
+
+    double shapePara = 0;
+    arma::vec ratePara_vec(p, arma::fill::zeros);
+    // std::cout << "ratePara_vec: "  << std::endl << ratePara_vec << std::endl;
+
+    for (int k=0; k<m; ++k) {
+
+      // double nVec_k = nVec[k];
+      // double qVec_k = qVec[k];
+
+
+      // std::cout << "nVec[k]: "  << std::endl << nVec[k] << std::endl;
+      // std::cout << "qVec[k]: "  << std::endl << qVec[k] << std::endl;
+      // std::cout << "delta: "  << std::endl << delta << std::endl;
+
+
+      shapePara += p/2 * (nVec[k] + qVec[k] + 2 * delta - 1);
+      // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
+      // ratePara_vec += 1；
+
+      Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
+      Rcpp::NumericMatrix Cxtytk_k = Cxtytk[k];
+      Rcpp::NumericMatrix Cytytk_k = Cytytk[k];
+
+      Rcpp::NumericMatrix tildaLambda_k = tildaLambda[k];
+      Rcpp::NumericMatrix A_k = A[k];
+
+      // std::cout << "Cxxk[k]: " << std::endl << Cxxk_k << std::endl;
+      // std::cout << "Cxtytk_k: " << std::endl << Cxtytk_k << std::endl;
+      // std::cout << "tildaLambda_k: " << std::endl << tildaLambda_k << std::endl;
+
+      arma::mat Cxxk_ka = Rcpp::as<arma::mat>(Cxxk_k);
+      arma::mat Cxtytk_ka = Rcpp::as<arma::mat>(Cxtytk_k);
+      arma::mat Cytytk_ka = Rcpp::as<arma::mat>(Cytytk_k);
+
+      arma::mat tildaLambda_ka = Rcpp::as<arma::mat>(tildaLambda_k);
+      arma::mat A_ka = Rcpp::as<arma::mat>(A_k);
+      arma::mat bbeta_eye(p, p, arma::fill::eye);
+
+      bbeta_eye = 2 * bbeta * bbeta_eye;
+      // std::cout << "Cxxk[k]: (p * p)" << std::endl << Cxxk_k << std::endl;
+      // std::cout << "Cxtytk_ka: (p * m)" << std::endl << Cxtytk_ka << std::endl;
+      // std::cout << "tildaLambda_ka: (m * p)" << std::endl << trans(tildaLambda_ka) << std::endl;
+      // std::cout << "A_ka" << std::endl <<  A_ka << std::endl;
+      // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
+
+      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
+      // ratePara_k = arma::diagvec(ratePara_k) / 2;
+      ratePara_vec += arma::diagvec(ratePara_k) / 2;
+      // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
+
+      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) / 2 << std::endl;
+      // std::cout << "ratePara_vec: " << std::endl << ratePara_vec << std::endl;
+
+      // std::cout << "test: (p * p)" << std::endl << arma::diagvec(test) << std::endl;
+
+
+    }
+    shapePara += 1;
+    double ratePara = arma::sum(ratePara_vec);
+    double scalePara = 1 / ratePara;
+    // std::cout << "shapePara: " << std::endl << shapePara << std::endl;
+    // std::cout << "ratePara: " << std::endl << ratePara << std::endl;
+    // std::cout << "scalePara: " << std::endl << scalePara << std::endl;
+    double invpsy = sum(arma::randg( 1, distr_param(shapePara, scalePara) ));
+    // std::cout << "invpsy: " << std::endl << invpsy << std::endl;
+
+    // double invpsy = rgamma(Named("n", 1), Named("shape", shapePara), Named("rate", ratePara));
+    // std::cout << "invpsy: " << std::endl << invpsy << std::endl;
+
+    for (int k=0; k<m; ++k) {
+      arma::mat post_psy_eye(p, p, arma::fill::eye);
+      // std::cout << "post_psy_eye: " << std::endl << post_psy_eye << std::endl;
+      // std::cout << "post_psy_eye: " << std::endl << 1/invpsy * post_psy_eye << std::endl;
+
+      post_psy(k) = 1/invpsy * post_psy_eye;
+    }
+    // List res = Rcpp::List::create(Named("lambda") = lambda,
+    //                               Named("psy")    = post_psy);
+    //
+    // return(res);
+
+
   } else if (constraint[0] == 0 & constraint[1] == 1 & constraint[2] == 0) {
     std::cout << "Model 6" << std::endl;
   } else if (constraint[0] == 0 & constraint[1] == 0 & constraint[2] == 1) {
@@ -528,10 +820,8 @@ void CalculatePostLambdaPsy(int m,
   }
 
 
-  // Test Results
 
 
-  // True Results
   // List res = Rcpp::List::create(Named("lambda") = lambda,
   //                               Named("psy")    = psy);
 

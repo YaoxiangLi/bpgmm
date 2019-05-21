@@ -13,10 +13,6 @@ updatePostThetaY <- function(m, n, thetaYList) {
     .Call(`_bpgmm_updatePostThetaY`, m, n, thetaYList)
 }
 
-updatePostZ <- function(m, n, hparam, thetaYList, ZOneDim, qVec, constraint) {
-    .Call(`_bpgmm_updatePostZ`, m, n, hparam, thetaYList, ZOneDim, qVec, constraint)
-}
-
 get_Z_mat <- function(ZOneDim, m, n) {
     .Call(`_bpgmm_get_Z_mat`, ZOneDim, m, n)
 }

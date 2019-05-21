@@ -52,23 +52,6 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// updatePostZ
-Rcpp::S4 updatePostZ(int m, int n, Rcpp::S4 hparam, Rcpp::S4 thetaYList, arma::vec ZOneDim, arma::vec qVec, arma::vec constraint);
-RcppExport SEXP _bpgmm_updatePostZ(SEXP mSEXP, SEXP nSEXP, SEXP hparamSEXP, SEXP thetaYListSEXP, SEXP ZOneDimSEXP, SEXP qVecSEXP, SEXP constraintSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< Rcpp::S4 >::type hparam(hparamSEXP);
-    Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type ZOneDim(ZOneDimSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type constraint(constraintSEXP);
-    rcpp_result_gen = Rcpp::wrap(updatePostZ(m, n, hparam, thetaYList, ZOneDim, qVec, constraint));
-    return rcpp_result_gen;
-END_RCPP
-}
 // get_Z_mat
 arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n);
 RcppExport SEXP _bpgmm_get_Z_mat(SEXP ZOneDimSEXP, SEXP mSEXP, SEXP nSEXP) {
@@ -87,7 +70,6 @@ static const R_CallMethodDef CallEntries[] = {
     {"_bpgmm_CalculateCxy", (DL_FUNC) &_bpgmm_CalculateCxy, 7},
     {"_bpgmm_CalculatePostLambdaPsy", (DL_FUNC) &_bpgmm_CalculatePostLambdaPsy, 7},
     {"_bpgmm_updatePostThetaY", (DL_FUNC) &_bpgmm_updatePostThetaY, 3},
-    {"_bpgmm_updatePostZ", (DL_FUNC) &_bpgmm_updatePostZ, 7},
     {"_bpgmm_get_Z_mat", (DL_FUNC) &_bpgmm_get_Z_mat, 3},
     {NULL, NULL, 0}
 };
