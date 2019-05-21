@@ -690,10 +690,25 @@ void CalculatePostLambdaPsy(int m,
     std::cout << "Model 5" << std::endl;
     for (int k=0; k<m; ++k) {
 
-      Rcpp::NumericVector mean_vec = c(sumCxmyk * sumCyyk.i());
-      // std::cout << sumCxmyk << std::endl;
-      // std::cout << sumCyyk.i() << std::endl;
-      // std::cout << mean_vec << std::endl;
+
+      Rcpp::NumericMatrix Cxmyk_k = Cxmyk[k];
+      Rcpp::NumericMatrix Cyyk_k = Cyyk[k];
+
+      arma::mat Cxmyk_ka = Rcpp::as<arma::mat>(Cxmyk_k);
+      arma::mat Cyyk_ka = Rcpp::as<arma::mat>(Cyyk_k);
+      arma::mat alpha2_eye(qVec[k], qVec[k], arma::fill::eye);
+
+      // std::cout << alpha2_eye << std::endl;
+      alpha2_eye *= alpha2;
+      // std::cout << alpha2_eye << std::endl;
+
+      // std::cout << Cyyk_ka    << std::endl;
+      Cyyk_ka += alpha2_eye;
+      // std::cout << Cyyk_ka    << std::endl;
+
+      Rcpp::NumericVector mean_vec = c(Cxmyk_ka * Cyyk_ka.i());
+
+      // std::cout << mean_vec   << std::endl;
 
       Rcpp::NumericMatrix sigma_mat = kronecker(sumCyyk.i(), psy[k]);
       // std::cout << sigma_mat << std::endl;

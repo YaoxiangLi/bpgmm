@@ -337,9 +337,9 @@ CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, constr
     for(k in 1:m){
       psy[[k]] = diag(rep(1/invpsy),p)
     }
-    ##end model 5
+    ## end model 5
   }else if(constraint[1] == F & constraint[2] == T & constraint[3] == F){
-    ##model 6
+    ## model 6
     for(k in 1:m){
 
       lambda[[k]] = rmvnorm(1, mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]]+  alpha2 * diag(qVec[k]))),
