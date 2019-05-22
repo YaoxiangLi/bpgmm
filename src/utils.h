@@ -8,14 +8,10 @@
 
 arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n);
 
-arma::vec dmvnrm_arma(arma::mat x,
-                      arma::rowvec mean,
-                      arma::mat sigma,
-                      bool logd = false);
 
 arma::vec updatePostThetaY(int m, int n, Rcpp::S4 thetaYList);
 
-Rcpp::S4 updatePostZ(int m,
+Rcpp::NumericVector updatePostZ(int m,
                      int n,
                      Rcpp::S4 thetaYList);
 

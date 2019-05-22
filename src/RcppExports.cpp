@@ -93,3 +93,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+
+static const R_CallMethodDef CallEntries[] = {
+    {"_bpgmm_CalculateCxy", (DL_FUNC) &_bpgmm_CalculateCxy, 7},
+    {"_bpgmm_CalculatePostLambdaPsy", (DL_FUNC) &_bpgmm_CalculatePostLambdaPsy, 7},
+    {"_bpgmm_dmvnrm_arma", (DL_FUNC) &_bpgmm_dmvnrm_arma, 4},
+    {"_bpgmm_updatePostThetaY", (DL_FUNC) &_bpgmm_updatePostThetaY, 3},
+    {"_bpgmm_updatePostZ", (DL_FUNC) &_bpgmm_updatePostZ, 4},
+    {"_bpgmm_get_Z_mat", (DL_FUNC) &_bpgmm_get_Z_mat, 3},
+    {NULL, NULL, 0}
+};
+
+RcppExport void R_init_bpgmm(DllInfo *dll) {
+    R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
+    R_useDynamicSymbols(dll, FALSE);
+}

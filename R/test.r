@@ -1,8 +1,8 @@
 library(bpgmm)
 Rcpp::sourceCpp('src/calculateCxy.cpp')
 Rcpp::sourceCpp('src/calculatePostLambdaPsy.cpp')
-Rcpp::sourceCpp('src/dmvnorm.cpp')
-Rcpp::sourceCpp('src/updatePostZ2.cpp')
+# Rcpp::sourceCpp('src/dmvnorm.cpp')
+# Rcpp::sourceCpp('src/updatePostZ.cpp')
 m = 3
 n = 7
 p = 10
@@ -14,7 +14,7 @@ hparam <- new("Hparam", alpha1 = 3, alpha2 = 2, delta  = 3, ggamma = 4, bbeta  =
 thetaYList = generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
 X = matrix(rnorm(p * n, 0, 1), p, n)
 
-updatePostZ(m, n, thetaYList)
+# updatePostZ(m, n, thetaYList)
 
 
 CxyList = CalculateCxy(m, n, hparam, thetaYList, ZOneDim, qVec, X)
