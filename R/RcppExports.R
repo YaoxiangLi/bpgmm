@@ -6,7 +6,7 @@ CalculateCxy <- function(m, n, hparam, thetaYList, ZOneDim, qVec, X) {
 }
 
 CalculatePostLambdaPsy <- function(m, p, hparam, CxyList, thetaYList, qVec, constraint) {
-    invisible(.Call(`_bpgmm_CalculatePostLambdaPsy`, m, p, hparam, CxyList, thetaYList, qVec, constraint))
+    .Call(`_bpgmm_CalculatePostLambdaPsy`, m, p, hparam, CxyList, thetaYList, qVec, constraint)
 }
 
 dmvnrm_arma <- function(x, mean, sigma, logd = FALSE) {

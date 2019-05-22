@@ -101,7 +101,7 @@ updatePostThetaY = function(m, n,hparam, thetaYList, ZOneDim, qVec, constraint){
 }
 
 
-CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, constraint){
+R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, constraint){
 
   Cxxk = CxyList$Cxxk
   Cxyk = CxyList$Cxyk

@@ -1,5 +1,5 @@
 
-#' @title PriorThetaY list
+#' PriorThetaY list
 #' @description generate prior value for parameter Theta and Y.
 #' @importFrom gtools rdirichlet
 #' @importFrom mvtnorm rmvnorm
@@ -109,6 +109,8 @@ evaluatePrior = function(m,
   return(totalVal)
 
 }
+#' generatePriorPsi
+#'
 #' @description generate prior value for parameter Psi
 #' @import stats
 #' @export
@@ -153,6 +155,8 @@ generatePriorPsi = function(p,
   return(psy)
 }
 
+#' evaluatePriorPsi
+#'
 #' @description evaluate prior value for parameter Psi
 #' @import stats
 #' @export
@@ -196,6 +200,8 @@ evaluatePriorPsi = function(psy,
   return(psyeval)
 }
 
+#' generatePriorLambda
+#'
 #' @description evaluate prior value for parameter Lambda
 #' @importFrom mvtnorm rmvnorm
 #' @export
@@ -231,6 +237,8 @@ generatePriorLambda = function(p,
   return(lambda)
 }
 
+#' evaluatePriorLambda
+#'
 #' @description evaluate prior value for parameter Lambda
 #' @importFrom mvtnorm dmvnorm
 #' @export

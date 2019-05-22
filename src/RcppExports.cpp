@@ -24,9 +24,10 @@ BEGIN_RCPP
 END_RCPP
 }
 // CalculatePostLambdaPsy
-void CalculatePostLambdaPsy(int m, int p, Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec qVec, arma::vec constraint);
+Rcpp::List CalculatePostLambdaPsy(int m, int p, Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec qVec, arma::vec constraint);
 RcppExport SEXP _bpgmm_CalculatePostLambdaPsy(SEXP mSEXP, SEXP pSEXP, SEXP hparamSEXP, SEXP CxyListSEXP, SEXP thetaYListSEXP, SEXP qVecSEXP, SEXP constraintSEXP) {
 BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< int >::type p(pSEXP);
@@ -35,8 +36,8 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type constraint(constraintSEXP);
-    CalculatePostLambdaPsy(m, p, hparam, CxyList, thetaYList, qVec, constraint);
-    return R_NilValue;
+    rcpp_result_gen = Rcpp::wrap(CalculatePostLambdaPsy(m, p, hparam, CxyList, thetaYList, qVec, constraint));
+    return rcpp_result_gen;
 END_RCPP
 }
 // dmvnrm_arma
