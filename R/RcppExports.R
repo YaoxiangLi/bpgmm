@@ -5,23 +5,31 @@ CalculateCxy <- function(m, n, hparam, thetaYList, ZOneDim, qVec, X) {
     .Call(`_bpgmm_CalculateCxy`, m, n, hparam, thetaYList, ZOneDim, qVec, X)
 }
 
-CalculatePostLambdaPsy <- function(m, p, hparam, CxyList, thetaYList, qVec, constraint) {
-    .Call(`_bpgmm_CalculatePostLambdaPsy`, m, p, hparam, CxyList, thetaYList, qVec, constraint)
+Calculate_PostLambdaPsy <- function(m, p, hparam, CxyList, thetaYList, qVec, constraint) {
+    .Call(`_bpgmm_Calculate_PostLambdaPsy`, m, p, hparam, CxyList, thetaYList, qVec, constraint)
 }
 
-dmvnrm_arma <- function(x, mean, sigma, logd = FALSE) {
-    .Call(`_bpgmm_dmvnrm_arma`, x, mean, sigma, logd)
+update_PostThetaY <- function(m, n, thetaYList) {
+    .Call(`_bpgmm_update_PostThetaY`, m, n, thetaYList)
 }
 
-updatePostThetaY <- function(m, n, thetaYList) {
-    .Call(`_bpgmm_updatePostThetaY`, m, n, thetaYList)
+update_PostZ <- function(X, m, n, thetaYList) {
+    .Call(`_bpgmm_update_PostZ`, X, m, n, thetaYList)
 }
 
-updatePostZ <- function(X, m, n, thetaYList) {
-    .Call(`_bpgmm_updatePostZ`, X, m, n, thetaYList)
+update_Hyperparameter <- function(m, p, q, hparam, thetaYList, dVec, sVec) {
+    .Call(`_bpgmm_update_Hyperparameter`, m, p, q, hparam, thetaYList, dVec, sVec)
 }
 
 get_Z_mat <- function(ZOneDim, m, n) {
     .Call(`_bpgmm_get_Z_mat`, ZOneDim, m, n)
+}
+
+dmvnrm_arma <- function(x, mean, sigma, logd) {
+    .Call(`_bpgmm_dmvnrm_arma`, x, mean, sigma, logd)
+}
+
+calculate_Ratio <- function(logDeno, logNume) {
+    .Call(`_bpgmm_calculate_Ratio`, logDeno, logNume)
 }
 

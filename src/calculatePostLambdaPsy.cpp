@@ -8,7 +8,7 @@ using namespace arma;
 
 
 // [[Rcpp::export]]
-Rcpp::List CalculatePostLambdaPsy(int m,
+Rcpp::List Calculate_PostLambdaPsy(int m,
                                   int p,
                                   Rcpp::S4 hparam,
                                   Rcpp::List CxyList,
@@ -59,7 +59,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
   Rcpp::Function matrix = base["matrix"];
   Rcpp::Function t = base["t"];
   Rcpp::Function diag = base["diag"];
-  Rcpp::Function rgamma = stats["rgamma"];
+  // Rcpp::Function rgamma = stats["rgamma"];
 
 
   // Rcpp::NumericVector test_norm = c(sumCxmyk * sumCyyk.i());
@@ -200,10 +200,10 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
       post_psy(k) = 1/invpsy * post_psy_eye;
     }
-    // List res = Rcpp::List::create(Named("lambda") = lambda,
-    //                               Named("psy")    = post_psy);
-    //
-    // return(res);
+    List res = Rcpp::List::create(Named("lambda") = lambda,
+                                  Named("psy")    = post_psy);
+
+    return(res);
 
   } else if (constraint[0] == 1 & constraint[1] == 1 & constraint[2] == 0) {
     std::cout << "Model 2" << std::endl;
@@ -270,7 +270,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara += p/2 * (nVec[k] + qVec[k] + 2 * delta - 1);
+      shapePara += 0.5 * (nVec[k] + qVec[k] + 2 * delta - 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -339,10 +339,10 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "1/invpsy: " << std::endl << diagmat(1/invpsy) << std::endl;
 
     }
-    // List res = Rcpp::List::create(Named("lambda") = lambda,
-    //                               Named("psy")    = post_psy);
-    //
-    // return(res);
+    List res = Rcpp::List::create(Named("lambda") = lambda,
+                                  Named("psy")    = post_psy);
+
+    return(res);
   } else if (constraint[0] == 1 & constraint[1] == 0 & constraint[2] == 1) {
     std::cout << "Model 3" << std::endl;
     arma::mat Cxmyk_0 = Cxmyk[0];
@@ -444,7 +444,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara += p/2 * (nVec[k] + qVec[k] + 2 * delta - 1);
+      shapePara = 0.5 * p * (nVec[k] + qVec[k] + 2 * delta - 1) + 1;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -483,32 +483,26 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "ratePara_vec: " << std::endl << ratePara_vec << std::endl;
 
       // std::cout << "test: (p * p)" << std::endl << arma::diagvec(test) << std::endl;
-
+      double ratePara = arma::sum(ratePara_vec);
+      double scalePara = 1 / ratePara;
+      double invpsy = sum(arma::randg( 1, distr_param(shapePara, scalePara) ));
+      arma::mat post_psy_eye(p, p, arma::fill::eye);
+      post_psy(k) = 1/invpsy * post_psy_eye;
 
     }
-    shapePara += 1;
-    double ratePara = arma::sum(ratePara_vec);
-    double scalePara = 1 / ratePara;
     // std::cout << "shapePara: " << std::endl << shapePara << std::endl;
     // std::cout << "ratePara: " << std::endl << ratePara << std::endl;
     // std::cout << "scalePara: " << std::endl << scalePara << std::endl;
-    double invpsy = sum(arma::randg( 1, distr_param(shapePara, scalePara) ));
     // std::cout << "invpsy: " << std::endl << invpsy << std::endl;
 
     // double invpsy = rgamma(Named("n", 1), Named("shape", shapePara), Named("rate", ratePara));
     // std::cout << "invpsy: " << std::endl << invpsy << std::endl;
 
-    for (int k=0; k<m; ++k) {
-      arma::mat post_psy_eye(p, p, arma::fill::eye);
-      // std::cout << "post_psy_eye: " << std::endl << post_psy_eye << std::endl;
-      // std::cout << "post_psy_eye: " << std::endl << 1/invpsy * post_psy_eye << std::endl;
 
-      post_psy(k) = 1/invpsy * post_psy_eye;
-    }
-    // List res = Rcpp::List::create(Named("lambda") = lambda,
-    //                               Named("psy")    = post_psy);
-    //
-    // return(res);
+    List res = Rcpp::List::create(Named("lambda") = lambda,
+                                  Named("psy")    = post_psy);
+
+    return(res);
 
   } else if (constraint[0] == 1 & constraint[1] == 0 & constraint[2] == 0) {
     std::cout << "Model 4" << std::endl;
@@ -681,10 +675,10 @@ Rcpp::List CalculatePostLambdaPsy(int m,
     //
     // }
 
-    // List res = Rcpp::List::create(Named("lambda") = lambda,
-    //                               Named("psy")    = post_psy);
-    //
-    // return(res);
+    List res = Rcpp::List::create(Named("lambda") = lambda,
+                                  Named("psy")    = post_psy);
+
+    return(res);
 
   } else if (constraint[0] == 0 & constraint[1] == 1 & constraint[2] == 1) {
     std::cout << "Model 5" << std::endl;
@@ -820,10 +814,10 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
       post_psy(k) = 1/invpsy * post_psy_eye;
     }
-    // List res = Rcpp::List::create(Named("lambda") = lambda,
-    //                               Named("psy")    = post_psy);
-    //
-    // return(res);
+    List res = Rcpp::List::create(Named("lambda") = lambda,
+                                  Named("psy")    = post_psy);
+
+    return(res);
 
 
   } else if (constraint[0] == 0 & constraint[1] == 1 & constraint[2] == 0) {
@@ -958,6 +952,12 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       post_psy(k) = diagmat(1/invpsy);
       // std::cout << "diagmat(1/invpsy): " << std::endl << diagmat(1/invpsy) << std::endl;
     }
+
+    List res = Rcpp::List::create(Named("lambda") = lambda,
+                                  Named("psy")    = post_psy);
+
+    return(res);
+
   } else if (constraint[0] == 0 & constraint[1] == 0 & constraint[2] == 1) {
     std::cout << "Model 7" << std::endl;
 
@@ -1061,10 +1061,10 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
     }
 
-    // List res = Rcpp::List::create(Named("lambda") = lambda,
-    //                               Named("psy")    = post_psy);
-    //
-    // return(res);
+    List res = Rcpp::List::create(Named("lambda") = lambda,
+                                  Named("psy")    = post_psy);
+
+    return(res);
 
   } else if (constraint[0] == 0 & constraint[1] == 0 & constraint[2] == 0) {
     std::cout << "Model 8" << std::endl;
@@ -1152,37 +1152,49 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       bbeta_eye = 2 * bbeta * bbeta_eye;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      ratePara_vec = arma::diagvec(ratePara_k) / 2;
-      // std::cout << "ratePara_vec: "  << std::endl << ratePara_vec << std::endl;
+      Rcpp::NumericVector ratePara = c(arma::diagvec(ratePara_k) / 2.0);
+      // std::cout << "ratePara: "  << std::endl << ratePara << std::endl;
 
-      arma:vec scalePara_vec = 1 / ratePara_vec;
+      // arma:vec scalePara_vec = 1.0 / ratePara_vec;
       // std::cout << "scalePara_vec: "  << std::endl << scalePara_vec << std::endl;
 
-      arma::vec invpsy(p);
-      for (int j=0; j<p; ++j) {
+      // arma::vec invpsy(p);
+      // for (int j=0; j<p; ++j) {
 
         // std::cout << "arma::vec: " << std::endl << arma::randg( 1, distr_param(shapePara, scalePara[j]) ) << std::endl;
 
-        invpsy[j] = sum(arma::randg( 1, distr_param(shapePara, scalePara_vec[j]) ));;
+        // invpsy[j] = sum(arma::randg( 1, distr_param(shapePara, scalePara_vec[j]) ));;
         // std::cout << "invpsy[j]: " << std::endl << invpsy[j] << std::endl;
 
-      }
+      // }
 
       // std::cout << "diagmat(1/invpsy): " << std::endl << diagmat(1/invpsy) << std::endl;
+      // Rcpp::NumericVector invpsy = rgamma(Name("n", p),
+      //                                     Name("shape", shapePara),
+      //                                     Name("rate", ratePara));
 
 
-      post_psy(k) = diagmat(1/invpsy);
+      std::cout << "p: " << std::endl << p << std::endl;
+      std::cout << "shapePara: " << std::endl << shapePara << std::endl;
+      std::cout << "ratePara: " << std::endl << ratePara << std::endl;
+
+      arma::vec invpsy(p);
+      for (int j=0; j<p; ++j) {
+        // std::cout << "ratePara[j]: " << std::endl << ratePara[j] << std::endl;
+        double ratePara_j = ratePara[j];
+        double scalePara_j = 1.0/ratePara_j;
+        invpsy[j] = sum(Rcpp::rgamma(1, shapePara, scalePara_j));
+
+      }
+      // std::cout << "invpsy: " << std::endl << invpsy << std::endl;
+
+      post_psy(k) = diagmat(1.0/invpsy);
+      // std::cout << "diagmat(1/invpsy): " << std::endl << diagmat(1/invpsy) << std::endl;
+
     }
 
-    // List res = Rcpp::List::create(Named("lambda") = lambda,
-    //                               Named("psy")    = post_psy);
-    //
-    // return(res);
-
-
+    List res = Rcpp::List::create(Named("lambda") = lambda,
+                                  Named("psy")    = post_psy);
+    return(res);
   }
-
-  List res = Rcpp::List::create(Named("lambda") = lambda,
-                                Named("psy")    = psy);
-  return(res);
 }

@@ -101,7 +101,7 @@ updatePostThetaY = function(m, n,hparam, thetaYList, ZOneDim, qVec, constraint){
 }
 
 
-R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, constraint){
+R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, thetaYList, constraint){
 
   Cxxk = CxyList$Cxxk
   Cxyk = CxyList$Cxyk
@@ -180,7 +180,7 @@ R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, cons
     # post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
     tildaLambda = list()
     for(k in 1:m){
-      tildaLambda[[k]] = cbind(t(M[[k]]), lambda[[k]])
+      tildaLambda[[k]] = cbind(as.matrix(M[[k]]), lambda[[k]])
     }
 
     ## post psy
@@ -230,7 +230,7 @@ R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, cons
     # post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
     tildaLambda = list()
     for(k in 1:m){
-      tildaLambda[[k]] = cbind(t(M[[k]]), lambda[[k]])
+      tildaLambda[[k]] = cbind(as.matrix(M[[k]]), lambda[[k]])
     }
 
     ## post psy
@@ -275,7 +275,7 @@ R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, cons
     # post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
     tildaLambda = list()
     for(k in 1:m){
-      tildaLambda[[k]] = cbind(t(M[[k]]), lambda[[k]])
+      tildaLambda[[k]] = cbind(as.matrix(M[[k]]), lambda[[k]])
     }
 
     ## post psy
@@ -314,7 +314,7 @@ R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, cons
     # post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
     tildaLambda = list()
     for(k in 1:m){
-      tildaLambda[[k]] = cbind(t(M[[k]]), lambda[[k]])
+      tildaLambda[[k]] = cbind(as.matrix(M[[k]]), lambda[[k]])
     }
 
     ## post psy
@@ -353,7 +353,7 @@ R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, cons
     # post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
     tildaLambda = list()
     for(k in 1:m){
-      tildaLambda[[k]] = cbind(t(M[[k]]), lambda[[k]])
+      tildaLambda[[k]] = cbind(as.matrix(M[[k]]), lambda[[k]])
     }
 
     ## post psy
@@ -393,7 +393,7 @@ R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, cons
     # post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
     tildaLambda = list()
     for(k in 1:m){
-      tildaLambda[[k]] = cbind(t(M[[k]]), lambda[[k]])
+      tildaLambda[[k]] = cbind(as.matrix(M[[k]]), lambda[[k]])
     }
 
     ## post psy
@@ -415,7 +415,10 @@ R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, cons
     ##model 8
     for(k in 1:m){
 
-      lambda[[k]] = rmvnorm(1, mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]] +  alpha2 * diag(qVec[k]))),
+      print(c(Cxmyk[[k]] %*% solve(Cyyk[[k]] +  alpha2 * diag(qVec[k]))))
+      print(kronecker(solve(sumCyyk), psy[[k]]))
+
+      lambda[[k]] = mvtnorm::rmvnorm(1, mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]] +  alpha2 * diag(qVec[k]))),
                             sigma = kronecker(solve(sumCyyk), psy[[k]])
       )
       lambda[[k]] = matrix(lambda[[k]], p, qVec[k])
@@ -426,7 +429,7 @@ R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, cons
     # post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
     tildaLambda = list()
     for(k in 1:m){
-      tildaLambda[[k]] = cbind(t(M[[k]]), lambda[[k]])
+      tildaLambda[[k]] = cbind(as.matrix(M[[k]]), lambda[[k]])
     }
 
     ## post psy
@@ -436,11 +439,17 @@ R_CalculatePostLambdaPsy = function(alpha1, alpha2, bbeta, CxyList, M, psy, cons
     ratePara = 0
     for(k in 1:m){
       shapePara = 1/2 * (nVec[k] + qVec[k] + 2 * delta - 1) + 1
+      print(shapePara)
       ratePara = 1/2 * diag(Cxxk[[k]] - 2 * Cxtytk[[k]] %*% t(tildaLambda[[k]])
                             + tildaLambda[[k]]%*%(Cytytk[[k]] + A[[k]])%*%t(tildaLambda[[k]] )
                             + 2 * bbeta * diag(rep(1,p)))
+      print(ratePara)
 
       invpsy = rgamma(p, shape = shapePara, rate = ratePara)
+      # print(invpsy)
+      # print(mean(invpsy))
+      # print(sd(invpsy))
+
       psy[[k]] = diag(1/invpsy)
     }
 

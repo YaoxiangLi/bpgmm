@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-arma::vec updatePostThetaY(int m, int n, Rcpp::S4 thetaYList) {
+arma::vec update_PostThetaY(int m, int n, Rcpp::S4 thetaYList) {
 
   arma::vec ZOneDim(n);
   return ZOneDim;
