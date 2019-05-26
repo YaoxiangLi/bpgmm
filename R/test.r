@@ -1,39 +1,39 @@
-library(bpgmm)
-Rcpp::sourceCpp('src/calculateCxy.cpp')
-Rcpp::sourceCpp('src/calculatePostLambdaPsy.cpp')
-Rcpp::sourceCpp('src/dmvnorm.cpp')
-Rcpp::sourceCpp('src/updatePostZ.cpp')
-Rcpp::sourceCpp('src/update_Hyperparameter.cpp')
-
-
-m = 3
-n = 7
-p = 10
-q = 2
-muBar =  rnorm(p)
-dVec = c(1,1,1)
-sVec = c(1,1,1)
-qVec = c(2,2,2)
-ZOneDim = c(1,2,3,1,2,2,3)
-constraint = c(0,0,1)
-hparam <- new("Hparam", alpha1 = 3, alpha2 = 2, delta  = 3, ggamma = 4, bbeta  = 5)
-thetaYList = generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
-X = matrix(rnorm(p * n, 0, 100), p, n)
-
-
-a = update_Hyperparameter(m,p,q,hparam,thetaYList,dVec,sVec)
-updateHyperparameter(m, p, q, hparam, thetaYList, dVec, sVec)
-
-aa = rgamma(100000, shape = 91, scale  = 0.0553164)
-
-mean(a)
-var(a)
-
-mean(aa)
-var(aa)
-
-hist(a)
-hist(aa)
+# library(bpgmm)
+# Rcpp::sourceCpp('src/calculateCxy.cpp')
+# Rcpp::sourceCpp('src/calculatePostLambdaPsy.cpp')
+# # Rcpp::sourceCpp('src/dmvnorm.cpp')
+# # Rcpp::sourceCpp('src/updatePostZ.cpp')
+# # Rcpp::sourceCpp('src/update_Hyperparameter.cpp')
+#
+#
+# m = 3
+# n = 7
+# p = 10
+# q = 2
+# muBar =  rnorm(p)
+# dVec = c(1,1,1)
+# sVec = c(1,1,1)
+# qVec = c(2,2,2)
+# ZOneDim = c(1,2,3,1,2,2,3)
+# constraint = c(0,0,1)
+# hparam <- new("Hparam", alpha1 = 3, alpha2 = 2, delta  = 3, ggamma = 4, bbeta  = 5)
+# thetaYList = generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
+# X = matrix(rnorm(p * n, 0, 100), p, n)
+#
+#
+# # a = update_Hyperparameter(m,p,q,hparam,thetaYList,dVec,sVec)
+# # updateHyperparameter(m, p, q, hparam, thetaYList, dVec, sVec)
+# #
+# # aa = rgamma(100000, shape = 91, scale  = 0.0553164)
+# #
+# # mean(a)
+# # var(a)
+# #
+# # mean(aa)
+# # var(aa)
+# #
+# # hist(a)
+# # hist(aa)
 # CxyList = CalculateCxy(m, n, hparam, thetaYList, ZOneDim, qVec, X)
 # a = Calculate_PostLambdaPsy(m, p, hparam, CxyList, thetaYList, qVec, constraint)
 #
@@ -105,4 +105,4 @@ hist(aa)
 #
 #
 #
-
+#

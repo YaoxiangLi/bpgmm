@@ -139,7 +139,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara += p/2 * (nVec[k] + qVec[k] + 2 * delta - 1);
+      shapePara += 0.5 * p * (nVec[k] + qVec[k] + 2 * delta - 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -170,11 +170,11 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) / 2;
-      ratePara_vec += arma::diagvec(ratePara_k) / 2;
+      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
+      ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
-      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) / 2 << std::endl;
+      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) * 0.5 << std::endl;
       // std::cout << "ratePara_vec: " << std::endl << ratePara_vec << std::endl;
 
       // std::cout << "test: (p * p)" << std::endl << arma::diagvec(test) << std::endl;
@@ -301,11 +301,11 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) / 2;
-      ratePara_vec += arma::diagvec(ratePara_k) / 2;
+      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
+      ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
-      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) / 2 << std::endl;
+      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) * 0.5 << std::endl;
       // std::cout << "ratePara_vec: " << std::endl << ratePara_vec << std::endl;
 
       // std::cout << "test: (p * p)" << std::endl << arma::diagvec(test) << std::endl;
@@ -475,11 +475,11 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) / 2;
-      ratePara_vec += arma::diagvec(ratePara_k) / 2;
+      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
+      ratePara_vec = arma::diagvec(ratePara_k) * 0.5;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
-      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) / 2 << std::endl;
+      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) * 0.5 << std::endl;
       // std::cout << "ratePara_vec: " << std::endl << ratePara_vec << std::endl;
 
       // std::cout << "test: (p * p)" << std::endl << arma::diagvec(test) << std::endl;
@@ -610,7 +610,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara = (nVec[k] + qVec[k] + 2 * delta - 1) / 2 + 1;
+      shapePara = (nVec[k] + qVec[k] + 2 * delta - 1) * 0.5 + 1;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
@@ -642,7 +642,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
-      ratePara_k = arma::diagvec(ratePara_k) / 2;
+      ratePara_k = arma::diagvec(ratePara_k) * 0.5;
       arma::vec scalePara = 1 / ratePara_k;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
       // std::cout << "scalePara: " << std::endl << scalePara << std::endl;
@@ -753,7 +753,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara += p/2 * (nVec[k] + qVec[k] + 2 * delta - 1);
+      shapePara += 0.5 * p * (nVec[k] + qVec[k] + 2 * delta - 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -784,11 +784,11 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) / 2;
-      ratePara_vec += arma::diagvec(ratePara_k) / 2;
+      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
+      ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
-      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) / 2 << std::endl;
+      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) * 0.5 << std::endl;
       // std::cout << "ratePara_vec: " << std::endl << ratePara_vec << std::endl;
 
       // std::cout << "test: (p * p)" << std::endl << arma::diagvec(test) << std::endl;
@@ -894,7 +894,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara += (nVec[k] + qVec[k] + 2 * delta - 1)/2;
+      shapePara += (nVec[k] + qVec[k] + 2 * delta - 1)* 0.5;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -925,11 +925,11 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) / 2;
-      ratePara_vec += arma::diagvec(ratePara_k) / 2;
+      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
+      ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
-      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) / 2 << std::endl;
+      // std::cout << "ratePara_k: " << std::endl << arma::diagvec(ratePara_k) * 0.5 << std::endl;
       // std::cout << "ratePara_vec: " << std::endl << ratePara_vec << std::endl;
 
       // std::cout << "test: (p * p)" << std::endl << arma::diagvec(test) << std::endl;
@@ -1024,7 +1024,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     for (int k=0; k<m; ++k) {
 
-      shapePara = p/2 * (nVec[k] + qVec[k] + 2 * delta - 1) + 1;
+      shapePara = 0.5 * p * (nVec[k] + qVec[k] + 2 * delta - 1) + 1;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
@@ -1045,7 +1045,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       bbeta_eye = 2 * bbeta * bbeta_eye;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      ratePara_vec += arma::diagvec(ratePara_k) / 2;
+      ratePara_vec = arma::diagvec(ratePara_k) * 0.5;
       double ratePara = arma::sum(ratePara_vec);
       // std::cout << "ratePara: "  << std::endl << ratePara << std::endl;
 
@@ -1131,7 +1131,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     for (int k=0; k<m; ++k) {
 
-      shapePara = (nVec[k] + qVec[k] + 2 * delta - 1) / 2 + 1;
+      shapePara = (nVec[k] + qVec[k] + 2 * delta - 1) * 0.5 + 1;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
@@ -1152,7 +1152,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       bbeta_eye = 2 * bbeta * bbeta_eye;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      Rcpp::NumericVector ratePara = c(arma::diagvec(ratePara_k) / 2.0);
+      Rcpp::NumericVector ratePara = c(arma::diagvec(ratePara_k) * 0.5);
       // std::cout << "ratePara: "  << std::endl << ratePara << std::endl;
 
       // arma:vec scalePara_vec = 1.0 / ratePara_vec;

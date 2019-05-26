@@ -68,7 +68,7 @@ BEGIN_RCPP
 END_RCPP
 }
 // update_Hyperparameter
-arma::vec update_Hyperparameter(int m, int p, int q, Rcpp::S4 hparam, Rcpp::S4 thetaYList, arma::vec dVec, arma::vec sVec);
+S4 update_Hyperparameter(int m, int p, int q, Rcpp::S4 hparam, Rcpp::S4 thetaYList, arma::vec dVec, arma::vec sVec);
 RcppExport SEXP _bpgmm_update_Hyperparameter(SEXP mSEXP, SEXP pSEXP, SEXP qSEXP, SEXP hparamSEXP, SEXP thetaYListSEXP, SEXP dVecSEXP, SEXP sVecSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;

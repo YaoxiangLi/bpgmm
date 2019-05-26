@@ -7,7 +7,7 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-S4   update_Hyperparameter(
+S4 update_Hyperparameter(
     int m,
     int p,
     int q,
@@ -19,11 +19,11 @@ S4   update_Hyperparameter(
 
 
   // extract value from s4 obj
-  double delta = hparam.slot("delta");
+  double delta   = hparam.slot("delta");
   double ggamma  = hparam.slot("ggamma");
-  List M  = thetaYList.slot("M");
-  List lambda  = thetaYList.slot("lambda");
-  List psy  = thetaYList.slot("psy");
+  List M         = thetaYList.slot("M");
+  List lambda    = thetaYList.slot("lambda");
+  List psy       = thetaYList.slot("psy");
 
   // update alpha1
   double alpha1Rate = 0;
@@ -81,10 +81,10 @@ S4   update_Hyperparameter(
 
   // Setting values to the slots
   newhparam.slot("alpha1")  = alpha1Vec(0);
-  newhparam.slot("alpha2") = alpha2Vec(0);
-  newhparam.slot("delta") = delta;
-  newhparam.slot("ggamma") = ggamma;
-  newhparam.slot("bbeta") = bbetaVec(0);
+  newhparam.slot("alpha2")  = alpha2Vec(0);
+  newhparam.slot("delta")   = delta;
+  newhparam.slot("ggamma")  = ggamma;
+  newhparam.slot("bbeta")   = bbetaVec(0);
 
   return(newhparam);
 }
