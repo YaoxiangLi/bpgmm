@@ -5,7 +5,8 @@
 \alias{parsimoniousGaussianMixtureModel}
 \title{Model-Based Clustering Using Baysian PGMM}
 \usage{
-
+parsimoniousGaussianMixtureModel(niter, burn, X, n, p, delta, ggamma, m,
+  qVec, qnew, constraint, dVec, sVec)
 }
 \arguments{
 \item{niter}{the number of iterations.}

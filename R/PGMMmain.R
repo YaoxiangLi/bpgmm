@@ -12,14 +12,6 @@
 #' @aliases bpgmm
 #' @title Model-Based Clustering Using Baysian PGMM
 #' @description Carries out model-based clustering using parsimonious Gaussian mixture models. MCMC are used for parameter estimation. The RJMCMC is used for model selection.
-#' @usage
-#'
-#'
-#'
-#'
-#'
-#'
-#'
 #' @import stats
 #' @param niter the number of iterations.
 #' @param burn the number of burn in iterations.

@@ -14,10 +14,10 @@ Rcpp::IntegerVector update_PostZ(
                      int n,
                      Rcpp::S4 thetaYList ){
 
-  List lambda = thetaYList.slot("lambda");
-  List Y      = thetaYList.slot("Y");
-  List M      = thetaYList.slot("M");
-  List psy    = thetaYList.slot("psy");
+  List lambda   = thetaYList.slot("lambda");
+  List Y        = thetaYList.slot("Y");
+  List M        = thetaYList.slot("M");
+  List psy      = thetaYList.slot("psy");
   arma::vec tao = thetaYList.slot("tao");
 
   arma::mat pMat(m,n);
@@ -63,4 +63,3 @@ Rcpp::IntegerVector update_PostZ(
 
   return(ZOneDim);
 }
-
