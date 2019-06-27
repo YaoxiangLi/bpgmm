@@ -7,11 +7,21 @@
 generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
 }
 \arguments{
-\item{m}{the number of cluster.}
+\item{m}{the number of cluster}
 
-\item{n}{sample size.}
+\item{n}{sample size}
 
-\item{p}{number of covariates.}
+\item{p}{number of covariates}
+
+\item{muBar}{parameter}
+
+\item{hparam}{hyperparameters}
+
+\item{qVec}{the vector of the number of factors in each clusters}
+
+\item{ZOneDim}{ZOneDim}
+
+\item{constraint}{constraint}
 }
 \description{
 generate prior value for parameter Theta and Y.

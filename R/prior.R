@@ -1,13 +1,17 @@
-
 #' PriorThetaY list
 #' @description generate prior value for parameter Theta and Y.
 #' @importFrom gtools rdirichlet
 #' @importFrom mvtnorm rmvnorm
 #' @import stats
-#' @param m the number of cluster.
-#' @param n sample size.
-#' @param p number of covariates.
-#' @export
+#' @param m the number of cluster
+#' @param n sample size
+#' @param p number of covariates
+#' @param muBar parameter
+#' @param hparam hyperparameters
+#' @param qVec the vector of the number of factors in each clusters
+#' @param ZOneDim ZOneDim
+#' @param constraint constraint
+#'
 generatePriorThetaY = function(m,
                                n,
                                p,
@@ -67,6 +71,16 @@ generatePriorThetaY = function(m,
 #' @importFrom gtools ddirichlet
 #' @importFrom mvtnorm dmvnorm
 #' @import stats
+#'
+#' @param m m
+#' @param p p
+#' @param muBar mu_bar
+#' @param hparam hyper parameter class
+#' @param thetaYList theta Y list
+#' @param ZOneDim one dime of z
+#' @param qVec q vector
+#' @param constraint type of constraint
+#'
 #' @export
 evaluatePrior = function(m,
                          p,
@@ -113,7 +127,12 @@ evaluatePrior = function(m,
 #'
 #' @description generate prior value for parameter Psi
 #' @import stats
-#' @export
+#' @param p the number of features
+#' @param m the number of clusters
+#' @param delta hyperparameters
+#' @param bbeta hyperparameters
+#' @param constraint the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model
+#'
 generatePriorPsi = function(p,
                             m,
                             delta,
@@ -159,7 +178,14 @@ generatePriorPsi = function(p,
 #'
 #' @description evaluate prior value for parameter Psi
 #' @import stats
-#' @export
+#' @param psy parameter
+#' @param p the number of features
+#' @param m the number of clusters
+#' @param delta parameter
+#' @param bbeta parameter
+#' @param constraint parameter
+#'
+#'
 evaluatePriorPsi = function(psy,
                             p,
                             m,
@@ -204,7 +230,13 @@ evaluatePriorPsi = function(psy,
 #'
 #' @description evaluate prior value for parameter Lambda
 #' @importFrom mvtnorm rmvnorm
-#' @export
+#' @param p the number of features
+#' @param m the number of clusters
+#' @param alpha2 hyper parameter
+#' @param qVec parameter
+#' @param psy parameter
+#' @param constraint parameter
+#'
 generatePriorLambda = function(p,
                                m,
                                alpha2,
@@ -241,7 +273,16 @@ generatePriorLambda = function(p,
 #'
 #' @description evaluate prior value for parameter Lambda
 #' @importFrom mvtnorm dmvnorm
-#' @export
+#' @param p the number of features
+#' @param m the number of clusters
+#' @param alpha2 hyper parameter
+#' @param qVec the vector of the number of factors in each clusters
+#' @param psy parameter
+#' @param lambda parameter
+#' @param constraint the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model
+#'
+#'
+#'
 evaluatePriorLambda = function(p,
                                m,
                                alpha2,

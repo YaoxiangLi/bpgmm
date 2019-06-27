@@ -1,9 +1,11 @@
-#' @import methods
-#' @name Hparam
-#' @title Hparam-class
-#' @aliases Hparam
-#' @description Definiton of hyper parameter sets
+#' An S4 class to represent a Hyper parameter.
 #'
+#' @import methods
+#' @slot alpha1 A numeric value
+#' @slot alpha2 A numeric value
+#' @slot delta A numeric value
+#' @slot ggamma A numeric value
+#' @slot bbeta A numeric value
 #' @export
 setClass(
   "Hparam",

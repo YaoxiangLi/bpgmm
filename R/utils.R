@@ -45,3 +45,34 @@ listToStrVec <- function(stringList) {
   unlist(stringList)
 }
 
+
+
+#' likelihood
+#'
+#' @param thetaYList thetaYList
+#' @param ZOneDim ZOneDim
+#' @param qqVec qqVec
+#' @param muBar muBar
+#' @param X X
+#'
+#' @export
+#'
+likelihood = function(thetaYList, ZOneDim, qqVec, muBar, X){
+
+  m = length(qqVec)
+  n = ncol(X)
+
+  ## 2.1: X
+  xVal = 0
+  for(i in 1:n){
+    ## for subject i
+    k = ZOneDim[i]
+
+    meanx = thetaYList@lambda[[k]] %*% thetaYList@Y[[k]][,i] + c(thetaYList@M[[k]])
+    varx =  thetaYList@psy[[k]]
+
+    xVal = xVal + dmvnorm(x = X[,i], mean = meanx, sigma = varx, log = T)
+  }
+
+  xVal
+}

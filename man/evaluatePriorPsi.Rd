@@ -6,6 +6,19 @@
 \usage{
 evaluatePriorPsi(psy, p, m, delta, bbeta, constraint)
 }
+\arguments{
+\item{psy}{parameter}
+
+\item{p}{the number of features}
+
+\item{m}{the number of clusters}
+
+\item{delta}{parameter}
+
+\item{bbeta}{parameter}
+
+\item{constraint}{parameter}
+}
 \description{
 evaluate prior value for parameter Psi
 }

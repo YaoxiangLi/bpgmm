@@ -17,8 +17,8 @@ Author: Xiang Lu <Xiang_Lu at urmc.rochester.edu>,
   Yaoxiang Li <yl814 at georgetown.edu>,
   Tanzy Love <tanzy_love at urmc.rochester.edu>
 Maintainer: Yaoxiang Li <yl814@georgetown.edu>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
+Description: model-based clustering using parsimonious Gaussian mixture models.
+  MCMC are used for parameter estimation. The RJMCMC is used for model selection.
 SystemRequirements: C++11
 License: GPL-3
 Encoding: UTF-8

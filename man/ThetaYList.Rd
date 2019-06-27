@@ -7,3 +7,17 @@
 \description{
 Definiton of ThetaYList parameter sets
 }
+\section{Slots}{
+
+\describe{
+\item{\code{tao}}{A numeric vector}
+
+\item{\code{psy}}{A list value}
+
+\item{\code{M}}{A list value}
+
+\item{\code{lambda}}{A list value}
+
+\item{\code{Y}}{A list value}
+}}
+

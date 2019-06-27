@@ -3,6 +3,11 @@
 #' @title ThetaYList-class
 #' @description Definiton of ThetaYList parameter sets
 #'
+#' @slot tao A numeric vector
+#' @slot psy A list value
+#' @slot M A list value
+#' @slot lambda A list value
+#' @slot Y A list value
 #' @export
 setClass(
   "ThetaYList",

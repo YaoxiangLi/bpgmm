@@ -1,29 +1,22 @@
-# source("priors.r")
-# source("posteriors.r")
-# source("pgmmAssist.r")
 # source("plotFun.r")
 # source("proposalLambda.r")
 # source("proposalPsi.r")
-# source("jointDensity.r")
-# source("HparamClass.R")
-# source("paramClass.R")
 
-#' @name bpgmm
-#' @aliases bpgmm
-#' @title Model-Based Clustering Using Baysian PGMM
-#' @description Carries out model-based clustering using parsimonious Gaussian mixture models. MCMC are used for parameter estimation. The RJMCMC is used for model selection.
+#' bpgmm Model-Based Clustering Using Baysian PGMM Carries out model-based clustering using parsimonious Gaussian mixture models. MCMC are used for parameter estimation. The RJMCMC is used for model selection.
 #' @import stats
-#' @param niter the number of iterations.
-#' @param burn the number of burn in iterations.
-#' @param X the observation matrix with size p * m.
-#' @param n the number of observations.
-#' @param m the number of clusters.
-#' @param delta,ggamma  scaler hyperparameters.
-#' @param qVec the vector of the number of factors in each clusters.
-#' @param qnew the number of factor for a new cluster.
-#' @param constraint the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model.
-#' @param dVec a vector of hyperparameters with length three, shape parameters for alpha1, alpha2 and bbeta respectively.
-#' @param sVec a vector of hyperparameters with length three, rate parameters for alpha1, alpha2 and bbeta respectively.
+#' @param niter the number of iterations
+#' @param burn the number of burn in iterations
+#' @param X the observation matrix with size p * m
+#' @param n the number of observations
+#' @param p the number of features
+#' @param m the number of clusters
+#' @param delta scaler hyperparameters
+#' @param ggamma scaler hyperparameters
+#' @param qVec the vector of the number of factors in each clusters
+#' @param qnew the number of factor for a new cluster
+#' @param constraint the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model
+#' @param dVec a vector of hyperparameters with length three, shape parameters for alpha1, alpha2 and bbeta respectively
+#' @param sVec a vector of hyperparameters with length three, rate parameters for alpha1, alpha2 and bbeta respectively
 
 parsimoniousGaussianMixtureModel = function(niter,
                                             burn,
@@ -42,7 +35,7 @@ parsimoniousGaussianMixtureModel = function(niter,
 
   alpha1 = rgamma(1, dVec[1], sVec[1])
   alpha2 = rgamma(1, dVec[2], sVec[2])
-  bbeta = rgamma(1, dVec[3], sVec[3])
+  bbeta  = rgamma(1, dVec[3], sVec[3])
 
   hparam = new("Hparam", alpha1=alpha1, alpha2=alpha2, bbeta=bbeta, delta=delta, ggamma=ggamma)
 
@@ -58,9 +51,9 @@ parsimoniousGaussianMixtureModel = function(niter,
                    )
 
   for(i in 1:burn){
-    ZOneDim = updatePostZ(m, n, thetaYList)
+    ZOneDim = update_PostZ(m, n, thetaYList)
     thetaYList = updatePostThetaY(m = m, n = n,hparam, thetaYList, ZOneDim=ZOneDim,  qVec = qVec,constraint = constraint)
-    hparam = updateHyperparameter(m, p, qnew, hparam,thetaYList, dVec, sVec)
+    hparam = update_Hyperparameter(m, p, qnew, hparam,thetaYList, dVec, sVec)
   }
 
   ##
@@ -85,9 +78,9 @@ parsimoniousGaussianMixtureModel = function(niter,
     currentStep = sample(size = 1, x = steps)
     if(currentStep == "stay"){
       print("stay")
-      ZOneDim = updatePostZ(m, n, thetaYList)
+      ZOneDim = update_PostZ(m, n, thetaYList)
       thetaYList = updatePostThetaY(m = m, n = n,hparam, thetaYList, ZOneDim=ZOneDim, qVec = qVec, constraint = constraint)
-      hparam = updateHyperparameter(m, p, qnew, hparam, thetaYList, dVec, sVec)
+      hparam = update_Hyperparameter(m, p, qnew, hparam, thetaYList, dVec, sVec)
 
     }else if(currentStep == "lambda"){
 
@@ -96,26 +89,26 @@ parsimoniousGaussianMixtureModel = function(niter,
       proposeConstraint[1] = (constraint[1] + 1) %% 2
 
       CxyList = CalculateCxy(m, n, hparam, thetaYList,ZOneDim, qVec)
-      newLambda = CalculateProposalLambda(hparam, thetaYList,CxyList, proposeConstraint)
+      newLambda = CalculatePostLambdaPsy(hparam, thetaYList,CxyList, proposeConstraint)
 
       newthetaYList = thetaYList
       newthetaYList@lambda = newLambda
 
       newCxyList = CalculateCxy(m, n, hparam,newthetaYList, ZOneDim, qVec)
 
-      oldDensity = likelihood(thetaYList, ZOneDim,qVec,muBar) + evaluatePrior(m, p, muBar,hparam, thetaYList, ZOneDim, qVec,constraint)
-      oldLambdaEval = EvaluateProposalLambda(hparam, newthetaYList,newCxyList, constraint, thetaYList@lambda)
-      newLambdaEval = EvaluateProposalLambda(hparam, thetaYList,CxyList, proposeConstraint, newthetaYList@lambda)
+      oldDensity = likelihood(thetaYList, ZOneDim,qVec,muBar, X) + evaluatePrior(m, p, muBar,hparam, thetaYList, ZOneDim, qVec,constraint)
+      oldLambdaEval = EvaluateProposalLambda(hparam, newthetaYList,newCxyList, constraint, thetaYList@lambda, m, qVec, p)
+      newLambdaEval = EvaluateProposalLambda(hparam, thetaYList,CxyList, proposeConstraint, newthetaYList@lambda, m, qVec, p)
 
       ## Gibbs
       newhparam = hparam
       for(i in 1:10){
-        newZOneDim = updatePostZ(m, n, newthetaYList)
+        newZOneDim = update_PostZ(m, n, newthetaYList)
         newthetaYList = updatePostThetaY(m = m, n = n,newhparam, newthetaYList, ZOneDim=ZOneDim, qVec = qVec, constraint = proposeConstraint)
-        newhparam = updateHyperparameter(m, p, qnew, newhparam,newthetaYList, dVec, sVec)
+        newhparam = update_Hyperparameter(m, p, qnew, newhparam,newthetaYList, dVec, sVec)
       }
 
-      newDensity = likelihood(newthetaYList, newZOneDim,qVec,muBar) + evaluatePrior(m, p, muBar, newhparam,newthetaYList, newZOneDim, qVec, proposeConstraint)
+      newDensity = likelihood(newthetaYList, newZOneDim,qVec,muBar, X) + evaluatePrior(m, p, muBar, newhparam,newthetaYList, newZOneDim, qVec, proposeConstraint)
 
       numer  = newDensity + oldLambdaEval
       denom = oldDensity + newLambdaEval
@@ -148,7 +141,7 @@ parsimoniousGaussianMixtureModel = function(niter,
 
       #####
       CxyList = CalculateCxy(m, n, hparam, thetaYList , ZOneDim, qVec)
-      newPsy = CalculateProposalPsy(hparam, thetaYList, CxyList, proposeConstraint)
+      newPsy = CalculateProposalPsy(hparam, thetaYList, CxyList, proposeConstraint, m, p, qVec, delta)
 
       newthetaYList = thetaYList
       newthetaYList@psy = newPsy
@@ -156,8 +149,8 @@ parsimoniousGaussianMixtureModel = function(niter,
 
 
 
-      oldDensity = likelihood(thetaYList, ZOneDim,qVec,muBar) + evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint)
-      newDensity = likelihood(newthetaYList, ZOneDim,qVec,muBar) + evaluatePrior(m, p, muBar,hparam, newthetaYList, ZOneDim, qVec, proposeConstraint)
+      oldDensity = likelihood(thetaYList, ZOneDim,qVec,muBar, X) + evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint)
+      newDensity = likelihood(newthetaYList, ZOneDim,qVec,muBar, X) + evaluatePrior(m, p, muBar,hparam, newthetaYList, ZOneDim, qVec, proposeConstraint)
 
       oldPsyEval = EvaluateProposalPsy(hparam,newthetaYList, newCxyList, constraint, thetaYList@psy)
       newPsyEval = EvaluateProposalPsy(hparam,thetaYList, CxyList, proposeConstraint, newthetaYList@psy)

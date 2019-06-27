@@ -20,8 +20,8 @@ Rcpp::IntegerVector update_PostZ(
   List psy      = thetaYList.slot("psy");
   arma::vec tao = thetaYList.slot("tao");
 
-  arma::mat pMat(m,n);
-  arma::mat dMat(m,n);
+  arma::mat pMat(m, n);
+  arma::mat dMat(m, n);
 
 
   for(int k = 0; k < m; k++ ){
@@ -30,15 +30,14 @@ Rcpp::IntegerVector update_PostZ(
       arma::vec Mk = M(k);
       arma::mat lambdak = lambda(k);
       arma::mat psyk = psy(k);
-      arma::mat var = psyk +  lambdak * trans(lambdak);
-
-      arma::vec temp = dmvnrm_arma(trans(X.col(i)), trans(Mk),var,true);
-      dMat(k,i) = temp.at(0);
+      arma::mat var = psyk + lambdak * trans(lambdak);
+      arma::vec temp = dmvnrm_arma(trans(X.col(i)), trans(Mk), var, true);
+      dMat(k, i) = temp.at(0);
     }
   }
 
   for(int k = 0; k < m; k++ ){
-    double taok =tao(k);
+    double taok = tao(k);
     arma::vec taokvec = rep(taok, n);
     dMat.row(k) += trans(taokvec);
   }
@@ -46,18 +45,18 @@ Rcpp::IntegerVector update_PostZ(
 
     for(int i = 0; i < n; i++){
       for(int k = 0; k < m; k++ ){
-        pMat(k,i) = calculate_Ratio(dMat(k,i),dMat.col(i));
+        pMat(k, i) = calculate_Ratio(dMat(k, i),dMat.col(i));
       }
     }
 
   Rcpp::IntegerVector ZOneDim(n);
   Rcpp::IntegerVector ZOneDimTemp;
   arma::vec tempProb;
-  Rcpp::IntegerVector sampleVec = Rcpp::seq(1,m);
+  Rcpp::IntegerVector sampleVec = Rcpp::seq(1, m);
 
     for(int i = 0; i < n; i++){
       tempProb =  pMat.col(i);
-      ZOneDimTemp = RcppArmadillo::sample(sampleVec, 1,FALSE, tempProb);
+      ZOneDimTemp = RcppArmadillo::sample(sampleVec, 1, FALSE, tempProb);
       ZOneDim(i) = ZOneDimTemp(0);
     }
 

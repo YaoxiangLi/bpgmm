@@ -3,7 +3,7 @@
 
 #include <RcppArmadillo.h>
 
-Rcpp::List Calculate_PostLambdaPsy(Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec constraint);
+Rcpp::List CalculatePostLambdaPsy(Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec constraint);
 
 
 #endif

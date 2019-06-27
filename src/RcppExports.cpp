@@ -23,9 +23,9 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// Calculate_PostLambdaPsy
-Rcpp::List Calculate_PostLambdaPsy(int m, int p, Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec qVec, arma::vec constraint);
-RcppExport SEXP _bpgmm_Calculate_PostLambdaPsy(SEXP mSEXP, SEXP pSEXP, SEXP hparamSEXP, SEXP CxyListSEXP, SEXP thetaYListSEXP, SEXP qVecSEXP, SEXP constraintSEXP) {
+// CalculatePostLambdaPsy
+Rcpp::List CalculatePostLambdaPsy(int m, int p, Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec qVec, arma::vec constraint);
+RcppExport SEXP _bpgmm_CalculatePostLambdaPsy(SEXP mSEXP, SEXP pSEXP, SEXP hparamSEXP, SEXP CxyListSEXP, SEXP thetaYListSEXP, SEXP qVecSEXP, SEXP constraintSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,20 +36,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type constraint(constraintSEXP);
-    rcpp_result_gen = Rcpp::wrap(Calculate_PostLambdaPsy(m, p, hparam, CxyList, thetaYList, qVec, constraint));
-    return rcpp_result_gen;
-END_RCPP
-}
-// update_PostThetaY
-arma::vec update_PostThetaY(int m, int n, Rcpp::S4 thetaYList);
-RcppExport SEXP _bpgmm_update_PostThetaY(SEXP mSEXP, SEXP nSEXP, SEXP thetaYListSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< int >::type n(nSEXP);
-    Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_PostThetaY(m, n, thetaYList));
+    rcpp_result_gen = Rcpp::wrap(CalculatePostLambdaPsy(m, p, hparam, CxyList, thetaYList, qVec, constraint));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -126,8 +113,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_bpgmm_CalculateCxy", (DL_FUNC) &_bpgmm_CalculateCxy, 7},
-    {"_bpgmm_Calculate_PostLambdaPsy", (DL_FUNC) &_bpgmm_Calculate_PostLambdaPsy, 7},
-    {"_bpgmm_update_PostThetaY", (DL_FUNC) &_bpgmm_update_PostThetaY, 3},
+    {"_bpgmm_CalculatePostLambdaPsy", (DL_FUNC) &_bpgmm_CalculatePostLambdaPsy, 7},
     {"_bpgmm_update_PostZ", (DL_FUNC) &_bpgmm_update_PostZ, 4},
     {"_bpgmm_update_Hyperparameter", (DL_FUNC) &_bpgmm_update_Hyperparameter, 7},
     {"_bpgmm_get_Z_mat", (DL_FUNC) &_bpgmm_get_Z_mat, 3},

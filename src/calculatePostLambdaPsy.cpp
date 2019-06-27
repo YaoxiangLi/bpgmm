@@ -8,7 +8,7 @@ using namespace arma;
 
 
 // [[Rcpp::export]]
-Rcpp::List Calculate_PostLambdaPsy(int m,
+Rcpp::List CalculatePostLambdaPsy(int m,
                                   int p,
                                   Rcpp::S4 hparam,
                                   Rcpp::List CxyList,

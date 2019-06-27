@@ -5,12 +5,8 @@ CalculateCxy <- function(m, n, hparam, thetaYList, ZOneDim, qVec, X) {
     .Call(`_bpgmm_CalculateCxy`, m, n, hparam, thetaYList, ZOneDim, qVec, X)
 }
 
-Calculate_PostLambdaPsy <- function(m, p, hparam, CxyList, thetaYList, qVec, constraint) {
-    .Call(`_bpgmm_Calculate_PostLambdaPsy`, m, p, hparam, CxyList, thetaYList, qVec, constraint)
-}
-
-update_PostThetaY <- function(m, n, thetaYList) {
-    .Call(`_bpgmm_update_PostThetaY`, m, n, thetaYList)
+CalculatePostLambdaPsy <- function(m, p, hparam, CxyList, thetaYList, qVec, constraint) {
+    .Call(`_bpgmm_CalculatePostLambdaPsy`, m, p, hparam, CxyList, thetaYList, qVec, constraint)
 }
 
 update_PostZ <- function(X, m, n, thetaYList) {

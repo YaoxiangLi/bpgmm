@@ -6,6 +6,17 @@
 \usage{
 generatePriorPsi(p, m, delta, bbeta, constraint)
 }
+\arguments{
+\item{p}{the number of features}
+
+\item{m}{the number of clusters}
+
+\item{delta}{hyperparameters}
+
+\item{bbeta}{hyperparameters}
+
+\item{constraint}{the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model}
+}
 \description{
 generate prior value for parameter Psi
 }

@@ -6,6 +6,23 @@
 \usage{
 evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint)
 }
+\arguments{
+\item{m}{m}
+
+\item{p}{p}
+
+\item{muBar}{mu_bar}
+
+\item{hparam}{hyper parameter class}
+
+\item{thetaYList}{theta Y list}
+
+\item{ZOneDim}{one dime of z}
+
+\item{qVec}{q vector}
+
+\item{constraint}{type of constraint}
+}
 \description{
 evaluate prior value for parameter Theta and Y.
 }

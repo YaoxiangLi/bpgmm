@@ -6,6 +6,21 @@
 \usage{
 evaluatePriorLambda(p, m, alpha2, qVec, psy, lambda, constraint)
 }
+\arguments{
+\item{p}{the number of features}
+
+\item{m}{the number of clusters}
+
+\item{alpha2}{hyper parameter}
+
+\item{qVec}{the vector of the number of factors in each clusters}
+
+\item{psy}{parameter}
+
+\item{lambda}{parameter}
+
+\item{constraint}{the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model}
+}
 \description{
 evaluate prior value for parameter Lambda
 }

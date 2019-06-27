@@ -6,6 +6,19 @@
 \usage{
 generatePriorLambda(p, m, alpha2, qVec, psy, constraint)
 }
+\arguments{
+\item{p}{the number of features}
+
+\item{m}{the number of clusters}
+
+\item{alpha2}{hyper parameter}
+
+\item{qVec}{parameter}
+
+\item{psy}{parameter}
+
+\item{constraint}{parameter}
+}
 \description{
 evaluate prior value for parameter Lambda
 }
