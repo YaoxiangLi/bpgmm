@@ -6,9 +6,9 @@
 
 using namespace Rcpp;
 
-// CalculateCxy
-Rcpp::List CalculateCxy(int m, int n, Rcpp::S4 hparam, Rcpp::S4 thetaYList, arma::vec ZOneDim, arma::vec qVec, arma::mat X);
-RcppExport SEXP _bpgmm_CalculateCxy(SEXP mSEXP, SEXP nSEXP, SEXP hparamSEXP, SEXP thetaYListSEXP, SEXP ZOneDimSEXP, SEXP qVecSEXP, SEXP XSEXP) {
+// Calculate_Cxy
+Rcpp::List Calculate_Cxy(int m, int n, Rcpp::S4 hparam, Rcpp::S4 thetaYList, arma::vec ZOneDim, arma::vec qVec, arma::mat X);
+RcppExport SEXP _bpgmm_Calculate_Cxy(SEXP mSEXP, SEXP nSEXP, SEXP hparamSEXP, SEXP thetaYListSEXP, SEXP ZOneDimSEXP, SEXP qVecSEXP, SEXP XSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -19,13 +19,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< arma::vec >::type ZOneDim(ZOneDimSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
     Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
-    rcpp_result_gen = Rcpp::wrap(CalculateCxy(m, n, hparam, thetaYList, ZOneDim, qVec, X));
+    rcpp_result_gen = Rcpp::wrap(Calculate_Cxy(m, n, hparam, thetaYList, ZOneDim, qVec, X));
     return rcpp_result_gen;
 END_RCPP
 }
-// CalculatePostLambdaPsy
-Rcpp::List CalculatePostLambdaPsy(int m, int p, Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec qVec, arma::vec constraint);
-RcppExport SEXP _bpgmm_CalculatePostLambdaPsy(SEXP mSEXP, SEXP pSEXP, SEXP hparamSEXP, SEXP CxyListSEXP, SEXP thetaYListSEXP, SEXP qVecSEXP, SEXP constraintSEXP) {
+// Calculate_PostLambdaPsy
+Rcpp::List Calculate_PostLambdaPsy(int m, int p, Rcpp::S4 hparam, Rcpp::List CxyList, Rcpp::S4 thetaYList, arma::vec qVec, arma::vec constraint);
+RcppExport SEXP _bpgmm_Calculate_PostLambdaPsy(SEXP mSEXP, SEXP pSEXP, SEXP hparamSEXP, SEXP CxyListSEXP, SEXP thetaYListSEXP, SEXP qVecSEXP, SEXP constraintSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -36,7 +36,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
     Rcpp::traits::input_parameter< arma::vec >::type constraint(constraintSEXP);
-    rcpp_result_gen = Rcpp::wrap(CalculatePostLambdaPsy(m, p, hparam, CxyList, thetaYList, qVec, constraint));
+    rcpp_result_gen = Rcpp::wrap(Calculate_PostLambdaPsy(m, p, hparam, CxyList, thetaYList, qVec, constraint));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -112,8 +112,8 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_bpgmm_CalculateCxy", (DL_FUNC) &_bpgmm_CalculateCxy, 7},
-    {"_bpgmm_CalculatePostLambdaPsy", (DL_FUNC) &_bpgmm_CalculatePostLambdaPsy, 7},
+    {"_bpgmm_Calculate_Cxy", (DL_FUNC) &_bpgmm_Calculate_Cxy, 7},
+    {"_bpgmm_Calculate_PostLambdaPsy", (DL_FUNC) &_bpgmm_Calculate_PostLambdaPsy, 7},
     {"_bpgmm_update_PostZ", (DL_FUNC) &_bpgmm_update_PostZ, 4},
     {"_bpgmm_update_Hyperparameter", (DL_FUNC) &_bpgmm_update_Hyperparameter, 7},
     {"_bpgmm_get_Z_mat", (DL_FUNC) &_bpgmm_get_Z_mat, 3},

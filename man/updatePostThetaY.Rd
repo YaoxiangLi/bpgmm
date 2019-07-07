@@ -4,15 +4,16 @@
 \alias{updatePostThetaY}
 \title{Update posterior theta Y list}
 \usage{
-updatePostThetaY(m, n, hparam, thetaYList, ZOneDim, qVec, constraint, X,
-  ggamma)
+updatePostThetaY(m, n, p, hparam, thetaYList, ZOneDim, qVec, constraint, X)
 }
 \arguments{
 \item{m}{the number of clusters.}
 
 \item{n}{the number of observations.}
 
-\item{hparam}{hyper parameters}
+\item{p}{the number of features.}
+
+\item{hparam}{hyper parameters S4 class.}
 
 \item{thetaYList}{theta Y list}
 
@@ -23,9 +24,19 @@ updatePostThetaY(m, n, hparam, thetaYList, ZOneDim, qVec, constraint, X,
 \item{constraint}{constraint}
 
 \item{X}{X}
-
-\item{ggamma}{ggamma}
+}
+\value{
+ThetaYList S4 class
 }
 \description{
 Update posterior theta Y list
+}
+\examples{
+
+url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
+"blob/master/data/updatePostThetaY_example.RData?raw=true")
+download.file(url, destfile= "updatePostThetaY_example.RData", mode = "wb")
+load("updatePostThetaY_example.RData")
+updatePostThetaY(m, n, p, hparam, thetaYList, ZOneDim, qVec, constraint, X)
+
 }

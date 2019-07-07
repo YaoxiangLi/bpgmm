@@ -1,9 +1,6 @@
-# source("plotFun.r")
-# source("proposalLambda.r")
-# source("proposalPsi.r")
-
 #' bpgmm Model-Based Clustering Using Baysian PGMM Carries out model-based clustering using parsimonious Gaussian mixture models. MCMC are used for parameter estimation. The RJMCMC is used for model selection.
-#' @import stats
+#'
+#' @import stats MASS mcmcse pgmm label.switching
 #' @param niter the number of iterations
 #' @param burn the number of burn in iterations
 #' @param X the observation matrix with size p * m
@@ -17,7 +14,29 @@
 #' @param constraint the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model
 #' @param dVec a vector of hyperparameters with length three, shape parameters for alpha1, alpha2 and bbeta respectively
 #' @param sVec a vector of hyperparameters with length three, rate parameters for alpha1, alpha2 and bbeta respectively
-
+#'
+#' @return parsimonious Gaussian mixture models classification results list
+#'
+#' @examples
+#' sample_data = "https://raw.githubusercontent.com/lzyacht/bpgmm-examples/master/data/sampleData.csv"
+#' X = utils::read.table(sample_data, header = TRUE, sep = ',')
+#' X = as.matrix(X)
+#' nsim = 1000
+#' burn = 20
+#' n = ncol(X)
+#' p = nrow(X)
+#' m = 2
+#' qVec = rep(3,m)
+#' qnew = 3
+#' delta = 2
+#' ggamma = 2
+#' dVec = c(1,1,1)
+#' sVec = c(1,1,1)
+#' constraint = c(1,1,1)
+#'
+#' parsimoniousGaussianMixtureModel(nsim,burn,X,n,p,delta,ggamma,m,qVec,qnew,constraint,dVec,sVec)
+#'
+#' @export
 parsimoniousGaussianMixtureModel = function(niter,
                                             burn,
                                             X,
@@ -43,16 +62,16 @@ parsimoniousGaussianMixtureModel = function(niter,
 
   ## priors
   ZOneDim = kmeans(x = t(X), centers = m)$cluster
-  priorList = generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
+  thetaYList = generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
 
-  thetaYList = new("ThetaYList",tao = priorList$tao,
-                   psy = priorList$psy, M = priorList$M,
-                   lambda = priorList$lambda, Y = priorList$Y
-                   )
+  # thetaYList = new("ThetaYList",tao = priorList$tao,
+  #                  psy = priorList$psy, M = priorList$M,
+  #                  lambda = priorList$lambda, Y = priorList$Y
+  #                  )
 
   for(i in 1:burn){
-    ZOneDim = update_PostZ(m, n, thetaYList)
-    thetaYList = updatePostThetaY(m = m, n = n,hparam, thetaYList, ZOneDim=ZOneDim,  qVec = qVec,constraint = constraint)
+    ZOneDim = update_PostZ(X, m, n, thetaYList)
+    thetaYList = updatePostThetaY(m, n, p, hparam, thetaYList, ZOneDim,  qVec,constraint, X)
     hparam = update_Hyperparameter(m, p, qnew, hparam,thetaYList, dVec, sVec)
   }
 
@@ -76,11 +95,12 @@ parsimoniousGaussianMixtureModel = function(niter,
     cat("h = ", h, "  =========>\n")
     steps = c("stay", "lambda", "psi1", "psi2")
     currentStep = sample(size = 1, x = steps)
+    # currentStep = "psi1"
     if(currentStep == "stay"){
       print("stay")
-      ZOneDim = update_PostZ(m, n, thetaYList)
-      thetaYList = updatePostThetaY(m = m, n = n,hparam, thetaYList, ZOneDim=ZOneDim, qVec = qVec, constraint = constraint)
-      hparam = update_Hyperparameter(m, p, qnew, hparam, thetaYList, dVec, sVec)
+      ZOneDim = update_PostZ(X, m, n, thetaYList)
+      thetaYList = updatePostThetaY(m, n, p, hparam, thetaYList, ZOneDim,  qVec,constraint, X)
+      hparam = update_Hyperparameter(m, p, qnew, hparam,thetaYList, dVec, sVec)
 
     }else if(currentStep == "lambda"){
 
@@ -88,23 +108,27 @@ parsimoniousGaussianMixtureModel = function(niter,
       proposeConstraint = constraint
       proposeConstraint[1] = (constraint[1] + 1) %% 2
 
-      CxyList = CalculateCxy(m, n, hparam, thetaYList,ZOneDim, qVec)
-      newLambda = CalculatePostLambdaPsy(hparam, thetaYList,CxyList, proposeConstraint)
+      CxyList = Calculate_Cxy(m, n, hparam, thetaYList,ZOneDim, qVec, X)
+
+      newLambda = CalculateProposalLambda(hparam, thetaYList, CxyList, proposeConstraint, m, p, qVec)
 
       newthetaYList = thetaYList
       newthetaYList@lambda = newLambda
 
-      newCxyList = CalculateCxy(m, n, hparam,newthetaYList, ZOneDim, qVec)
+      newCxyList = Calculate_Cxy(m, n, hparam,newthetaYList, ZOneDim, qVec, X)
 
       oldDensity = likelihood(thetaYList, ZOneDim,qVec,muBar, X) + evaluatePrior(m, p, muBar,hparam, thetaYList, ZOneDim, qVec,constraint)
       oldLambdaEval = EvaluateProposalLambda(hparam, newthetaYList,newCxyList, constraint, thetaYList@lambda, m, qVec, p)
       newLambdaEval = EvaluateProposalLambda(hparam, thetaYList,CxyList, proposeConstraint, newthetaYList@lambda, m, qVec, p)
 
+
+
+
       ## Gibbs
       newhparam = hparam
       for(i in 1:10){
-        newZOneDim = update_PostZ(m, n, newthetaYList)
-        newthetaYList = updatePostThetaY(m = m, n = n,newhparam, newthetaYList, ZOneDim=ZOneDim, qVec = qVec, constraint = proposeConstraint)
+        newZOneDim = update_PostZ(X, m, n, newthetaYList)
+        newthetaYList = updatePostThetaY(m = m, n = n, p, newhparam, newthetaYList, ZOneDim=ZOneDim, qVec = qVec, constraint = proposeConstraint, X)
         newhparam = update_Hyperparameter(m, p, qnew, newhparam,newthetaYList, dVec, sVec)
       }
 
@@ -140,20 +164,19 @@ parsimoniousGaussianMixtureModel = function(niter,
       }
 
       #####
-      CxyList = CalculateCxy(m, n, hparam, thetaYList , ZOneDim, qVec)
-      newPsy = CalculateProposalPsy(hparam, thetaYList, CxyList, proposeConstraint, m, p, qVec, delta)
+      CxyList = Calculate_Cxy(m, n, hparam, thetaYList , ZOneDim, qVec, X)
+      newPsy = CalculateProposalPsy(hparam, thetaYList, CxyList, proposeConstraint, m, p, qVec)
 
       newthetaYList = thetaYList
       newthetaYList@psy = newPsy
-      newCxyList = CalculateCxy(m, n, hparam, newthetaYList, ZOneDim, qVec)
-
+      newCxyList = Calculate_Cxy(m, n, hparam, newthetaYList, ZOneDim, qVec, X)
 
 
       oldDensity = likelihood(thetaYList, ZOneDim,qVec,muBar, X) + evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint)
       newDensity = likelihood(newthetaYList, ZOneDim,qVec,muBar, X) + evaluatePrior(m, p, muBar,hparam, newthetaYList, ZOneDim, qVec, proposeConstraint)
 
-      oldPsyEval = EvaluateProposalPsy(hparam,newthetaYList, newCxyList, constraint, thetaYList@psy)
-      newPsyEval = EvaluateProposalPsy(hparam,thetaYList, CxyList, proposeConstraint, newthetaYList@psy)
+      oldPsyEval = EvaluateProposalPsy(hparam,newthetaYList, newCxyList, constraint, thetaYList@psy, m, p, qVec)
+      newPsyEval = EvaluateProposalPsy(hparam,thetaYList, CxyList, proposeConstraint, newthetaYList@psy,m, p, qVec)
 
       numer  = newDensity + oldPsyEval
       denom = oldDensity + newPsyEval
@@ -173,7 +196,7 @@ parsimoniousGaussianMixtureModel = function(niter,
   }
 
     print(constraint)
-    print(ZOneDim)
+    # print(ZOneDim)
     ##save
     alpha1Vec[h] = hparam@alpha1
     alpha2Vec[h] = hparam@alpha2
@@ -187,7 +210,12 @@ parsimoniousGaussianMixtureModel = function(niter,
     constraintList[[h]] = constraint
   }
 
-  return(list(taoList=taoList, psyList=psyList,MList=MList,lambdaList=lambdaList,
-              YList=YList,ZmatList=ZmatList, constraintList = constraintList,lambdaCount = lambdaCount,
-              alpha1Vec = alpha1Vec, alpha2Vec = alpha2Vec, bbetaVec = bbetaVec, diffVec = diffVec))
+   switchedRed = lableSwichingByCluster(X,taoList,YList, MList, psyList,lambdaList, m, ZmatList)
+   listTable = table(listToStrVec(constraintList))
+   Zfinal = sumerizeZ(switchedRed$ZswitchList)
+   return(list(listTable = listTable, Zfinal = Zfinal))
+
+  # return(list(taoList=taoList, psyList=psyList,MList=MList,lambdaList=lambdaList,
+  #          YList=YList,ZmatList=ZmatList, constraintList = constraintList,lambdaCount = lambdaCount,
+  #            alpha1Vec = alpha1Vec, alpha2Vec = alpha2Vec, bbetaVec = bbetaVec, diffVec = diffVec))
 }

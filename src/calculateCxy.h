@@ -3,12 +3,12 @@
 
 #include <RcppArmadillo.h>
 
-Rcpp::List CalculateCxy(int m, 
-                        int n,
-                        Rcpp::S4 hparam,
-                        Rcpp::S4 thetaYList,
-                        arma::vec ZOneDim,
-                        arma::vec qVec,
-                        arma::mat X);
+Rcpp::List Calculate_Cxy(int m,
+                         int n,
+                         Rcpp::S4 hparam,
+                         Rcpp::S4 thetaYList,
+                         arma::vec ZOneDim,
+                         arma::vec qVec,
+                         arma::mat X);
 
 #endif

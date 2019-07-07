@@ -21,6 +21,9 @@ evaluatePriorLambda(p, m, alpha2, qVec, psy, lambda, constraint)
 
 \item{constraint}{the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model}
 }
+\value{
+evaluated prior value for parameter Lambda
+}
 \description{
 evaluate prior value for parameter Lambda
 }

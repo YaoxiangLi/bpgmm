@@ -55,6 +55,16 @@ listToStrVec <- function(stringList) {
 #' @param muBar muBar
 #' @param X X
 #'
+#' @return likelihood value for parameters thetaYList
+#' @examples
+#' url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
+#' "blob/master/data/CalculateProposalLambda.RData?raw=true")
+#'
+#'
+#' download.file(url, destfile= "CalculateProposalLambda.RData", mode = "wb")
+#' load("CalculateProposalLambda.RData")
+#' likelihood(thetaYList, ZOneDim,qVec,muBar, X)
+#'
 #' @export
 #'
 likelihood = function(thetaYList, ZOneDim, qqVec, muBar, X){
@@ -76,3 +86,62 @@ likelihood = function(thetaYList, ZOneDim, qqVec, muBar, X){
 
   xVal
 }
+
+#' sumerizeZ
+#'
+#' @param Zlist list of Z matrix
+#' @param index index of Zlist
+#'
+#'
+#' @return count mode of Z matrix
+#'
+#'
+#'
+sumerizeZ = function(Zlist, index = 1:length(Zlist)){
+  sampleSize = length(Zlist[[1]])
+  res = c()
+  for(i in 1:sampleSize){
+    temp = c()
+    for(j in index){
+      temp[j] = Zlist[[j]][i]
+    }
+    res[i] = getmode(temp)
+  }
+  return(res)
+}
+
+
+#' getmode
+#'
+#' @param v vec of numeric values
+#' @return mode of the vec
+#'
+getmode <- function(v){
+  v = v[!is.na(v)]
+  uniqv <- unique(v)
+  uniqv[which.max(tabulate(match(v, uniqv)))]
+}
+
+
+#' calculateVarList
+#'
+#' @param psyList list of psy
+#' @param lambdaList list of lambda
+#'
+#' @return list of covariance matrix
+#'
+calculateVarList = function(psyList,lambdaList){
+  m = length(psyList)
+  varList = list()
+  for(i in 1:m){
+    tempCov = psyList[[i]] + lambdaList[[i]]%*%t(lambdaList[[i]])
+    varList[[i]] = tempCov
+  }
+  return(varList)
+}
+
+
+
+
+
+

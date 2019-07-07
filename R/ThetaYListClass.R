@@ -8,7 +8,7 @@
 #' @slot M A list value
 #' @slot lambda A list value
 #' @slot Y A list value
-#' @export
+#'
 setClass(
   "ThetaYList",
   slots = c(

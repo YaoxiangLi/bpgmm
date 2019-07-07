@@ -8,13 +8,13 @@ using namespace arma;
 
 
 // [[Rcpp::export]]
-Rcpp::List CalculatePostLambdaPsy(int m,
-                                  int p,
-                                  Rcpp::S4 hparam,
-                                  Rcpp::List CxyList,
-                                  Rcpp::S4 thetaYList,
-                                  arma::vec qVec,
-                                  arma::vec constraint) {
+Rcpp::List Calculate_PostLambdaPsy(int m,
+                                   int p,
+                                   Rcpp::S4 hparam,
+                                   Rcpp::List CxyList,
+                                   Rcpp::S4 thetaYList,
+                                   arma::vec qVec,
+                                   arma::vec constraint) {
 
   // double alpha1 = hparam.slot("alpha1");
   double alpha2 = hparam.slot("alpha2");
@@ -74,10 +74,25 @@ Rcpp::List CalculatePostLambdaPsy(int m,
   // arma::vec test_norm;
   // test_norm = rmvnorm(_["n"] = 1, _["mean"]=arma::vec(1), _["sigma"]=arma::vec(1));
 
-  if (constraint[0] == 1 & constraint[1] == 1 & constraint[2] == 1) {
+  if ((constraint[0] == 1) & (constraint[1] == 1) & (constraint[2] == 1)) {
     // std::cout << "Model 1" << std::endl;
     // Model 1
+    sumCxmyk = sumCxmyk.zeros();
+    sumCyyk = sumCyyk.zeros();
 
+    for (int k=0; k<m; ++k) {
+      arma::mat Cxmyk_k = Cxmyk[k];
+      arma::mat Cyyk_k = Cyyk[k];
+      sumCxmyk = sumCxmyk + Cxmyk_k;
+      arma::mat alpha2_eye(qVec[k], qVec[k], arma::fill::eye);
+      alpha2_eye = alpha2 / m * alpha2_eye;  
+      sumCyyk = sumCyyk + Cyyk_k + alpha2_eye;
+      // std::cout << sumCxmyk << std::endl;
+      // std::cout << sumCyyk << std::endl;
+    }
+
+
+    
     for (int k=0; k<m; ++k) {
       if (k == 0) {
 
@@ -133,13 +148,13 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // double nVec_k = nVec[k];
       // double qVec_k = qVec[k];
 
+      shapePara += 0.5 * p * (nVec[k] + qVec[k] / m + (2 * delta - 2) / (m * p) + 1);
 
       // std::cout << "nVec[k]: "  << std::endl << nVec[k] << std::endl;
       // std::cout << "qVec[k]: "  << std::endl << qVec[k] << std::endl;
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara += 0.5 * p * (nVec[k] + qVec[k] + 2 * delta - 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -162,14 +177,19 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       arma::mat A_ka = Rcpp::as<arma::mat>(A_k);
       arma::mat bbeta_eye(p, p, arma::fill::eye);
 
-      bbeta_eye = 2 * bbeta * bbeta_eye;
+      // std::cout << "bbeta" << std::endl <<  2*bbeta << std::endl;
+      // std::cout << "bbeta/(m * p)" << std::endl <<  2*bbeta/(m * p) << std::endl;
+
+      bbeta_eye = 2 * bbeta/(m * p) * bbeta_eye;
       // std::cout << "Cxxk[k]: (p * p)" << std::endl << Cxxk_k << std::endl;
       // std::cout << "Cxtytk_ka: (p * m)" << std::endl << Cxtytk_ka << std::endl;
       // std::cout << "tildaLambda_ka: (m * p)" << std::endl << trans(tildaLambda_ka) << std::endl;
       // std::cout << "A_ka" << std::endl <<  A_ka << std::endl;
+      // std::cout << "A_ka/m" << std::endl <<  A_ka/m << std::endl;
+
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
-      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
+      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka / m) * trans(tildaLambda_ka) + bbeta_eye;
       // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
       ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
@@ -205,10 +225,25 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
     return(res);
 
-  } else if (constraint[0] == 1 & constraint[1] == 1 & constraint[2] == 0) {
+  } else if ((constraint[0] == 1) & (constraint[1] == 1) & (constraint[2] == 0)) {
     // std::cout << "Model 2" << std::endl;
 
     // Model 2
+
+    sumCxmyk = sumCxmyk.zeros();
+    sumCyyk = sumCyyk.zeros();
+
+    for (int k=0; k<m; ++k) {
+      arma::mat Cxmyk_k = Cxmyk[k];
+      arma::mat Cyyk_k = Cyyk[k];
+      sumCxmyk = sumCxmyk + Cxmyk_k;
+      arma::mat alpha2_eye(qVec[k], qVec[k], arma::fill::eye);
+      alpha2_eye = alpha2 / m * alpha2_eye;  
+      sumCyyk = sumCyyk + Cyyk_k + alpha2_eye;
+      // std::cout << sumCxmyk << std::endl;
+      // std::cout << sumCyyk << std::endl;
+    }
+
     for (int k=0; k<m; ++k) {
       if (k == 0) {
 
@@ -270,7 +305,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara += 0.5 * (nVec[k] + qVec[k] + 2 * delta - 1);
+      shapePara += 0.5 * (nVec[k] + qVec[k] / m + (2 * delta - 2)/m + 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -293,14 +328,14 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       arma::mat A_ka = Rcpp::as<arma::mat>(A_k);
       arma::mat bbeta_eye(p, p, arma::fill::eye);
 
-      bbeta_eye = 2 * bbeta * bbeta_eye;
+      bbeta_eye = (2 * bbeta / m) * bbeta_eye;
       // std::cout << "Cxxk[k]: (p * p)" << std::endl << Cxxk_k << std::endl;
       // std::cout << "Cxtytk_ka: (p * m)" << std::endl << Cxtytk_ka << std::endl;
       // std::cout << "tildaLambda_ka: (m * p)" << std::endl << trans(tildaLambda_ka) << std::endl;
       // std::cout << "A_ka" << std::endl <<  A_ka << std::endl;
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
-      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
+      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka/m) * trans(tildaLambda_ka) + bbeta_eye;
       // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
       ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
@@ -343,7 +378,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
                                   Named("psy")    = post_psy);
 
     return(res);
-  } else if (constraint[0] == 1 & constraint[1] == 0 & constraint[2] == 1) {
+  } else if ((constraint[0] == 1) & (constraint[1] == 0) & (constraint[2] == 1)) {
     // std::cout << "Model 3" << std::endl;
     arma::mat Cxmyk_0 = Cxmyk[0];
     arma::mat Cyyk_0 = Cyyk[0];
@@ -367,7 +402,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
 
       arma::mat alpha2_eye(qVec[k], qVec[k], arma::fill::eye);
-      alpha2_eye = alpha2 * alpha2_eye;
+      alpha2_eye = (alpha2 / m) * alpha2_eye;
       // std::cout << "alpha2: " << std::endl << alpha2 << std::endl;
       // std::cout << "alpha2_eye: " << std::endl << alpha2_eye << std::endl;
 
@@ -444,7 +479,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara = 0.5 * p * (nVec[k] + qVec[k] + 2 * delta - 1) + 1;
+      shapePara = 0.5 * p * (nVec[k] + qVec[k] / m + (2 * delta - 2) / p + 1) + 1;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -467,7 +502,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       arma::mat A_ka = Rcpp::as<arma::mat>(A_k);
       arma::mat bbeta_eye(p, p, arma::fill::eye);
 
-      bbeta_eye = 2 * bbeta * bbeta_eye;
+      bbeta_eye = 2 * (bbeta / p) * bbeta_eye;
       // std::cout << "Cxxk[k]: (p * p)" << std::endl << Cxxk_k << std::endl;
       // std::cout << "Cxtytk_ka: (p * m)" << std::endl << Cxtytk_ka << std::endl;
       // std::cout << "tildaLambda_ka: (m * p)" << std::endl << trans(tildaLambda_ka) << std::endl;
@@ -504,7 +539,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
     return(res);
 
-  } else if (constraint[0] == 1 & constraint[1] == 0 & constraint[2] == 0) {
+  } else if ((constraint[0] == 1) & (constraint[1] == 0) & (constraint[2] == 0)) {
     // std::cout << "Model 4" << std::endl;
     arma::mat sumVar;
     arma::mat B;
@@ -524,7 +559,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       arma::mat Cyyk_ka = Rcpp::as<arma::mat>(Cyyk_k);
 
       arma::mat alpha2_eye(qVec[k], qVec[k], arma::fill::eye);
-      alpha2_eye = alpha2 * alpha2_eye;
+      alpha2_eye = (alpha2 / m) * alpha2_eye;
       // std::cout << "alpha2_eye: " << std::endl << alpha2_eye << std::endl;
       // std::cout << "Cyyk_ka: " << std::endl << Cyyk_ka << std::endl;
 
@@ -610,7 +645,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara = (nVec[k] + qVec[k] + 2 * delta - 1) * 0.5 + 1;
+      shapePara = 0.5 * (nVec[k] + qVec[k] / m + 2 * delta - 1) + 1;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
@@ -639,7 +674,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "A_ka" << std::endl <<  A_ka << std::endl;
       // std::cout << "bbeta_eye" << std::endl <<  bbeta_eye << std::endl;
 
-      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
+      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka / m) * trans(tildaLambda_ka) + bbeta_eye;
       // std::cout << "ratePara_k: " << std::endl << ratePara_k << std::endl;
 
       ratePara_k = arma::diagvec(ratePara_k) * 0.5;
@@ -680,7 +715,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
     return(res);
 
-  } else if (constraint[0] == 0 & constraint[1] == 1 & constraint[2] == 1) {
+  } else if ((constraint[0] == 0) & (constraint[1] == 1) & (constraint[2] == 1)) {
     // std::cout << "Model 5" << std::endl;
     for (int k=0; k<m; ++k) {
 
@@ -704,7 +739,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
       // std::cout << mean_vec   << std::endl;
 
-      Rcpp::NumericMatrix sigma_mat = kronecker(sumCyyk.i(), psy[k]);
+      Rcpp::NumericMatrix sigma_mat = kronecker(Cyyk_ka.i(), psy[k]);
       // std::cout << sigma_mat << std::endl;
 
 
@@ -753,7 +788,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara += 0.5 * p * (nVec[k] + qVec[k] + 2 * delta - 1);
+      shapePara += 0.5 * p * (nVec[k] + qVec[k] + (2 * delta - 2)/(m * p) + 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -776,7 +811,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       arma::mat A_ka = Rcpp::as<arma::mat>(A_k);
       arma::mat bbeta_eye(p, p, arma::fill::eye);
 
-      bbeta_eye = 2 * bbeta * bbeta_eye;
+      bbeta_eye = 2 * (bbeta / (m * p)) * bbeta_eye;
       // std::cout << "Cxxk[k]: (p * p)" << std::endl << Cxxk_k << std::endl;
       // std::cout << "Cxtytk_ka: (p * m)" << std::endl << Cxtytk_ka << std::endl;
       // std::cout << "tildaLambda_ka: (m * p)" << std::endl << trans(tildaLambda_ka) << std::endl;
@@ -820,7 +855,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
     return(res);
 
 
-  } else if (constraint[0] == 0 & constraint[1] == 1 & constraint[2] == 0) {
+  } else if ((constraint[0] == 0) & (constraint[1] == 1) & (constraint[2] == 0)) {
     // std::cout << "Model 6" << std::endl;
 
     for (int k=0; k<m; ++k) {
@@ -845,7 +880,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
       // std::cout << mean_vec   << std::endl;
 
-      Rcpp::NumericMatrix sigma_mat = kronecker(sumCyyk.i(), psy[k]);
+      Rcpp::NumericMatrix sigma_mat = kronecker(Cyyk_ka.i(), psy[k]);
       // std::cout << sigma_mat << std::endl;
 
 
@@ -894,7 +929,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       // std::cout << "delta: "  << std::endl << delta << std::endl;
 
 
-      shapePara += (nVec[k] + qVec[k] + 2 * delta - 1)* 0.5;
+      shapePara += 0.5 * (nVec[k] + qVec[k] + (2 * delta - 2)/m + 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
       // ratePara_vec += 1；
 
@@ -917,7 +952,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       arma::mat A_ka = Rcpp::as<arma::mat>(A_k);
       arma::mat bbeta_eye(p, p, arma::fill::eye);
 
-      bbeta_eye = 2 * bbeta * bbeta_eye;
+      bbeta_eye = 2 * (bbeta / m) * bbeta_eye;
       // std::cout << "Cxxk[k]: (p * p)" << std::endl << Cxxk_k << std::endl;
       // std::cout << "Cxtytk_ka: (p * m)" << std::endl << Cxtytk_ka << std::endl;
       // std::cout << "tildaLambda_ka: (m * p)" << std::endl << trans(tildaLambda_ka) << std::endl;
@@ -958,7 +993,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
     return(res);
 
-  } else if (constraint[0] == 0 & constraint[1] == 0 & constraint[2] == 1) {
+  } else if ((constraint[0] == 0) & (constraint[1] == 0) & (constraint[2] == 1)) {
     // std::cout << "Model 7" << std::endl;
 
 
@@ -984,7 +1019,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
       // std::cout << mean_vec   << std::endl;
 
-      Rcpp::NumericMatrix sigma_mat = kronecker(sumCyyk.i(), psy[k]);
+      Rcpp::NumericMatrix sigma_mat = kronecker(Cyyk_ka.i(), psy[k]);
       // std::cout << sigma_mat << std::endl;
 
 
@@ -1024,7 +1059,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
     for (int k=0; k<m; ++k) {
 
-      shapePara = 0.5 * p * (nVec[k] + qVec[k] + 2 * delta - 1) + 1;
+      shapePara = 0.5 * p * (nVec[k] + qVec[k] +  (2 * delta - 2)/p + 1) + 1;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
@@ -1042,7 +1077,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
       arma::mat A_ka = Rcpp::as<arma::mat>(A_k);
       arma::mat bbeta_eye(p, p, arma::fill::eye);
 
-      bbeta_eye = 2 * bbeta * bbeta_eye;
+      bbeta_eye = 2 * (bbeta / p) * bbeta_eye;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
       ratePara_vec = arma::diagvec(ratePara_k) * 0.5;
@@ -1066,7 +1101,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
     return(res);
 
-  } else if (constraint[0] == 0 & constraint[1] == 0 & constraint[2] == 0) {
+  } else if ((constraint[0] == 0) & (constraint[1] == 0) & (constraint[2] == 0)) {
     // std::cout << "Model 8" << std::endl;
 
     for (int k=0; k<m; ++k) {
@@ -1091,7 +1126,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
       // std::cout << mean_vec   << std::endl;
 
-      Rcpp::NumericMatrix sigma_mat = kronecker(sumCyyk.i(), psy[k]);
+      Rcpp::NumericMatrix sigma_mat = kronecker(Cyyk_ka.i(), psy[k]);
       // std::cout << sigma_mat << std::endl;
 
 
@@ -1131,7 +1166,7 @@ Rcpp::List CalculatePostLambdaPsy(int m,
 
     for (int k=0; k<m; ++k) {
 
-      shapePara = (nVec[k] + qVec[k] + 2 * delta - 1) * 0.5 + 1;
+      shapePara = 0.5 * (nVec[k] + qVec[k] + 2 * delta - 1) + 1;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
@@ -1197,4 +1232,8 @@ Rcpp::List CalculatePostLambdaPsy(int m,
                                   Named("psy")    = post_psy);
     return(res);
   }
+
+  List res = Rcpp::List::create(Named("lambda") = lambda,
+                                Named("psy")    = psy);
+  return(res);
 }

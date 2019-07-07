@@ -79,7 +79,7 @@ test_that("calculateCxy is working correctly", {
   hparam <- new("Hparam",alpha1 = 3, alpha2 = 2, delta  = 3, ggamma = 4, bbeta  = 5)
   thetaYList = generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
   X = matrix(rnorm(p * n, 0, 1), p, n)
-  res   = CalculateCxy(m, n, hparam, thetaYList, ZOneDim, qVec, X)
+  res   = Calculate_Cxy(m, n, hparam, thetaYList, ZOneDim, qVec, X)
   r_res = r_CalculateCxy(m, n, hparam, thetaYList, ZOneDim, qVec, X)
 
   expect_equal(r_res$A, res$A)

@@ -7,13 +7,13 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-Rcpp::List CalculateCxy(int m,
-                        int n,
-                        Rcpp::S4 hparam,
-                        Rcpp::S4 thetaYList,
-                        arma::vec ZOneDim,
-                        arma::vec qVec,
-                        arma::mat X){
+Rcpp::List Calculate_Cxy(int m,
+                         int n,
+                         Rcpp::S4 hparam,
+                         Rcpp::S4 thetaYList,
+                         arma::vec ZOneDim,
+                         arma::vec qVec,
+                         arma::mat X){
 
   double alpha1 = hparam.slot("alpha1");
   double alpha2 = hparam.slot("alpha2");

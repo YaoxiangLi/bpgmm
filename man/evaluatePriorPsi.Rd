@@ -19,6 +19,9 @@ evaluatePriorPsi(psy, p, m, delta, bbeta, constraint)
 
 \item{constraint}{parameter}
 }
+\value{
+evaluated prior value for parameter Psi
+}
 \description{
 evaluate prior value for parameter Psi
 }

@@ -17,6 +17,19 @@ likelihood(thetaYList, ZOneDim, qqVec, muBar, X)
 
 \item{X}{X}
 }
+\value{
+likelihood value for parameters thetaYList
+}
 \description{
 likelihood
+}
+\examples{
+url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
+"blob/master/data/CalculateProposalLambda.RData?raw=true")
+
+
+download.file(url, destfile= "CalculateProposalLambda.RData", mode = "wb")
+load("CalculateProposalLambda.RData")
+likelihood(thetaYList, ZOneDim,qVec,muBar, X)
+
 }

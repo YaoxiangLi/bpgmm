@@ -19,6 +19,9 @@ generatePriorLambda(p, m, alpha2, qVec, psy, constraint)
 
 \item{constraint}{parameter}
 }
+\value{
+evaluated prior value for parameter Lambda
+}
 \description{
 evaluate prior value for parameter Lambda
 }

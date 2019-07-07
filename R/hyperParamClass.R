@@ -6,6 +6,10 @@
 #' @slot delta A numeric value
 #' @slot ggamma A numeric value
 #' @slot bbeta A numeric value
+#'
+#' @examples
+#' new("Hparam", alpha1=1, alpha2=2, bbeta=3, delta=4, ggamma=5)
+#'
 #' @export
 setClass(
   "Hparam",

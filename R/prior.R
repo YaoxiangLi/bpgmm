@@ -12,6 +12,33 @@
 #' @param ZOneDim ZOneDim
 #' @param constraint constraint
 #'
+#' @return PriorThetaY list
+#'
+#' @examples
+#'
+#' sample_data = "https://raw.githubusercontent.com/lzyacht/bpgmm-examples/master/data/sampleData.csv"
+#' X = utils::read.table(sample_data, header = TRUE, sep = ',')
+#' X = as.matrix(X)
+#' nsim = 1000
+#' burn = 20
+#' n = ncol(X)
+#' p = nrow(X)
+#' m = 2
+#' qVec = rep(3,m)
+#' qnew = 3
+#' delta = 2
+#' ggamma = 2
+#' dVec = c(1,1,1)
+#' sVec = c(1,1,1)
+#' constraint = c(1,1,1)
+#' hparam = new("Hparam", alpha1=1, alpha2=2, bbeta=3, delta=4, ggamma=5)
+#' muBar = apply(X, MARGIN = 1, FUN = mean)
+#' ZOneDim = kmeans(x = t(X), centers = m)$cluster
+#' generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
+#'
+#'
+#' @export
+#'
 generatePriorThetaY = function(m,
                                n,
                                p,
@@ -39,7 +66,7 @@ generatePriorThetaY = function(m,
   # prior M
   M = list()
   for (i in 1:m) {
-    M[[i]] = c(mvtnorm::rmvnorm(n =  1, mean = muBar, sigma = 1 / alpha1 * psy[[i]]))
+    M[[i]] = (mvtnorm::rmvnorm(n =  1, mean = muBar, sigma = 1 / alpha1 * psy[[i]]))
   }
 
   # prior lambda
@@ -80,6 +107,16 @@ generatePriorThetaY = function(m,
 #' @param ZOneDim one dime of z
 #' @param qVec q vector
 #' @param constraint type of constraint
+#'
+#' @return evaluated prior value for parameter Theta and Y.
+#'
+#' @examples
+#' url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
+#' "blob/master/data/updatePostThetaY_example.RData?raw=true")
+#' download.file(url, destfile= "updatePostThetaY_example.RData", mode = "wb")
+#' load("updatePostThetaY_example.RData")
+#' evaluatePrior(m, p, muBar,hparam, thetaYList, ZOneDim, qVec,constraint)
+#'
 #'
 #' @export
 evaluatePrior = function(m,
@@ -132,6 +169,8 @@ evaluatePrior = function(m,
 #' @param delta hyperparameters
 #' @param bbeta hyperparameters
 #' @param constraint the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model
+#' @return generated prior value for parameter Psi
+#'
 #'
 generatePriorPsi = function(p,
                             m,
@@ -185,6 +224,8 @@ generatePriorPsi = function(p,
 #' @param bbeta parameter
 #' @param constraint parameter
 #'
+#' @return evaluated prior value for parameter Psi
+#'
 #'
 evaluatePriorPsi = function(psy,
                             p,
@@ -237,6 +278,8 @@ evaluatePriorPsi = function(psy,
 #' @param psy parameter
 #' @param constraint parameter
 #'
+#' @return evaluated prior value for parameter Lambda
+#'
 generatePriorLambda = function(p,
                                m,
                                alpha2,
@@ -245,13 +288,32 @@ generatePriorLambda = function(p,
                                constraint){
 
   lambda = list()
-  if(constraint[1] == T){
+  if(constraint[1] == T & constraint[2] == T){
     for(k in 1:m){
       if(k == 1){
         qk = qVec[k]
         lambda[[k]] = matrix(0, p, qk)
         for(j in 1:qk){
           lambda[[k]][,j] = mvtnorm::rmvnorm(1, rep(0,p), 1/alpha2 * psy[[k]])
+        }
+      }else{
+        lambda[[k]] = lambda[[1]]
+      }
+    }
+  }else if(constraint[1] == T & constraint[2] == F){
+
+    psyAve = matrix(0, nrow = p, ncol = p)
+    for(k in 1:m){
+      psyAve = psyAve +  solve(psy[[k]])
+    }
+    psyAve = solve(1/m * psyAve)
+
+    for(k in 1:m){
+      if(k == 1){
+        qk = qVec[k]
+        lambda[[k]] = matrix(0, p, qk)
+        for(j in 1:qk){
+          lambda[[k]][,j] = mvtnorm::rmvnorm(1, rep(0,p), 1/alpha2 * psyAve)
         }
       }else{
         lambda[[k]] = lambda[[1]]
@@ -281,7 +343,7 @@ generatePriorLambda = function(p,
 #' @param lambda parameter
 #' @param constraint the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model
 #'
-#'
+#' @return evaluated prior value for parameter Lambda
 #'
 evaluatePriorLambda = function(p,
                                m,
@@ -292,12 +354,28 @@ evaluatePriorLambda = function(p,
                                constraint){
 
   evallambda = 0
-  if(constraint[1] == T){
+  if(constraint[1] == T & constraint[2] == T){
     for(k in 1:m){
       if(k == 1){
         qk = qVec[k]
         for(j in 1:qk){
           evallambda = evallambda + mvtnorm::dmvnorm(lambda[[k]][,j], rep(0,p), 1/alpha2 * psy[[k]], log = T)
+        }
+      }
+    }
+  }else if(constraint[1] == T & constraint[2] == F){
+
+    psyAve = matrix(0, nrow = p, ncol = p)
+    for(k in 1:m){
+      psyAve = psyAve +  solve(psy[[k]])
+    }
+    psyAve = solve(1/m * psyAve)
+
+    for(k in 1:m){
+      if(k == 1){
+        qk = qVec[k]
+        for(j in 1:qk){
+          evallambda = evallambda + mvtnorm::dmvnorm(lambda[[k]][,j], rep(0,p), 1/alpha2 * psyAve, log = T)
         }
       }
     }
