@@ -19,7 +19,7 @@
 #' sample_data = "https://raw.githubusercontent.com/lzyacht/bpgmm-examples/master/data/sampleData.csv"
 #' X = utils::read.table(sample_data, header = TRUE, sep = ',')
 #' X = as.matrix(X)
-#' nsim = 1000
+#' nsim = 1
 #' burn = 20
 #' n = ncol(X)
 #' p = nrow(X)
@@ -111,12 +111,13 @@ generatePriorThetaY = function(m,
 #' @return evaluated prior value for parameter Theta and Y.
 #'
 #' @examples
+#' \donttest{
 #' url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
 #' "blob/master/data/updatePostThetaY_example.RData?raw=true")
 #' download.file(url, destfile= "updatePostThetaY_example.RData", mode = "wb")
 #' load("updatePostThetaY_example.RData")
 #' evaluatePrior(m, p, muBar,hparam, thetaYList, ZOneDim, qVec,constraint)
-#'
+#' }
 #'
 #' @export
 evaluatePrior = function(m,

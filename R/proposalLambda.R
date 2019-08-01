@@ -14,7 +14,7 @@
 #' sample_data = "https://raw.githubusercontent.com/lzyacht/bpgmm-examples/master/data/sampleData.csv"
 #' X = utils::read.table(sample_data, header = TRUE, sep = ',')
 #' X = as.matrix(X)
-#' nsim = 1000
+#' nsim = 1
 #' burn = 20
 #' n = ncol(X)
 #' p = nrow(X)
@@ -31,11 +31,14 @@
 #' muBar = apply(X, MARGIN = 1, FUN = mean)
 #' ZOneDim = kmeans(x = t(X), centers = m)$cluster
 #' thetaYList = generatePriorThetaY(m, n, p, muBar, hparam, qVec, ZOneDim, constraint)
+#'
+#' \donttest{
 #' url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
 #' "blob/master/data/CalculateProposalLambda.RData?raw=true")
 #' download.file(url, destfile= "CalculateProposalLambda.RData", mode = "wb")
 #' load("CalculateProposalLambda.RData")
 #' CalculateProposalLambda(hparam, thetaYList, CxyList, constraint, m, p, qVec)
+#' }
 #'
 #' @export
 

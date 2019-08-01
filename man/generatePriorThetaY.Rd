@@ -34,7 +34,7 @@ generate prior value for parameter Theta and Y.
 sample_data = "https://raw.githubusercontent.com/lzyacht/bpgmm-examples/master/data/sampleData.csv"
 X = utils::read.table(sample_data, header = TRUE, sep = ',')
 X = as.matrix(X)
-nsim = 1000
+nsim = 1
 burn = 20
 n = ncol(X)
 p = nrow(X)

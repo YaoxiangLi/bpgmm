@@ -13,13 +13,13 @@
 #'
 #' @return ThetaYList S4 class
 #' @examples
-#'
+#' \donttest{
 #' url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
 #' "blob/master/data/updatePostThetaY_example.RData?raw=true")
 #' download.file(url, destfile= "updatePostThetaY_example.RData", mode = "wb")
 #' load("updatePostThetaY_example.RData")
 #' updatePostThetaY(m, n, p, hparam, thetaYList, ZOneDim, qVec, constraint, X)
-#'
+#' }
 #' @export
 #'
 updatePostThetaY = function(m, n, p, hparam, thetaYList, ZOneDim, qVec, constraint, X){

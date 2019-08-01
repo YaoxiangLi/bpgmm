@@ -57,6 +57,8 @@ listToStrVec <- function(stringList) {
 #'
 #' @return likelihood value for parameters thetaYList
 #' @examples
+#'
+#' \donttest{
 #' url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
 #' "blob/master/data/CalculateProposalLambda.RData?raw=true")
 #'
@@ -64,7 +66,7 @@ listToStrVec <- function(stringList) {
 #' download.file(url, destfile= "CalculateProposalLambda.RData", mode = "wb")
 #' load("CalculateProposalLambda.RData")
 #' likelihood(thetaYList, ZOneDim,qVec,muBar, X)
-#'
+#' }
 #' @export
 #'
 likelihood = function(thetaYList, ZOneDim, qqVec, muBar, X){

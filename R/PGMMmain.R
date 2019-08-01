@@ -21,7 +21,7 @@
 #' sample_data = "https://raw.githubusercontent.com/lzyacht/bpgmm-examples/master/data/sampleData.csv"
 #' X = utils::read.table(sample_data, header = TRUE, sep = ',')
 #' X = as.matrix(X)
-#' nsim = 1000
+#' nsim = 1
 #' burn = 20
 #' n = ncol(X)
 #' p = nrow(X)
@@ -32,9 +32,11 @@
 #' ggamma = 2
 #' dVec = c(1,1,1)
 #' sVec = c(1,1,1)
-#' constraint = c(1,1,1)
-#'
+#' constraint = c(0,0,0)
+#' \donttest{
 #' parsimoniousGaussianMixtureModel(nsim,burn,X,n,p,delta,ggamma,m,qVec,qnew,constraint,dVec,sVec)
+#' }
+#'
 #'
 #' @export
 parsimoniousGaussianMixtureModel = function(niter,

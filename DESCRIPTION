@@ -1,8 +1,8 @@
 Package: bpgmm
 Type: Package
 Title: Bayesian Model Selection Approach for Parsimonious Gaussian Mixture Models
-Version: 1.0.3
-Date: 2019-06-27
+Version: 1.0.5
+Date: 2019-07-15
 Depends: R(>= 3.1.0)
 Imports: 
     methods (>= 3.5.1),
@@ -14,11 +14,12 @@ Imports:
     gtools (>= 3.8.1),
     label.switching (>= 1.8)
 Author: Xiang Lu <Xiang_Lu at urmc.rochester.edu>,
-  Yaoxiang Li <yl814 at georgetown.edu>,
-  Tanzy Love <tanzy_love at urmc.rochester.edu>
+    Yaoxiang Li <yl814 at georgetown.edu>,
+    Tanzy Love <tanzy_love at urmc.rochester.edu>
 Maintainer: Yaoxiang Li <yl814@georgetown.edu>
-Description: Model-based clustering using parsimonious Gaussian mixture models.
-  MCMC (Markov chain Monte Carlo) are used for parameter estimation. The RJMCMC (Reversible-jump Markov chain Monte Carlo) is used for model selection.
+Description: Model-based clustering using Bayesian parsimonious Gaussian mixture models.
+  MCMC (Markov chain Monte Carlo) are used for parameter estimation. The RJMCMC (Reversible-jump Markov chain Monte Carlo) is used for model selection. 
+  GREEN et al. (1995) <doi:10.1093/biomet/82.4.711>.
 SystemRequirements: C++11
 License: GPL-3
 Encoding: UTF-8

@@ -24,6 +24,8 @@ likelihood value for parameters thetaYList
 likelihood
 }
 \examples{
+
+\donttest{
 url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
 "blob/master/data/CalculateProposalLambda.RData?raw=true")
 
@@ -31,5 +33,5 @@ url <- paste0("https://github.com/lzyacht/bpgmm-examples/",
 download.file(url, destfile= "CalculateProposalLambda.RData", mode = "wb")
 load("CalculateProposalLambda.RData")
 likelihood(thetaYList, ZOneDim,qVec,muBar, X)
-
+}
 }
