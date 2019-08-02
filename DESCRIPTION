@@ -1,8 +1,8 @@
 Package: bpgmm
 Type: Package
 Title: Bayesian Model Selection Approach for Parsimonious Gaussian Mixture Models
-Version: 1.0.5
-Date: 2019-07-15
+Version: 1.0.6
+Date: 2019-08-01
 Depends: R(>= 3.1.0)
 Imports: 
     methods (>= 3.5.1),
