@@ -4,6 +4,7 @@
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/bpgmm)](https://cran.r-project.org/package=bpgmm)
 [![R-CMD-check](https://github.com/YaoxiangLi/bpgmm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/YaoxiangLi/bpgmm/actions/workflows/R-CMD-check.yaml)
 [![GitHub release](https://img.shields.io/github/v/release/YaoxiangLi/bpgmm?display_name=tag&sort=semver)](https://github.com/YaoxiangLi/bpgmm/releases)
+[![pkgdown](https://github.com/YaoxiangLi/bpgmm/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/YaoxiangLi/bpgmm/actions/workflows/pkgdown.yaml)
 [![License: GPL-3](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![DOI](https://img.shields.io/badge/DOI-10.1007%2Fs00357--021--09391--8-blue)](https://doi.org/10.1007/s00357-021-09391-8)
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
@@ -119,3 +120,7 @@ BibTeX for the paper:
 ## License
 
 `bpgmm` is released under the GPL-3 license.
+
+## Website
+
+The package website is available at https://yaoxiangli.github.io/bpgmm/.

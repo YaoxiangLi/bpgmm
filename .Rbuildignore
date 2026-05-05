@@ -1,3 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^paper_text\.txt$
+^_pkgdown\.yml$
+^docs$
+^\.github$

@@ -9,3 +9,5 @@ src/*.so
 src/*.dll
 src/symbols.rds
 paper_text.txt
+docs/
+.pkgdown/
