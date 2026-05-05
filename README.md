@@ -1,4 +1,4 @@
-# bpgmm
+# bpgmm: Bayesian inference for parsimonious Gaussian mixture models
 
 [![CRAN status](https://www.r-pkg.org/badges/version/bpgmm)](https://cran.r-project.org/package=bpgmm)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/bpgmm)](https://cran.r-project.org/package=bpgmm)
@@ -49,24 +49,58 @@ library(bpgmm)
 - fit mixture-of-factor-analyzers models for high-dimensional clustering;
 - use RJMCMC to move across models with different parameter dimensions.
 
-The main user-facing function is `pgmm_rjmcmc()`.
+## Minimal Runnable Example
+
+This example creates two small clusters, fits a short RJMCMC chain, and
+summarizes the posterior samples. Real analyses should use a longer burn-in and
+more posterior samples.
 
 ```r
+set.seed(2026)
+
+X <- cbind(
+  matrix(rnorm(8, mean = -2, sd = 0.2), nrow = 2),
+  matrix(rnorm(8, mean = 2, sd = 0.2), nrow = 2)
+)
+known_labels <- rep(1:2, each = 4)
+
 fit <- pgmm_rjmcmc(
   X = X,
   mInit = 2,
-  mVec = c(1, 6),
-  qnew = 2,
-  burn = 100,
-  niter = 1000,
-  Mstep = 1,
-  Vstep = 1
+  mVec = c(1, 3),
+  qnew = 1,
+  burn = 1,
+  niter = 3,
+  constraint = model_to_constraint("UUU"),
+  Mstep = 0,
+  Vstep = 0
 )
+
+fit_summary <- summarize_pgmm_rjmcmc(fit, trueCluster = known_labels)
+as.integer(fit_summary$nCluster["2"])
+#> [1] 3
+
+as.integer(fit_summary$nConstraint["UUU"])
+#> [1] 3
+
+fit_summary$ari
+#> [1] 1
 ```
 
 Here `X` is a numeric matrix with variables in rows and observations in columns.
 Set `Mstep = 1` to allow RJMCMC updates for the number of clusters and
 `Vstep = 1` to allow updates for the variance structure.
+
+The main user-facing function is `pgmm_rjmcmc()`. Important settings include:
+
+- `mInit`: initial number of clusters.
+- `mVec`: allowed cluster range, such as `c(1, 6)`.
+- `qnew`: number of latent factors for a newly proposed cluster.
+- `burn` and `niter`: burn-in and posterior sampling iterations.
+- `constraint`: initial covariance model, usually set with
+  `model_to_constraint()`.
+- `Mstep`, `Vstep`, and `SCind`: switches for cluster-number, covariance-model,
+  and split/combine RJMCMC moves.
 
 The older names `pgmmRJMCMC()`, `summarizePgmmRJMCMC()`, and the misspelled
 `summerizePgmmRJMCMC()` are deprecated compatibility wrappers. They still work,
@@ -123,4 +157,6 @@ BibTeX for the paper:
 
 ## Website
 
-The package website is available at https://yaoxiangli.github.io/bpgmm/.
+The package website is available at https://yaoxiangli.github.io/bpgmm/. It
+includes a reference index, release notes, and worked examples that run the
+actual package functions.

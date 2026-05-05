@@ -10,7 +10,7 @@ navbar:
     right: [search, github]
 
 home:
-  title: bpgmm
+  title: "bpgmm: Bayesian inference for parsimonious Gaussian mixture models"
   description: Bayesian inference for parsimonious Gaussian mixture models.
   sidebar:
     structure: [links, license, citation, authors, dev]
@@ -44,3 +44,4 @@ articles:
     navbar: ~
     contents:
       - getting-started
+      - examples

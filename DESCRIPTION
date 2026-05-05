@@ -28,6 +28,7 @@ Description: Model-based clustering using Bayesian parsimonious Gaussian mixture
   GREEN et al. (1995) <doi:10.1093/biomet/82.4.711>.
 License: GPL-3
 URL: https://github.com/YaoxiangLi/bpgmm,
+    https://yaoxiangli.github.io/bpgmm/,
     https://doi.org/10.1007/s00357-021-09391-8
 BugReports: https://github.com/YaoxiangLi/bpgmm/issues
 Encoding: UTF-8
