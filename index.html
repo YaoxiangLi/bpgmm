@@ -5,12 +5,12 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>bpgmm • bpgmm</title>
+<title>bpgmm: Bayesian inference for parsimonious Gaussian mixture models • bpgmm</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="bpgmm">
+<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="bpgmm: Bayesian inference for parsimonious Gaussian mixture models">
 <meta name="description" content="Bayesian inference for parsimonious Gaussian mixture models.">
 <meta property="og:description" content="Bayesian inference for parsimonious Gaussian mixture models.">
 </head>
@@ -36,6 +36,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="articles/getting-started.html">Getting started with bpgmm</a></li>
+    <li><a class="dropdown-item" href="articles/examples.html">Worked examples</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -53,7 +54,7 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="bpgmm">bpgmm<a class="anchor" aria-label="anchor" href="#bpgmm"></a>
+<div class="page-header"><h1 id="bpgmm-bayesian-inference-for-parsimonious-gaussian-mixture-models">bpgmm: Bayesian inference for parsimonious Gaussian mixture models<a class="anchor" aria-label="anchor" href="#bpgmm-bayesian-inference-for-parsimonious-gaussian-mixture-models"></a>
 </h1></div>
 <p><a href="https://cran.r-project.org/package=bpgmm" class="external-link"><img src="https://www.r-pkg.org/badges/version/bpgmm" alt="CRAN status"></a> <a href="https://cran.r-project.org/package=bpgmm" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/bpgmm" alt="CRAN downloads"></a> <a href="https://github.com/YaoxiangLi/bpgmm/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/YaoxiangLi/bpgmm/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/YaoxiangLi/bpgmm/releases" class="external-link"><img src="https://img.shields.io/github/v/release/YaoxiangLi/bpgmm?display_name=tag&amp;sort=semver" alt="GitHub release"></a> <a href="https://github.com/YaoxiangLi/bpgmm/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/YaoxiangLi/bpgmm/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a> <a href="https://www.gnu.org/licenses/gpl-3.0" class="external-link"><img src="https://img.shields.io/badge/license-GPL--3-blue.svg" alt="License: GPL-3"></a> <a href="https://doi.org/10.1007/s00357-021-09391-8" class="external-link"><img src="https://img.shields.io/badge/DOI-10.1007%2Fs00357--021--09391--8-blue" alt="DOI"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></p>
 <p><code>bpgmm</code> implements Bayesian inference for parsimonious Gaussian mixture models. It is designed for model-based clustering when the number of clusters, the object partition, and the cluster covariance structure are all inferential targets.</p>
@@ -83,19 +84,57 @@
 <li>fit mixture-of-factor-analyzers models for high-dimensional clustering;</li>
 <li>use RJMCMC to move across models with different parameter dimensions.</li>
 </ul>
-<p>The main user-facing function is <code><a href="reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="minimal-runnable-example">Minimal Runnable Example<a class="anchor" aria-label="anchor" href="#minimal-runnable-example"></a>
+</h2>
+<p>This example creates two small clusters, fits a short RJMCMC chain, and summarizes the posterior samples. Real analyses should use a longer burn-in and more posterior samples.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">8</span>, mean <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">8</span>, mean <span class="op">=</span> <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">known_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">X</span>,</span>
 <span>  mInit <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  mVec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span>  qnew <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  burn <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  niter <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  Mstep <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  Vstep <span class="op">=</span> <span class="fl">1</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span>  mVec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  qnew <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  burn <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  niter <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>  constraint <span class="op">=</span> <span class="fu"><a href="reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span>,</span>
+<span>  Mstep <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  Vstep <span class="op">=</span> <span class="fl">0</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fit_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, trueCluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">$</span><span class="va">nCluster</span><span class="op">[</span><span class="st">"2"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 3</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/integer.html" class="external-link">as.integer</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">$</span><span class="va">nConstraint</span><span class="op">[</span><span class="st">"UUU"</span><span class="op">]</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 3</span></span>
+<span></span>
+<span><span class="va">fit_summary</span><span class="op">$</span><span class="va">ari</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>Here <code>X</code> is a numeric matrix with variables in rows and observations in columns. Set <code>Mstep = 1</code> to allow RJMCMC updates for the number of clusters and <code>Vstep = 1</code> to allow updates for the variance structure.</p>
+<p>The main user-facing function is <code><a href="reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code>. Important settings include:</p>
+<ul>
+<li>
+<code>mInit</code>: initial number of clusters.</li>
+<li>
+<code>mVec</code>: allowed cluster range, such as <code>c(1, 6)</code>.</li>
+<li>
+<code>qnew</code>: number of latent factors for a newly proposed cluster.</li>
+<li>
+<code>burn</code> and <code>niter</code>: burn-in and posterior sampling iterations.</li>
+<li>
+<code>constraint</code>: initial covariance model, usually set with <code><a href="reference/model_to_constraint.html">model_to_constraint()</a></code>.</li>
+<li>
+<code>Mstep</code>, <code>Vstep</code>, and <code>SCind</code>: switches for cluster-number, covariance-model, and split/combine RJMCMC moves.</li>
+</ul>
 <p>The older names <code><a href="reference/pgmm_rjmcmc.html">pgmmRJMCMC()</a></code>, <code><a href="reference/summarize_pgmm_rjmcmc.html">summarizePgmmRJMCMC()</a></code>, and the misspelled <code><a href="reference/summarize_pgmm_rjmcmc.html">summerizePgmmRJMCMC()</a></code> are deprecated compatibility wrappers. They still work, but new code should use <code><a href="reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code> and <code><a href="reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc()</a></code>.</p>
 <p>The eight covariance structures in the paper are represented by model labels such as <code>"CCC"</code>, <code>"CUU"</code>, and <code>"UUU"</code>. The package also accepts the legacy three-number constraint encoding:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -136,7 +175,7 @@
 <div class="section level2">
 <h2 id="website">Website<a class="anchor" aria-label="anchor" href="#website"></a>
 </h2>
-<p>The package website is available at <a href="https://yaoxiangli.github.io/bpgmm/" class="uri">https://yaoxiangli.github.io/bpgmm/</a>.</p>
+<p>The package website is available at <a href="https://yaoxiangli.github.io/bpgmm/" class="uri">https://yaoxiangli.github.io/bpgmm/</a>. It includes a reference index, release notes, and worked examples that run the actual package functions.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

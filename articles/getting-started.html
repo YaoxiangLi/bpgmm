@@ -34,6 +34,7 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started with bpgmm</a></li>
+    <li><a class="dropdown-item" href="../articles/examples.html">Worked examples</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -73,12 +74,60 @@ number of clusters, and the cluster covariance structure.</p>
 <h2 id="fit-a-model">Fit a model<a class="anchor" aria-label="anchor" href="#fit-a-model"></a>
 </h2>
 <p>Input data should be a numeric matrix with variables in rows and
-observations in columns.</p>
+observations in columns. The small example below has two variables and
+eight observations. It is intentionally short so the vignette runs
+quickly; use larger <code>burn</code> and <code>niter</code> values for
+real analysis.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; bpgmm 1.1.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
-<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
-<span>  X <span class="op">=</span> <span class="va">X</span>,</span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">8</span>, mean <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">8</span>, mean <span class="op">=</span> <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="op">)</span></span>
+<span><span class="va">known_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fit_log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span><span class="op">{</span></span>
+<span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
+<span>    X <span class="op">=</span> <span class="va">X</span>,</span>
+<span>    mInit <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    mVec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>    qnew <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    burn <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    niter <span class="op">=</span> <span class="fl">3</span>,</span>
+<span>    constraint <span class="op">=</span> <span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span>,</span>
+<span>    Mstep <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    Vstep <span class="op">=</span> <span class="fl">0</span></span>
+<span>  <span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">fit_log</span>, <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "iter =  3 ======&gt;"</span></span></code></pre></div>
+<p>The arguments control the sampler:</p>
+<ul>
+<li>
+<code>mInit</code> is the initial number of clusters.</li>
+<li>
+<code>mVec</code> is the allowed range for the number of
+clusters.</li>
+<li>
+<code>qnew</code> is the number of latent factors for a new
+cluster.</li>
+<li>
+<code>constraint</code> selects the starting covariance model.</li>
+<li>
+<code>Mstep = 1</code> allows RJMCMC updates for the number of
+clusters.</li>
+<li>
+<code>Vstep = 1</code> allows RJMCMC updates across
+covariance-constraint models.</li>
+</ul>
+<p>A longer run for applied work might look like this:</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
+<span>  X <span class="op">=</span> <span class="va">methylation_matrix</span>,</span>
 <span>  mInit <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  mVec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">)</span>,</span>
 <span>  qnew <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -87,24 +136,27 @@ observations in columns.</p>
 <span>  Mstep <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  Vstep <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p>Use <code>Mstep = 1</code> to allow RJMCMC updates for the number of
-clusters. Use <code>Vstep = 1</code> to allow RJMCMC updates across the
-covariance-constraint models.</p>
 </div>
 <div class="section level2">
 <h2 id="summarize-posterior-samples">Summarize posterior samples<a class="anchor" aria-label="anchor" href="#summarize-posterior-samples"></a>
 </h2>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">summary</span><span class="op">$</span><span class="va">Zalloc</span></span>
-<span><span class="va">summary</span><span class="op">$</span><span class="va">nCluster</span></span>
-<span><span class="va">summary</span><span class="op">$</span><span class="va">nConstraint</span></span></code></pre></div>
-<p>If a reference partition is available, pass it as
-<code>trueCluster</code> to calculate the adjusted Rand index.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, trueCluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
-<span><span class="va">summary</span><span class="op">$</span><span class="va">ari</span></span></code></pre></div>
+<span></span>
+<span><span class="va">summary</span><span class="op">$</span><span class="va">Zalloc</span></span>
+<span><span class="co">#&gt; [1] 2 2 2 2 1 1 1 1</span></span>
+<span><span class="va">summary</span><span class="op">$</span><span class="va">nCluster</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; 2 </span></span>
+<span><span class="co">#&gt; 3</span></span>
+<span><span class="va">summary</span><span class="op">$</span><span class="va">nConstraint</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; UUU </span></span>
+<span><span class="co">#&gt;   3</span></span>
+<span><span class="va">summary</span><span class="op">$</span><span class="va">ari</span></span>
+<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<p>If a reference partition is available, pass it as
+<code>trueCluster</code> to calculate the adjusted Rand index.</p>
 </div>
 <div class="section level2">
 <h2 id="work-with-covariance-constraints">Work with covariance constraints<a class="anchor" aria-label="anchor" href="#work-with-covariance-constraints"></a>
@@ -116,7 +168,9 @@ covariance-constraint models.</p>
 constraint vectors.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span></span>
-<span><span class="fu"><a href="../reference/constraint_to_model.html">constraint_to_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0 0 0</span></span>
+<span><span class="fu"><a href="../reference/constraint_to_model.html">constraint_to_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "CUU"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="deprecated-names">Deprecated names<a class="anchor" aria-label="anchor" href="#deprecated-names"></a>
@@ -133,7 +187,24 @@ wrappers, but new code should use <code><a href="../reference/pgmm_rjmcmc.html">
 <p>If you use <code>bpgmm</code> in published work, please cite the
 package and the methodology paper:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"bpgmm"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"bpgmm"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; To cite package 'bpgmm' in publications use:</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   Lu X, Li Y, Love T (2021). On Bayesian Analysis of Parsimonious</span></span>
+<span><span class="co">#&gt;   Gaussian Mixture Models. Journal of Classification, 38, 576-593.</span></span>
+<span><span class="co">#&gt;   doi:10.1007/s00357-021-09391-8</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; A BibTeX entry for LaTeX users is</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt;   @Article{,</span></span>
+<span><span class="co">#&gt;     title = {On Bayesian Analysis of Parsimonious Gaussian Mixture Models},</span></span>
+<span><span class="co">#&gt;     author = {Xiang Lu and Yaoxiang Li and Tanzy Love},</span></span>
+<span><span class="co">#&gt;     journal = {Journal of Classification},</span></span>
+<span><span class="co">#&gt;     year = {2021},</span></span>
+<span><span class="co">#&gt;     volume = {38},</span></span>
+<span><span class="co">#&gt;     pages = {576--593},</span></span>
+<span><span class="co">#&gt;     doi = {10.1007/s00357-021-09391-8},</span></span>
+<span><span class="co">#&gt;   }</span></span></code></pre></div>
 <p>Lu, X., Li, Y., &amp; Love, T. (2021). On Bayesian Analysis of
 Parsimonious Gaussian Mixture Models. <em>Journal of
 Classification</em>, 38, 576-593. <a href="https://doi.org/10.1007/s00357-021-09391-8" class="external-link uri">https://doi.org/10.1007/s00357-021-09391-8</a></p>
