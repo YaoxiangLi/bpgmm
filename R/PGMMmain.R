@@ -1,4 +1,8 @@
-#' bpgmm Model-Based Clustering Using Baysian PGMM Carries out model-based clustering using parsimonious Gaussian mixture models. MCMC are used for parameter estimation. The RJMCMC is used for model selection.
+#' Bayesian Model-Based Clustering with Parsimonious Gaussian Mixture Models
+#'
+#' Carries out model-based clustering using parsimonious Gaussian mixture
+#' models. MCMC is used for parameter estimation and RJMCMC is used for model
+#' selection.
 #'
 #' @import stats MASS mcmcse pgmm label.switching fabMix
 #' @param X the observation matrix with size p * m
@@ -24,7 +28,7 @@ pgmmRJMCMC <- function(X,
                        ggamma = 2,
                        burn = 20,
                        niter = 1000,
-                       constraint = C(0, 0, 0),
+                       constraint = c(0, 0, 0),
                        dVec = c(1, 1, 1),
                        sVec = c(1, 1, 1),
                        Mstep = 0,

@@ -2,7 +2,7 @@
 % Please edit documentation in R/PGMMmain.R
 \name{pgmmRJMCMC}
 \alias{pgmmRJMCMC}
-\title{bpgmm Model-Based Clustering Using Baysian PGMM Carries out model-based clustering using parsimonious Gaussian mixture models. MCMC are used for parameter estimation. The RJMCMC is used for model selection.}
+\title{Bayesian Model-Based Clustering with Parsimonious Gaussian Mixture Models}
 \usage{
 pgmmRJMCMC(
   X,
@@ -13,7 +13,7 @@ pgmmRJMCMC(
   ggamma = 2,
   burn = 20,
   niter = 1000,
-  constraint = C(0, 0, 0),
+  constraint = c(0, 0, 0),
   dVec = c(1, 1, 1),
   sVec = c(1, 1, 1),
   Mstep = 0,
@@ -51,5 +51,7 @@ pgmmRJMCMC(
 \item{SCind}{the indicator of whether use split/combine step in Mstep}
 }
 \description{
-bpgmm Model-Based Clustering Using Baysian PGMM Carries out model-based clustering using parsimonious Gaussian mixture models. MCMC are used for parameter estimation. The RJMCMC is used for model selection.
+Carries out model-based clustering using parsimonious Gaussian mixture
+models. MCMC is used for parameter estimation and RJMCMC is used for model
+selection.
 }

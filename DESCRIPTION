@@ -19,6 +19,9 @@ Authors@R: c(
     person(given = "Yaoxiang", family = "Li",  role = c("aut","cre"),email = "yl814@georgetown.edu"),
     person(given = "Xiang",  family = "Lu",    role = "aut"),
     person(given = "Tanzy",  family = "Love",  role = "aut"))
+Author: Yaoxiang Li [aut, cre],
+    Xiang Lu [aut],
+    Tanzy Love [aut]
 Maintainer: Yaoxiang Li <yl814@georgetown.edu>
 Description: Model-based clustering using Bayesian parsimonious Gaussian mixture models.
   MCMC (Markov chain Monte Carlo) are used for parameter estimation. The RJMCMC (Reversible-jump Markov chain Monte Carlo) is used for model selection. 
