@@ -2,6 +2,11 @@
 
 [![CRAN status](https://www.r-pkg.org/badges/version/bpgmm)](https://cran.r-project.org/package=bpgmm)
 [![CRAN downloads](https://cranlogs.r-pkg.org/badges/grand-total/bpgmm)](https://cran.r-project.org/package=bpgmm)
+[![R-CMD-check](https://github.com/YaoxiangLi/bpgmm/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/YaoxiangLi/bpgmm/actions/workflows/R-CMD-check.yaml)
+[![GitHub release](https://img.shields.io/github/v/release/YaoxiangLi/bpgmm?display_name=tag&sort=semver)](https://github.com/YaoxiangLi/bpgmm/releases)
+[![License: GPL-3](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![DOI](https://img.shields.io/badge/DOI-10.1007%2Fs00357--021--09391--8-blue)](https://doi.org/10.1007/s00357-021-09391-8)
+[![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 
 `bpgmm` implements Bayesian inference for parsimonious Gaussian mixture
 models. It is designed for model-based clustering when the number of clusters,
