@@ -1,6 +1,7 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(cpp11)]]
 #include <RcppArmadillo.h>
+#include <cmath>
 #include "utils.h"
 using namespace Rcpp;
 
@@ -8,10 +9,24 @@ using namespace Rcpp;
 // [[Rcpp::export]]
 arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n){
 
+  if (m < 1) {
+    Rcpp::stop("m must be a positive integer");
+  }
+  if (n < 1) {
+    Rcpp::stop("n must be a positive integer");
+  }
+  if (ZOneDim.n_elem != static_cast<arma::uword>(n)) {
+    Rcpp::stop("length of ZOneDim must equal n");
+  }
+
   arma::mat Zmat = arma::zeros<arma::mat>(m, n);
 
   for (int j = 0; j < n; j++) {
-    Zmat(ZOneDim(j) - 1, j) = 1;
+    double label = ZOneDim(j);
+    if (!std::isfinite(label) || label < 1 || label > m || label != std::floor(label)) {
+      Rcpp::stop("cluster labels must be integers in 1:m");
+    }
+    Zmat(static_cast<arma::uword>(label - 1), j) = 1;
   }
   return(Zmat);
 }
@@ -55,8 +70,6 @@ double calculate_Ratio(double logDeno, arma::vec logNume){
 
   return(ratio);
 }
-
-
 
 
 
