@@ -56,20 +56,31 @@ likelihood <- function(thetaYList, ZOneDim, qqVec, muBar, X) {
   # xvec
 }
 
-#' (internal)
+#' Summarize cluster allocations by posterior mode.
+#'
+#' @param Zlist List of sampled allocation vectors.
+#' @param index Sample indices to include in the posterior mode.
+#'
+#' @return An integer vector of modal cluster allocations.
 #' @noRd
-sumerizeZ <- function(Zlist, index = 1:length(Zlist)) {
+summarizeZ <- function(Zlist, index = seq_along(Zlist)) {
   sampleSize <- length(Zlist[[1]])
-  res <- c()
-  for (i in 1:sampleSize) {
-    temp <- c()
-    for (j in index) {
-      temp[j] <- Zlist[[j]][i]
+  res <- integer(sampleSize)
+
+  for (i in seq_len(sampleSize)) {
+    temp <- integer(length(index))
+    for (j in seq_along(index)) {
+      temp[j] <- Zlist[[index[j]]][i]
     }
     res[i] <- getmode(temp)
   }
-  return(res)
+
+  res
 }
+
+#' (internal)
+#' @noRd
+sumerizeZ <- summarizeZ
 
 
 

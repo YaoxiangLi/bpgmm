@@ -1,11 +1,11 @@
-#' An S4 class to represent a Hyper parameter.
+#' Hyperparameter set for the Bayesian PGMM sampler.
 #'
 #' @import methods
-#' @slot alpha1 A numeric value
-#' @slot alpha2 A numeric value
-#' @slot delta A numeric value
-#' @slot ggamma A numeric value
-#' @slot bbeta A numeric value
+#' @slot alpha1 First Dirichlet prior parameter for component weights.
+#' @slot alpha2 Second Dirichlet prior parameter for component weights.
+#' @slot delta Shape parameter used in prior updates.
+#' @slot ggamma Prior rate parameter used in covariance updates.
+#' @slot bbeta Prior scale parameter used in covariance updates.
 #'
 setClass(
   "Hparam",

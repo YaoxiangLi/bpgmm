@@ -3,21 +3,21 @@
 \docType{class}
 \name{Hparam-class}
 \alias{Hparam-class}
-\title{An S4 class to represent a Hyper parameter.}
+\title{Hyperparameter set for the Bayesian PGMM sampler.}
 \description{
-An S4 class to represent a Hyper parameter.
+Hyperparameter set for the Bayesian PGMM sampler.
 }
 \section{Slots}{
 
 \describe{
-\item{\code{alpha1}}{A numeric value}
+\item{\code{alpha1}}{First Dirichlet prior parameter for component weights.}
 
-\item{\code{alpha2}}{A numeric value}
+\item{\code{alpha2}}{Second Dirichlet prior parameter for component weights.}
 
-\item{\code{delta}}{A numeric value}
+\item{\code{delta}}{Shape parameter used in prior updates.}
 
-\item{\code{ggamma}}{A numeric value}
+\item{\code{ggamma}}{Prior rate parameter used in covariance updates.}
 
-\item{\code{bbeta}}{A numeric value}
+\item{\code{bbeta}}{Prior scale parameter used in covariance updates.}
 }}
 

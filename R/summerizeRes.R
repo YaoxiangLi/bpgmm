@@ -13,7 +13,7 @@
 #' @importFrom mclust adjustedRandIndex
 #' @export
 summarizePgmmRJMCMC <- function(pgmmResList, trueCluster = NULL) {
-  Zalloc <- sumerizeZ(pgmmResList$ZmatList)
+  Zalloc <- summarizeZ(pgmmResList$ZmatList)
 
   nCluster <- table(sapply(pgmmResList$ZmatList, function(x) {
     length(unique(x))

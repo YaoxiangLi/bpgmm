@@ -67,6 +67,15 @@ Here `X` is a numeric matrix with variables in rows and observations in columns.
 Set `Mstep = 1` to allow RJMCMC updates for the number of clusters and
 `Vstep = 1` to allow updates for the variance structure.
 
+The eight covariance structures in the paper are represented by model labels
+such as `"CCC"`, `"CUU"`, and `"UUU"`. The package also accepts the legacy
+three-number constraint encoding:
+
+```r
+model_to_constraint("UUU")
+constraint_to_model(c(1, 0, 0))
+```
+
 ## Paper
 
 The methodology behind this package is described in:

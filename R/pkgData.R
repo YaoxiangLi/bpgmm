@@ -38,4 +38,4 @@
 #   Mstep = Mstep, Vstep = Vstep
 # )
 #
-# summerizePgmmRJMCMC(res, syntheticDataset$class)
+# summarizePgmmRJMCMC(res, syntheticDataset$class)

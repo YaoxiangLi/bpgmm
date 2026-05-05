@@ -24,3 +24,10 @@ test_that("misspelled summary function remains a compatibility alias", {
     summarizePgmmRJMCMC(pgmm_res)
   )
 })
+
+test_that("internal allocation summarizer keeps compatibility alias", {
+  z_samples <- list(c(1, 1, 2), c(1, 2, 2), c(1, 1, 2))
+
+  expect_equal(bpgmm:::summarizeZ(z_samples), c(1, 1, 2))
+  expect_equal(bpgmm:::sumerizeZ(z_samples), bpgmm:::summarizeZ(z_samples))
+})

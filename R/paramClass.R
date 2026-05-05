@@ -1,13 +1,13 @@
 #' @import methods
 #' @name ThetaYList
 #' @title ThetaYList-class
-#' @description Definiton of ThetaYList parameter sets
+#' @description Parameter set for sampled PGMM component parameters.
 #'
-#' @slot tao A numeric vector
-#' @slot psy A list value
-#' @slot M A list value
-#' @slot lambda A list value
-#' @slot Y A list value
+#' @slot tao Numeric vector of component mixing weights.
+#' @slot psy List of diagonal noise covariance matrices.
+#' @slot M List of component mean vectors.
+#' @slot lambda List of component factor loading matrices.
+#' @slot Y List of latent factor score matrices.
 setClass(
   "ThetaYList",
   slots = c(
@@ -38,7 +38,7 @@ setValidity("ThetaYList", function(object) {
 #' #' @name tao
 #' #' @title tao-getter
 #' #' @aliases tao
-#' #' @description Definiton of hyper parameter sets
+#' #' @description Definition of parameter sets
 #' setGeneric("tao", function(x) standardGeneric("tao"))
 #' setMethod("tao", "ThetaYList", function(x) x@tao)
 #' setGeneric("psy", function(x) standardGeneric("psy"))
