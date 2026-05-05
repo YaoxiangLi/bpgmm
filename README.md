@@ -48,10 +48,10 @@ library(bpgmm)
 - fit mixture-of-factor-analyzers models for high-dimensional clustering;
 - use RJMCMC to move across models with different parameter dimensions.
 
-The main user-facing function is `pgmmRJMCMC()`.
+The main user-facing function is `pgmm_rjmcmc()`.
 
 ```r
-fit <- pgmmRJMCMC(
+fit <- pgmm_rjmcmc(
   X = X,
   mInit = 2,
   mVec = c(1, 6),
@@ -66,6 +66,10 @@ fit <- pgmmRJMCMC(
 Here `X` is a numeric matrix with variables in rows and observations in columns.
 Set `Mstep = 1` to allow RJMCMC updates for the number of clusters and
 `Vstep = 1` to allow updates for the variance structure.
+
+The older names `pgmmRJMCMC()`, `summarizePgmmRJMCMC()`, and the misspelled
+`summerizePgmmRJMCMC()` are deprecated compatibility wrappers. They still work,
+but new code should use `pgmm_rjmcmc()` and `summarize_pgmm_rjmcmc()`.
 
 The eight covariance structures in the paper are represented by model labels
 such as `"CCC"`, `"CUU"`, and `"UUU"`. The package also accepts the legacy

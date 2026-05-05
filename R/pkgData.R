@@ -33,9 +33,9 @@
 # mInit <- 20
 # mVec <- c(1, 20)
 #
-# res <- pgmmRJMCMC(X, mInit, mVec, qnew,
+# res <- pgmm_rjmcmc(X, mInit, mVec, qnew,
 #   niter = nsim, burn = burn, constraint = constraint,
 #   Mstep = Mstep, Vstep = Vstep
 # )
 #
-# summarizePgmmRJMCMC(res, syntheticDataset$class)
+# summarize_pgmm_rjmcmc(res, syntheticDataset$class)

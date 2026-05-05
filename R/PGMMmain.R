@@ -33,9 +33,10 @@
 #' @param Vstep indicator for RJMCMC model selection on covariance structures
 #' @param SCind indicator for using split/combine moves in the cluster-number
 #'   RJMCMC step
+#' @name pgmm_rjmcmc
 #' @export
 
-pgmmRJMCMC <- function(X,
+pgmm_rjmcmc <- function(X,
                        mInit,
                        mVec,
                        qnew,
@@ -155,5 +156,40 @@ pgmmRJMCMC <- function(X,
     YList = YList, ZmatList = ZmatList, constraintList = constraintList,
     alpha1Vec = alpha1Vec, alpha2Vec = alpha2Vec, bbetaVec = bbetaVec,
     clusIndList = clusIndList
+  )
+}
+
+#' @rdname pgmm_rjmcmc
+#' @export
+pgmmRJMCMC <- function(X,
+                       mInit,
+                       mVec,
+                       qnew,
+                       delta = 2,
+                       ggamma = 2,
+                       burn = 20,
+                       niter = 1000,
+                       constraint = c(0, 0, 0),
+                       dVec = c(1, 1, 1),
+                       sVec = c(1, 1, 1),
+                       Mstep = 0,
+                       Vstep = 0,
+                       SCind = 0) {
+  .Deprecated("pgmm_rjmcmc")
+  pgmm_rjmcmc(
+    X = X,
+    mInit = mInit,
+    mVec = mVec,
+    qnew = qnew,
+    delta = delta,
+    ggamma = ggamma,
+    burn = burn,
+    niter = niter,
+    constraint = constraint,
+    dVec = dVec,
+    sVec = sVec,
+    Mstep = Mstep,
+    Vstep = Vstep,
+    SCind = SCind
   )
 }
