@@ -1,17 +1,25 @@
-#' summerizePgmmRJMCMC
+#' Summarize RJMCMC Samples from a Bayesian PGMM Fit
 #'
-#' @param pgmmResList result list from pgmmRJMCMC
-#' @param trueCluster true cluster allocation
+#' Summarizes posterior samples from [pgmmRJMCMC()] into the modal allocation,
+#' posterior counts for the number of clusters, posterior counts for the eight
+#' PGMM covariance-constraint models, and optionally the adjusted Rand index
+#' against a known reference partition.
+#'
+#' @param pgmmResList Result list from [pgmmRJMCMC()].
+#' @param trueCluster Optional true or reference cluster allocation.
+#'
+#' @return A list with `Zalloc`, `nCluster`, `nConstraint`, and optionally
+#'   `ari`.
 #' @importFrom mclust adjustedRandIndex
-#'
-summerizePgmmRJMCMC <- function(pgmmResList, trueCluster = NULL) {
-  Zalloc <- sumerizeZ(res$ZmatList)
+#' @export
+summarizePgmmRJMCMC <- function(pgmmResList, trueCluster = NULL) {
+  Zalloc <- sumerizeZ(pgmmResList$ZmatList)
 
-  nCluster <- table(sapply(res$ZmatList, function(x) {
+  nCluster <- table(sapply(pgmmResList$ZmatList, function(x) {
     length(unique(x))
   }))
 
-  nConstraint <- res$constraintList
+  nConstraint <- pgmmResList$constraintList
   nConstraint <- listToStrVec(nConstraint)
   nConstraint <- table(nConstraint, dnn = "")
 
@@ -25,4 +33,10 @@ summerizePgmmRJMCMC <- function(pgmmResList, trueCluster = NULL) {
   }
 
   sumRes
+}
+
+#' @rdname summarizePgmmRJMCMC
+#' @export
+summerizePgmmRJMCMC <- function(pgmmResList, trueCluster = NULL) {
+  summarizePgmmRJMCMC(pgmmResList, trueCluster)
 }

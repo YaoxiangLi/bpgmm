@@ -28,30 +28,45 @@ pgmmRJMCMC(
 
 \item{mVec}{the range of the number of clusters}
 
-\item{qnew}{the number of factor for a new cluster}
+\item{qnew}{the number of latent factors for a new cluster}
 
-\item{delta}{scaler hyperparameters}
+\item{delta}{scalar hyperparameter for the noise covariance prior}
 
-\item{ggamma}{scaler hyperparameters}
+\item{ggamma}{scalar hyperparameter used in covariance-structure proposals}
 
-\item{burn}{the number of burn in iterations}
+\item{burn}{the number of burn-in iterations}
 
-\item{niter}{the number of iterations}
+\item{niter}{the number of posterior sampling iterations}
 
-\item{constraint}{the pgmm initial constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model}
+\item{constraint}{initial PGMM covariance constraint, a numeric vector of
+length three with binary entries. For example, `c(1, 1, 1)` is `CCC`, the
+fully constrained model, and `c(0, 0, 0)` is `UUU`, the fully unconstrained
+model.}
 
-\item{dVec}{a vector of hyperparameters with length three, shape parameters for alpha1, alpha2 and bbeta respectively}
+\item{dVec}{a vector of hyperparameters with length three, shape parameters
+for alpha1, alpha2 and bbeta respectively}
 
-\item{sVec}{sVec a vector of hyperparameters with length three, rate parameters for alpha1, alpha2 and bbeta respectively}
+\item{sVec}{a vector of hyperparameters with length three, rate parameters
+for alpha1, alpha2 and bbeta respectively}
 
-\item{Mstep}{the indicator of whether do model selection on the number of clusters}
+\item{Mstep}{indicator for RJMCMC model selection on the number of clusters}
 
-\item{Vstep}{the indicator of whether do model selection on variance structures}
+\item{Vstep}{indicator for RJMCMC model selection on covariance structures}
 
-\item{SCind}{the indicator of whether use split/combine step in Mstep}
+\item{SCind}{indicator for using split/combine moves in the cluster-number
+RJMCMC step}
 }
 \description{
 Carries out model-based clustering using parsimonious Gaussian mixture
 models. MCMC is used for parameter estimation and RJMCMC is used for model
 selection.
+}
+\details{
+The `constraint` argument follows the three-letter PGMM model notation used
+in Lu, Li, and Love (2021). The first entry indicates whether loading
+matrices are shared across clusters, the second whether noise covariance
+matrices are shared across clusters, and the third whether the noise
+covariance is isotropic within each cluster. Use [model_to_constraint()] to
+convert model names such as `CCC`, `CCU`, `CUC`, `CUU`, `UCC`, `UCU`, `UUC`,
+and `UUU` into the numeric vector used internally.
 }

@@ -23,11 +23,7 @@ calculateRatio <- function(deno, nume) {
 #' (internal)
 #' @noRd
 listToStrVec <- function(stringList) {
-  for (i in 1:length(stringList)) {
-    stringList[[i]] <-
-      paste0("(", paste0(stringList[[i]], collapse = ""), ")")
-  }
-  unlist(stringList)
+  vapply(stringList, constraint_to_model, character(1))
 }
 
 
@@ -170,10 +166,6 @@ getRemovedIndThetaY <- function(thetaYList, Ind) {
 #' (internal)
 #' @noRd
 changeConstraintFormat <- function(strNum) {
-  res <- ""
-  res <- gsub(pattern = "0", replacement = "U", x = strNum)
-  res <- gsub(pattern = "1", replacement = "C", x = res)
-  res <- gsub(pattern = "\\(", replacement = "", x = res)
-  res <- gsub(pattern = "\\)", replacement = "", x = res)
-  return(res)
+  digits <- regmatches(strNum, gregexpr("[01]", strNum))[[1]]
+  constraint_to_model(as.integer(digits))
 }

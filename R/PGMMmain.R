@@ -4,21 +4,36 @@
 #' models. MCMC is used for parameter estimation and RJMCMC is used for model
 #' selection.
 #'
+#' The `constraint` argument follows the three-letter PGMM model notation used
+#' in Lu, Li, and Love (2021). The first entry indicates whether loading
+#' matrices are shared across clusters, the second whether noise covariance
+#' matrices are shared across clusters, and the third whether the noise
+#' covariance is isotropic within each cluster. Use [model_to_constraint()] to
+#' convert model names such as `CCC`, `CCU`, `CUC`, `CUU`, `UCC`, `UCU`, `UUC`,
+#' and `UUU` into the numeric vector used internally.
+#'
 #' @import stats MASS mcmcse pgmm label.switching fabMix
 #' @param X the observation matrix with size p * m
 #' @param mInit the number of initial clusters
 #' @param mVec the range of the number of clusters
-#' @param qnew the number of factor for a new cluster
-#' @param delta scaler hyperparameters
-#' @param ggamma scaler hyperparameters
-#' @param burn the number of burn in iterations
-#' @param niter the number of iterations
-#' @param constraint the pgmm initial constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model
-#' @param dVec a vector of hyperparameters with length three, shape parameters for alpha1, alpha2 and bbeta respectively
-#' @param sVec sVec a vector of hyperparameters with length three, rate parameters for alpha1, alpha2 and bbeta respectively
-#' @param Mstep the indicator of whether do model selection on the number of clusters
-#' @param Vstep the indicator of whether do model selection on variance structures
-#' @param SCind the indicator of whether use split/combine step in Mstep
+#' @param qnew the number of latent factors for a new cluster
+#' @param delta scalar hyperparameter for the noise covariance prior
+#' @param ggamma scalar hyperparameter used in covariance-structure proposals
+#' @param burn the number of burn-in iterations
+#' @param niter the number of posterior sampling iterations
+#' @param constraint initial PGMM covariance constraint, a numeric vector of
+#'   length three with binary entries. For example, `c(1, 1, 1)` is `CCC`, the
+#'   fully constrained model, and `c(0, 0, 0)` is `UUU`, the fully unconstrained
+#'   model.
+#' @param dVec a vector of hyperparameters with length three, shape parameters
+#'   for alpha1, alpha2 and bbeta respectively
+#' @param sVec a vector of hyperparameters with length three, rate parameters
+#'   for alpha1, alpha2 and bbeta respectively
+#' @param Mstep indicator for RJMCMC model selection on the number of clusters
+#' @param Vstep indicator for RJMCMC model selection on covariance structures
+#' @param SCind indicator for using split/combine moves in the cluster-number
+#'   RJMCMC step
+#' @export
 
 pgmmRJMCMC <- function(X,
                        mInit,
