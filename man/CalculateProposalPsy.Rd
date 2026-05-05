@@ -21,9 +21,6 @@ CalculateProposalPsy(hparam, thetaYList, CxyList, constraint, m, p, qVec)
 
 \item{qVec}{the vector of the number of factors in each clusters}
 }
-\value{
-calculated psy for proposal function
-}
 \description{
 CalculateProposalPsy
 }

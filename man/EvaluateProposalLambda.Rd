@@ -4,8 +4,16 @@
 \alias{EvaluateProposalLambda}
 \title{EvaluateProposalLambda}
 \usage{
-EvaluateProposalLambda(hparam, thetaYList, CxyList, constraint, newlambda,
-  m, qVec, p)
+EvaluateProposalLambda(
+  hparam,
+  thetaYList,
+  CxyList,
+  constraint,
+  newlambda,
+  m,
+  qVec,
+  p
+)
 }
 \arguments{
 \item{hparam}{hparam}
@@ -23,9 +31,6 @@ EvaluateProposalLambda(hparam, thetaYList, CxyList, constraint, newlambda,
 \item{qVec}{the vector of the number of factors in each clusters}
 
 \item{p}{the number of features}
-}
-\value{
-density value from evaluating lambda
 }
 \description{
 EvaluateProposalLambda
