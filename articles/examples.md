@@ -13,7 +13,7 @@ columns. The code below creates two compact clusters in two dimensions.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -28,6 +28,30 @@ dim(X)
 known_labels
 #> [1] 1 1 1 1 2 2 2 2
 ```
+
+``` r
+
+cluster_cols <- c("#0072B2", "#D55E00", "#009E73")
+plot(
+  X[1, ], X[2, ],
+  col = cluster_cols[known_labels],
+  pch = 19,
+  xlab = "Variable 1",
+  ylab = "Variable 2",
+  main = "Simulated data",
+  asp = 1
+)
+legend(
+  "topleft",
+  legend = paste("Known", sort(unique(known_labels))),
+  col = cluster_cols[sort(unique(known_labels))],
+  pch = 19,
+  bty = "n"
+)
+```
+
+![Scatter plot of simulated observations colored by known
+cluster.](examples_files/figure-html/unnamed-chunk-3-1.png)
 
 ## Choose a covariance model
 
@@ -114,6 +138,71 @@ fit_summary$n_constraints
 #>   3
 fit_summary$ari
 #> [1] 1
+```
+
+``` r
+
+old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
+plot(
+  X[1, ], X[2, ],
+  col = cluster_cols[known_labels],
+  pch = 19,
+  xlab = "Variable 1",
+  ylab = "Variable 2",
+  main = "Known labels",
+  asp = 1
+)
+plot(
+  X[1, ], X[2, ],
+  col = cluster_cols[fit_summary$allocation],
+  pch = 19,
+  xlab = "Variable 1",
+  ylab = "Variable 2",
+  main = "Posterior allocation",
+  asp = 1
+)
+```
+
+![Two-panel plot comparing known labels and posterior
+allocation.](examples_files/figure-html/unnamed-chunk-8-1.png)
+
+``` r
+
+par(old_par)
+```
+
+The posterior samples also give simple model-selection summaries. In
+this tiny chain the settings fix the number of clusters and covariance
+model, but the same code becomes more informative when `m_step = 1` and
+`v_step = 1`.
+
+``` r
+
+old_par <- par(mfrow = c(1, 2), mar = c(5, 4, 3, 1))
+barplot(
+  fit_summary$n_clusters,
+  col = "#56B4E9",
+  border = NA,
+  xlab = "Number of clusters",
+  ylab = "Posterior sample count",
+  main = "Cluster count"
+)
+barplot(
+  fit_summary$n_constraints,
+  col = "#E69F00",
+  border = NA,
+  xlab = "PGMM model",
+  ylab = "Posterior sample count",
+  main = "Covariance model"
+)
+```
+
+![Posterior bar plots for cluster count and covariance
+model.](examples_files/figure-html/unnamed-chunk-9-1.png)
+
+``` r
+
+par(old_par)
 ```
 
 ## Scale the example to real data

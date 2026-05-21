@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -102,6 +102,56 @@ the cluster-specific covariance is</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Σ</mi><mi>k</mi></msub><mo>=</mo><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mi>⊤</mi></msubsup><mo>+</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
 \Sigma_k = \Lambda_k \Lambda_k^\top + \Psi_k.
 </annotation></semantics></math></p>
+<p>The plot below shows the geometric role of this covariance. The
+loading matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Lambda_k</annotation></semantics></math>
+controls the dominant low-dimensional direction, while
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Psi_k</annotation></semantics></math>
+adds cluster-specific noise around that subspace.</p>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">ellipse_points</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">center</span>, <span class="va">sigma</span>, <span class="va">level</span> <span class="op">=</span> <span class="fl">0.90</span>, <span class="va">n</span> <span class="op">=</span> <span class="fl">120</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">eig</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/eigen.html" class="external-link">eigen</a></span><span class="op">(</span><span class="va">sigma</span>, symmetric <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span>  <span class="va">angles</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">2</span> <span class="op">*</span> <span class="va">pi</span>, length.out <span class="op">=</span> <span class="va">n</span><span class="op">)</span></span>
+<span>  <span class="va">circle</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">cos</a></span><span class="op">(</span><span class="va">angles</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/Trig.html" class="external-link">sin</a></span><span class="op">(</span><span class="va">angles</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">radius</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Chisquare.html" class="external-link">qchisq</a></span><span class="op">(</span><span class="va">level</span>, df <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span></span>
+<span>  <span class="va">points</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">center</span> <span class="op">+</span> <span class="va">radius</span> <span class="op">*</span> <span class="va">eig</span><span class="op">$</span><span class="va">vectors</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="va">eig</span><span class="op">$</span><span class="va">values</span><span class="op">)</span>, <span class="fl">2</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">circle</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">points</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"x"</span>, <span class="st">"y"</span><span class="op">)</span></span>
+<span>  <span class="va">points</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="va">lambda_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.1</span>, <span class="fl">0.4</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">lambda_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">1.0</span><span class="op">)</span>, ncol <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">psi_1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.20</span>, <span class="fl">0.08</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">psi_2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.10</span>, <span class="fl">0.25</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">sigma_1</span> <span class="op">&lt;-</span> <span class="va">lambda_1</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">lambda_1</span><span class="op">)</span> <span class="op">+</span> <span class="va">psi_1</span></span>
+<span><span class="va">sigma_2</span> <span class="op">&lt;-</span> <span class="va">lambda_2</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">lambda_2</span><span class="op">)</span> <span class="op">+</span> <span class="va">psi_2</span></span>
+<span></span>
+<span><span class="va">ell_1</span> <span class="op">&lt;-</span> <span class="fu">ellipse_points</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.2</span>, <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span>, <span class="va">sigma_1</span><span class="op">)</span></span>
+<span><span class="va">ell_2</span> <span class="op">&lt;-</span> <span class="fu">ellipse_points</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.1</span>, <span class="fl">0.6</span><span class="op">)</span>, <span class="va">sigma_2</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">ell_1</span>,</span>
+<span>  type <span class="op">=</span> <span class="st">"l"</span>,</span>
+<span>  lwd <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  col <span class="op">=</span> <span class="st">"#0072B2"</span>,</span>
+<span>  xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3.5</span>, <span class="fl">3.5</span><span class="op">)</span>,</span>
+<span>  ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.5</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">"Variable 1"</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">"Variable 2"</span>,</span>
+<span>  main <span class="op">=</span> <span class="st">"Mixture-of-factor-analyzers covariance"</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/lines.html" class="external-link">lines</a></span><span class="op">(</span><span class="va">ell_2</span>, lwd <span class="op">=</span> <span class="fl">2</span>, col <span class="op">=</span> <span class="st">"#D55E00"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/points.html" class="external-link">points</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.2</span>, <span class="op">-</span><span class="fl">0.5</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.1</span>, <span class="fl">0.6</span><span class="op">)</span><span class="op">)</span>, pch <span class="op">=</span> <span class="fl">19</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/arrows.html" class="external-link">arrows</a></span><span class="op">(</span><span class="op">-</span><span class="fl">1.2</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="op">-</span><span class="fl">1.2</span> <span class="op">+</span> <span class="va">lambda_1</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="op">-</span><span class="fl">0.5</span> <span class="op">+</span> <span class="va">lambda_1</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, col <span class="op">=</span> <span class="st">"#0072B2"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, length <span class="op">=</span> <span class="fl">0.08</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/arrows.html" class="external-link">arrows</a></span><span class="op">(</span><span class="fl">1.1</span>, <span class="fl">0.6</span>, <span class="fl">1.1</span> <span class="op">+</span> <span class="va">lambda_2</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span>, <span class="fl">0.6</span> <span class="op">+</span> <span class="va">lambda_2</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span>, col <span class="op">=</span> <span class="st">"#D55E00"</span>, lwd <span class="op">=</span> <span class="fl">2</span>, length <span class="op">=</span> <span class="fl">0.08</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span></span>
+<span>  <span class="st">"topleft"</span>,</span>
+<span>  legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Cluster 1 covariance"</span>, <span class="st">"Cluster 2 covariance"</span>, <span class="st">"Loading direction"</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span>, <span class="st">"gray30"</span><span class="op">)</span>,</span>
+<span>  lwd <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">2</span>, <span class="fl">2</span><span class="op">)</span>,</span>
+<span>  bty <span class="op">=</span> <span class="st">"n"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="model-and-sampler_files/figure-html/unnamed-chunk-2-1.png" class="r-plt" alt="Two covariance ellipses illustrating cluster-specific covariance matrices." width="528"></p>
 <p>The mixture density is</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>f</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></munderover><msub><mi>τ</mi><mi>k</mi></msub><mi>N</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>μ</mi><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mi>⊤</mi></msubsup><mo>+</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
 f(x_i) = \sum_{k = 1}^m \tau_k
@@ -179,9 +229,9 @@ for unconstrained.</p>
 </tbody>
 </table>
 <p>The eight PGMM models are:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.2.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.2.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CCC"</span>, <span class="st">"CCU"</span>, <span class="st">"CUC"</span>, <span class="st">"CUU"</span>, <span class="st">"UCC"</span>, <span class="st">"UCU"</span>, <span class="st">"UUC"</span>, <span class="st">"UUU"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -203,7 +253,7 @@ for unconstrained.</p>
 <span><span class="co">#&gt; UUU   UUU      0,0,0</span></span></code></pre></div>
 <p>The package uses the numeric encoding internally: <code>1</code>
 means constrained and <code>0</code> means unconstrained.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0 0 0</span></span>
 <span><span class="fu"><a href="../reference/constraint_to_model.html">constraint_to_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
@@ -336,7 +386,7 @@ is isotropic or diagonal.</li>
 <p>The following example is deliberately small so the vignette can run
 quickly. For real analyses, increase <code>burn</code> and
 <code>niter</code>.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
@@ -372,7 +422,7 @@ quickly. For real analyses, increase <code>burn</code> and
 <p>The examples above keep <code>m_step = 0</code> and
 <code>v_step = 0</code> to make the vignette fast. A full
 model-selection run uses the same interface:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">your_data_matrix</span>,</span>
 <span>  m_init <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -435,7 +485,7 @@ used fields are:</p>
 </tbody>
 </table>
 <p>Use <code><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc()</a></code> for posterior summaries:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "tau_samples"            "psi_samples"           </span></span>
 <span><span class="co">#&gt;  [3] "mean_samples"           "lambda_samples"        </span></span>
@@ -454,7 +504,7 @@ used fields are:</p>
 Parsimonious Gaussian Mixture Models. <em>Journal of
 Classification</em>, 38, 576-593. <a href="https://doi.org/10.1007/s00357-021-09391-8" class="external-link uri">https://doi.org/10.1007/s00357-021-09391-8</a></p>
 <p>In R:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"bpgmm"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'bpgmm' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>

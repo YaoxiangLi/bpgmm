@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,7 @@ quickly; use larger <code>burn</code> and <code>niter</code> values for
 real analysis.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.2.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.2.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span></span>
@@ -95,9 +95,30 @@ real analysis.</p>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">8</span>, mean <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">8</span>, mean <span class="op">=</span> <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
-<span><span class="va">known_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">fit_log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span><span class="op">{</span></span>
+<span><span class="va">known_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
+<p>The example is easiest to check visually. Each point is one
+observation, and the colors show the reference labels used later for the
+ARI calculation.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">X</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, <span class="va">X</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span><span class="op">)</span><span class="op">[</span><span class="va">known_labels</span><span class="op">]</span>,</span>
+<span>  pch <span class="op">=</span> <span class="fl">19</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">"Variable 1"</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">"Variable 2"</span>,</span>
+<span>  main <span class="op">=</span> <span class="st">"Small two-cluster example"</span>,</span>
+<span>  asp <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span></span>
+<span>  <span class="st">"topleft"</span>,</span>
+<span>  legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Reference"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">known_labels</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span><span class="op">)</span>,</span>
+<span>  pch <span class="op">=</span> <span class="fl">19</span>,</span>
+<span>  bty <span class="op">=</span> <span class="st">"n"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="getting-started_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="Scatter plot of the small two-cluster example." width="528"></p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit_log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>    X <span class="op">=</span> <span class="va">X</span>,</span>
 <span>    m_init <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -133,7 +154,7 @@ clusters.</li>
 covariance-constraint models.</li>
 </ul>
 <p>A longer run for applied work might look like this:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">methylation_matrix</span>,</span>
 <span>  m_init <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -149,7 +170,7 @@ covariance-constraint models.</li>
 <div class="section level2">
 <h2 id="summarize-posterior-samples">Summarize posterior samples<a class="anchor" aria-label="anchor" href="#summarize-posterior-samples"></a>
 </h2>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, true_cluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">summary</span><span class="op">$</span><span class="va">allocation</span></span>
@@ -166,6 +187,28 @@ covariance-constraint models.</li>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>If a reference partition is available, pass it as
 <code>true_cluster</code> to calculate the adjusted Rand index.</p>
+<p>The summary allocation can be plotted back on the original
+coordinates. This is a useful first diagnostic before moving on to
+longer chains and convergence checks.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
+<span>  <span class="va">X</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, <span class="va">X</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#009E73"</span>, <span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span><span class="op">)</span><span class="op">[</span><span class="va">summary</span><span class="op">$</span><span class="va">allocation</span><span class="op">]</span>,</span>
+<span>  pch <span class="op">=</span> <span class="fl">19</span>,</span>
+<span>  xlab <span class="op">=</span> <span class="st">"Variable 1"</span>,</span>
+<span>  ylab <span class="op">=</span> <span class="st">"Variable 2"</span>,</span>
+<span>  main <span class="op">=</span> <span class="st">"Posterior modal allocation"</span>,</span>
+<span>  asp <span class="op">=</span> <span class="fl">1</span></span>
+<span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/text.html" class="external-link">text</a></span><span class="op">(</span><span class="va">X</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, <span class="va">X</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">summary</span><span class="op">$</span><span class="va">allocation</span><span class="op">)</span>, pos <span class="op">=</span> <span class="fl">3</span>, cex <span class="op">=</span> <span class="fl">0.75</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/legend.html" class="external-link">legend</a></span><span class="op">(</span></span>
+<span>  <span class="st">"topleft"</span>,</span>
+<span>  legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Cluster"</span>, <span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">summary</span><span class="op">$</span><span class="va">allocation</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#009E73"</span>, <span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/sort.html" class="external-link">sort</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unique.html" class="external-link">unique</a></span><span class="op">(</span><span class="va">summary</span><span class="op">$</span><span class="va">allocation</span><span class="op">)</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>  pch <span class="op">=</span> <span class="fl">19</span>,</span>
+<span>  bty <span class="op">=</span> <span class="st">"n"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><img src="getting-started_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="Scatter plot colored by posterior modal allocation." width="528"></p>
 </div>
 <div class="section level2">
 <h2 id="work-with-covariance-constraints">Work with covariance constraints<a class="anchor" aria-label="anchor" href="#work-with-covariance-constraints"></a>
@@ -175,7 +218,7 @@ covariance-constraint models.</li>
 <code>UCC</code>, <code>UCU</code>, <code>UUC</code>, and
 <code>UUU</code>. The package stores these internally as three-number
 constraint vectors.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 0 0 0</span></span>
 <span><span class="fu"><a href="../reference/constraint_to_model.html">constraint_to_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
@@ -195,7 +238,7 @@ as <code>m_init</code>, <code>m_range</code>, and
 </h2>
 <p>If you use <code>bpgmm</code> in published work, please cite the
 package and the methodology paper:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"bpgmm"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'bpgmm' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>

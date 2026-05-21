@@ -19,7 +19,7 @@ quickly; use larger `burn` and `niter` values for real analysis.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -28,6 +28,36 @@ X <- cbind(
   matrix(rnorm(8, mean = 2, sd = 0.2), nrow = 2)
 )
 known_labels <- rep(1:2, each = 4)
+```
+
+The example is easiest to check visually. Each point is one observation,
+and the colors show the reference labels used later for the ARI
+calculation.
+
+``` r
+
+plot(
+  X[1, ], X[2, ],
+  col = c("#0072B2", "#D55E00")[known_labels],
+  pch = 19,
+  xlab = "Variable 1",
+  ylab = "Variable 2",
+  main = "Small two-cluster example",
+  asp = 1
+)
+legend(
+  "topleft",
+  legend = paste("Reference", sort(unique(known_labels))),
+  col = c("#0072B2", "#D55E00"),
+  pch = 19,
+  bty = "n"
+)
+```
+
+![Scatter plot of the small two-cluster
+example.](getting-started_files/figure-html/unnamed-chunk-3-1.png)
+
+``` r
 
 fit_log <- capture.output({
   fit <- pgmm_rjmcmc(
@@ -96,6 +126,34 @@ summary$ari
 
 If a reference partition is available, pass it as `true_cluster` to
 calculate the adjusted Rand index.
+
+The summary allocation can be plotted back on the original coordinates.
+This is a useful first diagnostic before moving on to longer chains and
+convergence checks.
+
+``` r
+
+plot(
+  X[1, ], X[2, ],
+  col = c("#009E73", "#CC79A7", "#E69F00")[summary$allocation],
+  pch = 19,
+  xlab = "Variable 1",
+  ylab = "Variable 2",
+  main = "Posterior modal allocation",
+  asp = 1
+)
+text(X[1, ], X[2, ], labels = seq_along(summary$allocation), pos = 3, cex = 0.75)
+legend(
+  "topleft",
+  legend = paste("Cluster", sort(unique(summary$allocation))),
+  col = c("#009E73", "#CC79A7", "#E69F00")[sort(unique(summary$allocation))],
+  pch = 19,
+  bty = "n"
+)
+```
+
+![Scatter plot colored by posterior modal
+allocation.](getting-started_files/figure-html/unnamed-chunk-7-1.png)
 
 ## Work with covariance constraints
 
