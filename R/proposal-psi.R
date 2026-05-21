@@ -1,4 +1,4 @@
-#' CalculateProposalPsy
+#' calculate_proposal_psi
 #'
 #' @param hparam hparam
 #' @param thetaYList thetaYList
@@ -8,7 +8,8 @@
 #' @param qVec the vector of the number of factors in each clusters
 #' @param p the number of features
 #'
-CalculateProposalPsy <- function(hparam, thetaYList, CxyList, constraint, m, p, qVec) {
+#' @noRd
+calculate_proposal_psi <- function(hparam, thetaYList, CxyList, constraint, m, p, qVec) {
   alpha1 <- hparam@alpha1
   alpha2 <- hparam@alpha2
   bbeta <- hparam@bbeta
@@ -215,7 +216,8 @@ CalculateProposalPsy <- function(hparam, thetaYList, CxyList, constraint, m, p, 
 
 #' (internal)
 #' @noRd
-EvaluateProposalPsy <- function(hparam, thetaYList, CxyList, constraint, newpsy, m, p, qVec, delta) {
+#' @noRd
+evaluate_proposal_psi <- function(hparam, thetaYList, CxyList, constraint, newpsy, m, p, qVec, delta) {
   alpha1 <- hparam@alpha1
   alpha2 <- hparam@alpha2
   bbeta <- hparam@bbeta

@@ -1,6 +1,7 @@
 #' (internal)
 #' @noRd
-getZmat <- function(ZOneDim, m, n) {
+#' @noRd
+get_z_mat_r <- function(ZOneDim, m, n) {
   Zmat <- matrix(NA, m, n)
   for (i in 1:m) {
     Zmat[i, ] <- as.numeric(ZOneDim == i)
@@ -10,7 +11,8 @@ getZmat <- function(ZOneDim, m, n) {
 
 #' (internal)
 #' @noRd
-calculateRatio <- function(deno, nume) {
+#' @noRd
+calculate_ratio <- function(deno, nume) {
   ## deno nume both in log scale
   maxNume <- max(nume)
   transDeno <- deno - maxNume
@@ -22,13 +24,15 @@ calculateRatio <- function(deno, nume) {
 
 #' (internal)
 #' @noRd
-listToStrVec <- function(stringList) {
+#' @noRd
+constraint_list_to_models <- function(stringList) {
   vapply(stringList, constraint_to_model, character(1))
 }
 
 
 
 #' (internal)
+#' @noRd
 #' @noRd
 likelihood <- function(thetaYList, ZOneDim, qqVec, muBar, X) {
   m <- length(qqVec)
@@ -63,7 +67,8 @@ likelihood <- function(thetaYList, ZOneDim, qqVec, muBar, X) {
 #'
 #' @return An integer vector of modal cluster allocations.
 #' @noRd
-summarizeZ <- function(Zlist, index = seq_along(Zlist)) {
+#' @noRd
+summarize_allocations <- function(Zlist, index = seq_along(Zlist)) {
   sampleSize <- length(Zlist[[1]])
   res <- integer(sampleSize)
 
@@ -72,7 +77,7 @@ summarizeZ <- function(Zlist, index = seq_along(Zlist)) {
     for (j in seq_along(index)) {
       temp[j] <- Zlist[[index[j]]][i]
     }
-    res[i] <- getmode(temp)
+    res[i] <- get_mode(temp)
   }
 
   res
@@ -80,13 +85,14 @@ summarizeZ <- function(Zlist, index = seq_along(Zlist)) {
 
 #' (internal)
 #' @noRd
-sumerizeZ <- summarizeZ
+summarize_allocations_legacy <- summarize_allocations
 
 
 
 #' (internal)
 #' @noRd
-getmode <- function(v) {
+#' @noRd
+get_mode <- function(v) {
   v <- v[!is.na(v)]
   uniqv <- unique(v)
   uniqv[which.max(tabulate(match(v, uniqv)))]
@@ -95,7 +101,8 @@ getmode <- function(v) {
 
 #' (internal)
 #' @noRd
-calculateVarList <- function(psyList, lambdaList) {
+#' @noRd
+calculate_covariance_list <- function(psyList, lambdaList) {
   m <- length(psyList)
   varList <- list()
   for (i in 1:m) {
@@ -107,10 +114,11 @@ calculateVarList <- function(psyList, lambdaList) {
 
 #' (internal)
 #' @noRd
-updateY <- function(X, thetaYList, ZOneDim, clusInd, qVec) {
+#' @noRd
+update_latent_scores <- function(X, thetaYList, ZOneDim, clusInd, qVec) {
   n <- ncol(X)
   active <- which(clusInd == 1)
-  Zmat <- getZmat(ZOneDim, length(qVec), n)
+  Zmat <- get_z_mat_r(ZOneDim, length(qVec), n)
   Y <- thetaYList@Y
 
   for (k in active) {
@@ -140,7 +148,8 @@ updateY <- function(X, thetaYList, ZOneDim, clusInd, qVec) {
 
 #' (internal)
 #' @noRd
-clearCurrentThetaYlist <- function(thetaYList, clusInd, mMax) {
+#' @noRd
+clear_inactive_components <- function(thetaYList, clusInd, mMax) {
   resThetaYList <- thetaYList
 
   for (i in 1:mMax) {
@@ -164,7 +173,8 @@ clearCurrentThetaYlist <- function(thetaYList, clusInd, mMax) {
 
 #' (internal)
 #' @noRd
-combineClusterPara <- function(oldList, newList, ind) {
+#' @noRd
+combine_cluster_parameters <- function(oldList, newList, ind) {
   resList <- oldList
   resList@tao <- oldList@tao * (1 - newList@tao)
   resList@tao[ind] <- newList@tao
@@ -181,7 +191,8 @@ combineClusterPara <- function(oldList, newList, ind) {
 
 #' (internal)
 #' @noRd
-getIndThetaY <- function(thetaYList, Ind) {
+#' @noRd
+subset_theta_y <- function(thetaYList, Ind) {
   new("ThetaYList",
     tao = thetaYList@tao[Ind],
     psy = thetaYList@psy[Ind],
@@ -193,7 +204,8 @@ getIndThetaY <- function(thetaYList, Ind) {
 
 #' (internal)
 #' @noRd
-getRemovedIndThetaY <- function(thetaYList, Ind) {
+#' @noRd
+remove_theta_y_component <- function(thetaYList, Ind) {
   res <- thetaYList
 
   res@tao[Ind] <- NA
@@ -208,7 +220,8 @@ getRemovedIndThetaY <- function(thetaYList, Ind) {
 
 #' (internal)
 #' @noRd
-changeConstraintFormat <- function(strNum) {
+#' @noRd
+change_constraint_format <- function(strNum) {
   digits <- regmatches(strNum, gregexpr("[01]", strNum))[[1]]
   constraint_to_model(as.integer(digits))
 }

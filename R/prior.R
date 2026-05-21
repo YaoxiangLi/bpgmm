@@ -11,7 +11,8 @@
 #' @param qVec the vector of the number of factors in each clusters
 #' @param ZOneDim ZOneDim
 #' @param constraint constraint
-generatePriorThetaY <- function(m,
+#' @noRd
+generate_prior_theta_y <- function(m,
                                 n,
                                 p,
                                 muBar,
@@ -33,7 +34,7 @@ generatePriorThetaY <- function(m,
   }
 
   # prior psy
-  psy <- generatePriorPsi(p, m, delta, bbeta, constraint)
+  psy <- generate_prior_psi(p, m, delta, bbeta, constraint)
 
   # prior M
   M <- list()
@@ -42,11 +43,11 @@ generatePriorThetaY <- function(m,
   }
 
   # prior lambda
-  lambda <- generatePriorLambda(p, m, alpha2, qVec, psy, constraint)
+  lambda <- generate_prior_lambda(p, m, alpha2, qVec, psy, constraint)
 
 
-  # Zmat = getZmat(ZOneDim, m, n)
-  Zmat <- get_Z_mat(ZOneDim, m, n)
+  # Zmat = get_z_mat_r(ZOneDim, m, n)
+  Zmat <- get_z_mat_cpp(ZOneDim, m, n)
 
   # post Y
   Y <- list()
@@ -68,7 +69,8 @@ generatePriorThetaY <- function(m,
 
 #' (internal)
 #' @noRd
-evaluatePrior <- function(m,
+#' @noRd
+evaluate_prior <- function(m,
                           p,
                           muBar,
                           hparam,
@@ -117,13 +119,13 @@ evaluatePrior <- function(m,
   }
 
   ## 2.8: lambda
-  lambdaVal <- evaluatePriorLambda(
+  lambdaVal <- evaluate_prior_lambda(
     p, m, alpha2, qVec, thetaYList@psy, thetaYList@lambda, constraint,
     clusInd
   )
 
   ## 2.9: psy
-  psyVal <- evaluatePriorPsi(thetaYList@psy, p, m, delta, bbeta, constraint, clusInd)
+  psyVal <- evaluate_prior_psi(thetaYList@psy, p, m, delta, bbeta, constraint, clusInd)
 
 
   # print(Zval)
@@ -138,7 +140,7 @@ evaluatePrior <- function(m,
   totalVal <- sum(Zval + taoVal + Mval + lambdaVal + psyVal)
   return(totalVal)
 }
-#' generatePriorPsi
+#' generate_prior_psi
 #'
 #' @description generate prior value for parameter Psi
 #' @import stats
@@ -148,7 +150,8 @@ evaluatePrior <- function(m,
 #' @param bbeta hyperparameters
 #' @param constraint the pgmm constraint, a vector of length three with binary entry. For example, c(1,1,1) means the fully constraint model
 #'
-generatePriorPsi <- function(p,
+#' @noRd
+generate_prior_psi <- function(p,
                              m,
                              delta,
                              bbeta,
@@ -187,7 +190,8 @@ generatePriorPsi <- function(p,
 
 #' (internal)
 #' @noRd
-evaluatePriorPsi <- function(psy,
+#' @noRd
+evaluate_prior_psi <- function(psy,
                              p,
                              m,
                              delta,
@@ -225,7 +229,7 @@ evaluatePriorPsi <- function(psy,
 }
 
 
-#' generatePriorLambda
+#' generate_prior_lambda
 #'
 #' @description evaluate prior value for parameter Lambda
 #' @importFrom mvtnorm rmvnorm
@@ -236,7 +240,8 @@ evaluatePriorPsi <- function(psy,
 #' @param psy parameter
 #' @param constraint parameter
 #'
-generatePriorLambda <- function(p,
+#' @noRd
+generate_prior_lambda <- function(p,
                                 m,
                                 alpha2,
                                 qVec,
@@ -287,7 +292,8 @@ generatePriorLambda <- function(p,
 
 #' (internal)
 #' @noRd
-evaluatePriorLambda <- function(p,
+#' @noRd
+evaluate_prior_lambda <- function(p,
                                 m,
                                 alpha2,
                                 qVec,

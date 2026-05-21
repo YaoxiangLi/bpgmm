@@ -1,6 +1,7 @@
 #' (internal)
 #' @noRd
-updatePostZ <- function(X, m, n, thetaYList) {
+#' @noRd
+update_post_z_r <- function(X, m, n, thetaYList) {
   tao <- thetaYList@tao
   psy <- thetaYList@psy
   M <- thetaYList@M
@@ -26,7 +27,7 @@ updatePostZ <- function(X, m, n, thetaYList) {
 
   for (i in 1:n) {
     for (k in 1:m) {
-      pMat[k, i] <- calculateRatio(dMat[k, i], dMat[, i])
+      pMat[k, i] <- calculate_ratio_cpp(dMat[k, i], dMat[, i])
     }
   }
 

@@ -10,7 +10,7 @@ test_that("constraint helpers map between paper model names and binary codes", {
 
   expect_equal(constraint_to_model(c(1, 1, 1)), "CCC")
   expect_equal(constraint_to_model(c(0, 0, 0)), "UUU")
-  expect_equal(bpgmm:::changeConstraintFormat("(1, 0, 0)"), "CUU")
+  expect_equal(bpgmm:::change_constraint_format("(1, 0, 0)"), "CUU")
 })
 
 test_that("constraint helpers reject invalid encodings", {

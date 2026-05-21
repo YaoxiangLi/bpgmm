@@ -1,19 +1,19 @@
-test_that("Rcpp get_Z_mat matches the R implementation", {
+test_that("Rcpp get_z_mat_cpp matches the R implementation", {
   labels <- c(1, 2, 1, 3)
 
   expect_equal(
-    bpgmm:::get_Z_mat(labels, m = 3, n = length(labels)),
-    bpgmm:::getZmat(labels, m = 3, n = length(labels))
+    bpgmm:::get_z_mat_cpp(labels, m = 3, n = length(labels)),
+    bpgmm:::get_z_mat_r(labels, m = 3, n = length(labels))
   )
 })
 
-test_that("Rcpp get_Z_mat rejects labels outside 1:m", {
+test_that("Rcpp get_z_mat_cpp rejects labels outside 1:m", {
   expect_error(
-    bpgmm:::get_Z_mat(c(1, 0, 2), m = 2, n = 3),
+    bpgmm:::get_z_mat_cpp(c(1, 0, 2), m = 2, n = 3),
     "cluster labels must be integers in 1:m"
   )
   expect_error(
-    bpgmm:::get_Z_mat(c(1, 3, 2), m = 2, n = 3),
+    bpgmm:::get_z_mat_cpp(c(1, 3, 2), m = 2, n = 3),
     "cluster labels must be integers in 1:m"
   )
 })
@@ -52,30 +52,30 @@ test_that("Rcpp dmvnrm_arma validates dimensions and covariance", {
   )
 })
 
-test_that("Rcpp calculate_Ratio is stable for large log probabilities", {
+test_that("Rcpp calculate_ratio_cpp is stable for large log probabilities", {
   expect_equal(
-    bpgmm:::calculate_Ratio(1000, c(1000, 1001, 1002)),
+    bpgmm:::calculate_ratio_cpp(1000, c(1000, 1001, 1002)),
     exp(1000 - 1002) / sum(exp(c(1000, 1001, 1002) - 1002)),
     tolerance = 1e-12
   )
 })
 
-test_that("Rcpp calculate_Ratio validates finite log inputs", {
+test_that("Rcpp calculate_ratio_cpp validates finite log inputs", {
   expect_error(
-    bpgmm:::calculate_Ratio(0, numeric()),
+    bpgmm:::calculate_ratio_cpp(0, numeric()),
     "logNume"
   )
   expect_error(
-    bpgmm:::calculate_Ratio(Inf, c(0, 1)),
+    bpgmm:::calculate_ratio_cpp(Inf, c(0, 1)),
     "finite"
   )
   expect_error(
-    bpgmm:::calculate_Ratio(0, c(0, NA)),
+    bpgmm:::calculate_ratio_cpp(0, c(0, NA)),
     "finite"
   )
 })
 
-test_that("Rcpp update_PostZ uses log mixture weights", {
+test_that("Rcpp update_post_z_cpp uses log mixture weights", {
   n <- 2000
   theta <- new(
     "ThetaYList",
@@ -87,12 +87,12 @@ test_that("Rcpp update_PostZ uses log mixture weights", {
   )
 
   set.seed(22)
-  labels <- bpgmm:::update_PostZ(matrix(0, nrow = 1, ncol = n), m = 2, n = n, theta)
+  labels <- bpgmm:::update_post_z_cpp(matrix(0, nrow = 1, ncol = n), m = 2, n = n, theta)
 
   expect_gt(mean(labels == 1), 0.95)
 })
 
-test_that("Rcpp update_PostZ validates dimensions and mixture weights", {
+test_that("Rcpp update_post_z_cpp validates dimensions and mixture weights", {
   theta <- new(
     "ThetaYList",
     tao = c(1, 0),
@@ -103,11 +103,11 @@ test_that("Rcpp update_PostZ validates dimensions and mixture weights", {
   )
 
   expect_error(
-    bpgmm:::update_PostZ(matrix(0, nrow = 1, ncol = 1), m = 2, n = 1, theta),
+    bpgmm:::update_post_z_cpp(matrix(0, nrow = 1, ncol = 1), m = 2, n = 1, theta),
     "tao"
   )
   expect_error(
-    bpgmm:::update_PostZ(matrix(0, nrow = 1, ncol = 2), m = 2, n = 1, theta),
+    bpgmm:::update_post_z_cpp(matrix(0, nrow = 1, ncol = 2), m = 2, n = 1, theta),
     "n"
   )
 })

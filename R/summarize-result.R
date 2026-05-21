@@ -24,14 +24,14 @@ summarize_pgmm_rjmcmc <- function(pgmmResList, trueCluster = NULL) {
     stop("pgmmResList$constraintList must match pgmmResList$ZmatList", call. = FALSE)
   }
 
-  Zalloc <- summarizeZ(pgmmResList$ZmatList)
+  Zalloc <- summarize_allocations(pgmmResList$ZmatList)
 
   nCluster <- table(sapply(pgmmResList$ZmatList, function(x) {
     length(unique(x))
   }))
 
   nConstraint <- pgmmResList$constraintList
-  nConstraint <- listToStrVec(nConstraint)
+  nConstraint <- constraint_list_to_models(nConstraint)
   nConstraint <- table(nConstraint, dnn = "")
 
 

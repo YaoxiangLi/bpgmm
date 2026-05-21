@@ -1,6 +1,7 @@
 #' (internal)
 #' @noRd
-MstepRJMCMCupdate <- function(X,
+#' @noRd
+mstep_rjmcmc_update <- function(X,
                               muBar,
                               p,
                               thetaYList,
@@ -67,10 +68,10 @@ MstepRJMCMCupdate <- function(X,
   if (indChar == "birth") {
     birthInd <- which(clusInd == 0)[1]
 
-    newClusterThetaY <- generateNewClusPara(m, n, p, hparam, muBar, qnew, thetaYList, constraint, clusInd)
+    newClusterThetaY <- generate_new_cluster_parameters(m, n, p, hparam, muBar, qnew, thetaYList, constraint, clusInd)
 
     ## adjust tao in the combine
-    combinedThetaList <- combineClusterPara(thetaYList, newClusterThetaY, birthInd)
+    combinedThetaList <- combine_cluster_parameters(thetaYList, newClusterThetaY, birthInd)
     jacobianAdj <- m * log(1 - newClusterThetaY@tao)
 
     ## adjust q
@@ -83,17 +84,17 @@ MstepRJMCMCupdate <- function(X,
     clusIndNew[birthInd] <- 1
 
 
-    oldDensity <- likelihood(thetaYList, ZOneDim, qVec, muBar, X) + evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint, clusInd)
-    newDensity <- likelihood(combinedThetaList, ZOneDim, qVecNew, muBar, X) + evaluatePrior(m + 1, p, muBar, hparam, combinedThetaList, ZOneDim, qVecNew, constraint, clusIndNew)
+    oldDensity <- likelihood(thetaYList, ZOneDim, qVec, muBar, X) + evaluate_prior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint, clusInd)
+    newDensity <- likelihood(combinedThetaList, ZOneDim, qVecNew, muBar, X) + evaluate_prior(m + 1, p, muBar, hparam, combinedThetaList, ZOneDim, qVecNew, constraint, clusIndNew)
 
-    newClusterThetaYEval <- evaluateNewClusPara(m, p, hparam, muBar, qnew, thetaYList, newClusterThetaY, constraint)
+    newClusterThetaYEval <- evaluate_new_cluster_parameters(m, p, hparam, muBar, qnew, thetaYList, newClusterThetaY, constraint)
 
     emptyZ <- setdiff(which(clusIndNew == 1), ZOneDim)
 
     numeratorAlpha <- newDensity + jacobianAdj
     denominatorAlpha <- oldDensity + newClusterThetaYEval + log(length(emptyZ))
 
-    probAlpha <- calculateRatio(numeratorAlpha, denominatorAlpha)
+    probAlpha <- calculate_ratio_cpp(numeratorAlpha, denominatorAlpha)
     acceptP <- min(1, probAlpha)
 
     res <- rbinom(1, size = 1, prob = acceptP)
@@ -108,7 +109,7 @@ MstepRJMCMCupdate <- function(X,
       thetaYList <- combinedThetaList
       qVec <- qVecNew
       clusInd <- clusIndNew
-      thetaYList <- clearCurrentThetaYlist(thetaYList, clusInd, mVec[2])
+      thetaYList <- clear_inactive_components(thetaYList, clusInd, mVec[2])
     } else {
       ## stay
       # print("birth reject =====>")
@@ -133,18 +134,18 @@ MstepRJMCMCupdate <- function(X,
     clusIndNew[deathInd] <- 0
 
 
-    dropCluster <- getIndThetaY(thetaYList, deathInd)
+    dropCluster <- subset_theta_y(thetaYList, deathInd)
 
     ## adjust tao
 
-    leftThetaY <- getRemovedIndThetaY(thetaYList, deathInd)
-    dropClusterDval <- evaluateNewClusPara(m - 1, p, hparam, muBar, qnew, leftThetaY, dropCluster, constraint)
+    leftThetaY <- remove_theta_y_component(thetaYList, deathInd)
+    dropClusterDval <- evaluate_new_cluster_parameters(m - 1, p, hparam, muBar, qnew, leftThetaY, dropCluster, constraint)
 
     jacobianAdj <- (m - 1) * log(1 - dropCluster@tao)
 
 
-    oldDensity <- evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint, clusInd)
-    newDensity <- evaluatePrior(m - 1, p, muBar, hparam, leftThetaY, ZOneDim, qVecNew, constraint, clusIndNew)
+    oldDensity <- evaluate_prior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint, clusInd)
+    newDensity <- evaluate_prior(m - 1, p, muBar, hparam, leftThetaY, ZOneDim, qVecNew, constraint, clusIndNew)
 
 
     numeratorAlpha <- newDensity + dropClusterDval + chooseZprob
@@ -152,7 +153,7 @@ MstepRJMCMCupdate <- function(X,
 
     # cat("diff  = ", numeratorAlpha - denominatorAlpha, "=====> \n" )
 
-    probAlpha <- calculateRatio(numeratorAlpha, denominatorAlpha)
+    probAlpha <- calculate_ratio_cpp(numeratorAlpha, denominatorAlpha)
     acceptP <- min(1, probAlpha)
 
     res <- rbinom(1, size = 1, prob = acceptP)
@@ -167,7 +168,7 @@ MstepRJMCMCupdate <- function(X,
       thetaYList <- leftThetaY
       qVec <- qVecNew
       clusInd <- clusIndNew
-      thetaYList <- clearCurrentThetaYlist(thetaYList, clusInd, mVec[2])
+      thetaYList <- clear_inactive_components(thetaYList, clusInd, mVec[2])
     } else {
       # print("death stay =====>")
     }
@@ -190,43 +191,43 @@ MstepRJMCMCupdate <- function(X,
     qVecNew[combinedClusInd] <- qnew
 
     ## propose values for new clusters
-    combinedThetaYList <- proposeCombinedClusters(X, thetaYList, hparam, combineClusInd, combinedClusInd, qVecNew, constraint)
-    combinedThetaYList <- clearCurrentThetaYlist(combinedThetaYList, clusIndNew, mVec[2])
-    combineEval <- evaluateCombinedClusters(X, combinedThetaYList, hparam, combinedClusInd, qVecNew, constraint)
+    combinedThetaYList <- propose_combined_clusters(X, thetaYList, hparam, combineClusInd, combinedClusInd, qVecNew, constraint)
+    combinedThetaYList <- clear_inactive_components(combinedThetaYList, clusIndNew, mVec[2])
+    combineEval <- evaluate_combined_clusters(X, combinedThetaYList, hparam, combinedClusInd, qVecNew, constraint)
     ## evaluate values for old cluster
-    splitEval <- evaluateSplitedClusters(X, combinedThetaYList, thetaYList, hparam, combinedClusInd, combineClusInd, qVec, constraint)
+    splitEval <- evaluate_split_clusters(X, combinedThetaYList, thetaYList, hparam, combinedClusInd, combineClusInd, qVec, constraint)
 
 
     ## calculate Jacobian
 
-    JacEval <- calculateJacobian(p, combinedThetaYList, thetaYList, combinedClusInd, combineClusInd)
+    JacEval <- calculate_jacobian(p, combinedThetaYList, thetaYList, combinedClusInd, combineClusInd)
 
 
     ## combine Z
 
-    ZOneDimNew <- combineZOneDim(ZOneDim, combineClusInd, combinedClusInd)
+    ZOneDimNew <- combine_allocations(ZOneDim, combineClusInd, combinedClusInd)
 
     ## eval split
 
-    evalZProb <- splitEvalZOneDim(X, ZOneDimNew, ZOneDim, thetaYList, combinedClusInd, combineClusInd)
+    evalZProb <- evaluate_split_allocations(X, ZOneDimNew, ZOneDim, thetaYList, combinedClusInd, combineClusInd)
 
     # update Y
-    combinedThetaYList@Y <- updateY(X, combinedThetaYList, ZOneDimNew, clusIndNew, qVecNew)
+    combinedThetaYList@Y <- update_latent_scores(X, combinedThetaYList, ZOneDimNew, clusIndNew, qVecNew)
 
 
 
     combinedThetaYListTEST <- combinedThetaYList
     ZOneDimNewTEST <- ZOneDimNew
     for (i in 1:5) {
-      MCMCobj <- stayMCMCupdate(X, combinedThetaYListTEST, ZOneDimNewTEST, hparam, qVecNew, qnew, dVec, sVec, constraint, clusIndNew)
+      MCMCobj <- stay_mcmc_update(X, combinedThetaYListTEST, ZOneDimNewTEST, hparam, qVecNew, qnew, dVec, sVec, constraint, clusIndNew)
       ZOneDimNewTEST <- MCMCobj$ZOneDim
       combinedThetaYListTEST <- MCMCobj$thetaYList
       # hparam = MCMCobj$hparam
     }
 
 
-    oldDensity <- likelihood(thetaYList, ZOneDim, qVec, muBar, X) + evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint, clusInd)
-    newDensity <- likelihood(combinedThetaYListTEST, ZOneDimNewTEST, qVecNew, muBar, X) + evaluatePrior(m - 1, p, muBar, hparam, combinedThetaYListTEST, ZOneDimNewTEST, qVecNew, constraint, clusIndNew)
+    oldDensity <- likelihood(thetaYList, ZOneDim, qVec, muBar, X) + evaluate_prior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint, clusInd)
+    newDensity <- likelihood(combinedThetaYListTEST, ZOneDimNewTEST, qVecNew, muBar, X) + evaluate_prior(m - 1, p, muBar, hparam, combinedThetaYListTEST, ZOneDimNewTEST, qVecNew, constraint, clusIndNew)
 
     numer <- newDensity + splitEval + JacEval
     denom <- oldDensity + combineEval + logProbCombineZ
@@ -234,7 +235,7 @@ MstepRJMCMCupdate <- function(X,
     # cat("combine diff = ", newDensity - oldDensity, "====>\n")
     # cat("combine diff = ", numer - denom, "====>\n")
 
-    probAlpha <- calculateRatio(numer, denom)
+    probAlpha <- calculate_ratio_cpp(numer, denom)
     acceptP <- min(1, probAlpha)
     res <- rbinom(1, size = 1, prob = acceptP)
 
@@ -245,7 +246,7 @@ MstepRJMCMCupdate <- function(X,
       ZOneDim <- ZOneDimNewTEST
       clusInd <- clusIndNew
       qVec <- qVecNew
-      thetaYList <- clearCurrentThetaYlist(thetaYList, clusInd, mVec[2])
+      thetaYList <- clear_inactive_components(thetaYList, clusInd, mVec[2])
     } else {
       # print("combine fail=====>")
     }
@@ -270,44 +271,44 @@ MstepRJMCMCupdate <- function(X,
     qVecNew[splitedClusInd] <- qnew
     ## propose values for new clusters
 
-    splitedThetaYList <- proposeSplitedClusters(X, thetaYList, hparam, splitClusInd, splitedClusInd, qVecNew, constraint)
-    splitEval <- evaluateSplitedClusters(X, thetaYList, splitedThetaYList, hparam, splitClusInd, splitedClusInd, qVecNew, constraint)
+    splitedThetaYList <- propose_split_clusters(X, thetaYList, hparam, splitClusInd, splitedClusInd, qVecNew, constraint)
+    splitEval <- evaluate_split_clusters(X, thetaYList, splitedThetaYList, hparam, splitClusInd, splitedClusInd, qVecNew, constraint)
 
     ## calculate Jacobian
 
-    JacEval <- calculateJacobian(p, thetaYList, splitedThetaYList, splitClusInd, splitedClusInd)
+    JacEval <- calculate_jacobian(p, thetaYList, splitedThetaYList, splitClusInd, splitedClusInd)
 
     ## evaluate values for old cluster
-    combineEval <- evaluateCombinedClusters(X, thetaYList, hparam, splitClusInd, qVec, constraint)
+    combineEval <- evaluate_combined_clusters(X, thetaYList, hparam, splitClusInd, qVec, constraint)
 
     ## split Z
 
-    splitZObj <- splitZOneDim(X, ZOneDim, splitedThetaYList, splitClusInd, splitedClusInd)
+    splitZObj <- split_allocations(X, ZOneDim, splitedThetaYList, splitClusInd, splitedClusInd)
 
     ZOneDimNew <- splitZObj$ZOneDim
     evalZProb <- splitZObj$evalProb
 
     # update Y
-    splitedThetaYList@Y <- updateY(X, splitedThetaYList, ZOneDimNew, clusIndNew, qVecNew)
+    splitedThetaYList@Y <- update_latent_scores(X, splitedThetaYList, ZOneDimNew, clusIndNew, qVecNew)
 
     splitedThetaYListTEST <- splitedThetaYList
     ZOneDimNewTEST <- ZOneDimNew
     for (i in 1:5) {
-      MCMCobj <- stayMCMCupdate(X, splitedThetaYListTEST, ZOneDimNewTEST, hparam, qVecNew, qnew, dVec, sVec, constraint, clusIndNew)
+      MCMCobj <- stay_mcmc_update(X, splitedThetaYListTEST, ZOneDimNewTEST, hparam, qVecNew, qnew, dVec, sVec, constraint, clusIndNew)
       ZOneDimNewTEST <- MCMCobj$ZOneDim
       splitedThetaYListTEST <- MCMCobj$thetaYList
     }
 
     ## calculate acceptancy propability
 
-    oldDensity <- likelihood(thetaYList, ZOneDim, qVec, muBar, X) + evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint, clusInd)
-    newDensity <- likelihood(splitedThetaYListTEST, ZOneDimNewTEST, qVecNew, muBar, X) + evaluatePrior(m + 1, p, muBar, hparam, splitedThetaYListTEST, ZOneDimNewTEST, qVecNew, constraint, clusIndNew)
+    oldDensity <- likelihood(thetaYList, ZOneDim, qVec, muBar, X) + evaluate_prior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint, clusInd)
+    newDensity <- likelihood(splitedThetaYListTEST, ZOneDimNewTEST, qVecNew, muBar, X) + evaluate_prior(m + 1, p, muBar, hparam, splitedThetaYListTEST, ZOneDimNewTEST, qVecNew, constraint, clusIndNew)
 
     numer <- newDensity + combineEval
     denom <- oldDensity + splitEval + logProbSplitZ + JacEval
 
     # cat("diff  = ", numer - denom, "====>\n")
-    probAlpha <- calculateRatio(numer, denom)
+    probAlpha <- calculate_ratio_cpp(numer, denom)
     acceptP <- min(1, probAlpha)
     res <- rbinom(1, size = 1, prob = acceptP)
 
@@ -320,7 +321,7 @@ MstepRJMCMCupdate <- function(X,
       ZOneDim <- ZOneDimNewTEST
       clusInd <- clusIndNew
       qVec <- qVecNew
-      thetaYList <- clearCurrentThetaYlist(thetaYList, clusInd, mVec[2])
+      thetaYList <- clear_inactive_components(thetaYList, clusInd, mVec[2])
     } else {
       # print("split fail=====>")
     }
@@ -330,9 +331,9 @@ MstepRJMCMCupdate <- function(X,
 }
 
 utils::globalVariables(c(
-  "mVec", "generateNewClusPara", "evaluateNewClusPara",
-  "proposeCombinedClusters", "evaluateCombinedClusters",
-  "evaluateSplitedClusters", "calculateJacobian",
-  "combineZOneDim", "splitEvalZOneDim", "updateY",
-  "proposeSplitedClusters", "splitZOneDim", "res"
+  "mVec", "generate_new_cluster_parameters", "evaluate_new_cluster_parameters",
+  "propose_combined_clusters", "evaluate_combined_clusters",
+  "evaluate_split_clusters", "calculate_jacobian",
+  "combine_allocations", "evaluate_split_allocations", "update_latent_scores",
+  "propose_split_clusters", "split_allocations", "res"
 ))

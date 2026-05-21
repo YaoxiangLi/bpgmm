@@ -1,5 +1,5 @@
 
-#' proposeSplitedClusters
+#' propose_split_clusters
 #'
 #' @param X X
 #' @param thetaYList thetaYList
@@ -81,8 +81,9 @@
 #'   )
 #' splitClusInd <- 1
 #' splitedClusInd <- c(1, 2)
-#' proposeSplitedClusters(X, thetaYList, hparam, splitClusInd, splitedClusInd, qVec, constraint)
-proposeSplitedClusters <- function(X, thetaYList, hparam, splitClusInd, splitedClusInd, qVec, constraint) {
+#' propose_split_clusters(X, thetaYList, hparam, splitClusInd, splitedClusInd, qVec, constraint)
+#' @noRd
+propose_split_clusters <- function(X, thetaYList, hparam, splitClusInd, splitedClusInd, qVec, constraint) {
   p <- nrow(X)
   n <- ncol(X)
 
@@ -141,7 +142,7 @@ proposeSplitedClusters <- function(X, thetaYList, hparam, splitClusInd, splitedC
     psy2 <- thetaYList@psy[[splitClusInd]]
     psy <- list(psy1, psy2)
   } else {
-    psy <- generatePriorPsi(p, 2, delta, bbeta, constraint)
+    psy <- generate_prior_psi(p, 2, delta, bbeta, constraint)
     psy1 <- psy[[1]]
     psy2 <- psy[[2]]
   }
@@ -154,7 +155,7 @@ proposeSplitedClusters <- function(X, thetaYList, hparam, splitClusInd, splitedC
     lambda1 <- thetaYList@lambda[[splitClusInd]]
     lambda2 <- thetaYList@lambda[[splitClusInd]]
   } else {
-    lambda <- generatePriorLambda(p, 2, alpha2, qVec[splitedClusInd], psy, constraint)
+    lambda <- generate_prior_lambda(p, 2, alpha2, qVec[splitedClusInd], psy, constraint)
     lambda1 <- lambda[[1]]
     lambda2 <- lambda[[2]]
   }
@@ -174,7 +175,7 @@ proposeSplitedClusters <- function(X, thetaYList, hparam, splitClusInd, splitedC
 
 
 
-#' evaluateSplitedClusters
+#' evaluate_split_clusters
 #'
 #' @param X X
 #' @param thetaYList thetaYList
@@ -260,8 +261,9 @@ proposeSplitedClusters <- function(X, thetaYList, hparam, splitClusInd, splitedC
 #' sVec <- c(1, 1, 1)
 #' splitClusInd <- 1
 #' splitedClusInd <- c(1, 1)
-#' evaluateSplitedClusters(X, thetaYList, splitedThetaYList, hparam, splitClusInd, splitedClusInd, qVec, constraint)
-evaluateSplitedClusters <- function(X, thetaYList, splitedThetaYList, hparam, splitClusInd, splitedClusInd, qVec, constraint) {
+#' evaluate_split_clusters(X, thetaYList, splitedThetaYList, hparam, splitClusInd, splitedClusInd, qVec, constraint)
+#' @noRd
+evaluate_split_clusters <- function(X, thetaYList, splitedThetaYList, hparam, splitClusInd, splitedClusInd, qVec, constraint) {
   p <- nrow(X)
   n <- ncol(X)
 
@@ -327,7 +329,7 @@ evaluateSplitedClusters <- function(X, thetaYList, splitedThetaYList, hparam, sp
   psy <- list(psy1, psy2)
   evalpsy <- 0
   if (constraint[2] == 0) {
-    evalpsy <- evaluatePriorPsi(psy, p, 2, delta, bbeta, constraint, c(1, 1))
+    evalpsy <- evaluate_prior_psi(psy, p, 2, delta, bbeta, constraint, c(1, 1))
   }
 
   ## eval lambda
@@ -336,7 +338,7 @@ evaluateSplitedClusters <- function(X, thetaYList, splitedThetaYList, hparam, sp
   lambda <- list(lambda1, lambda2)
   evallambda <- 0
   if (constraint[1] == 0) {
-    evallambda <- evaluatePriorLambda(p, 2, alpha2, qVec[splitedClusInd], psy, lambda, constraint, c(1, 1))
+    evallambda <- evaluate_prior_lambda(p, 2, alpha2, qVec[splitedClusInd], psy, lambda, constraint, c(1, 1))
   }
 
   # signEval = log(0.5 ^ p)
@@ -345,7 +347,7 @@ evaluateSplitedClusters <- function(X, thetaYList, splitedThetaYList, hparam, sp
 }
 
 
-#' splitZOneDim
+#' split_allocations
 #'
 #' @param ZOneDim ZOneDim
 #' @param splitedThetaYList splitedThetaYList
@@ -414,8 +416,9 @@ evaluateSplitedClusters <- function(X, thetaYList, splitedThetaYList, hparam, sp
 #'   )
 #' splitClusInd <- 1
 #' splitedClusInd <- c(1, 2)
-#' splitZOneDim(ZOneDim, splitedThetaYList, splitClusInd, splitedClusInd)
-splitZOneDim <- function(X, ZOneDim, splitedThetaYList, splitClusInd, splitedClusInd) {
+#' split_allocations(ZOneDim, splitedThetaYList, splitClusInd, splitedClusInd)
+#' @noRd
+split_allocations <- function(X, ZOneDim, splitedThetaYList, splitClusInd, splitedClusInd) {
   resZOneDim <- ZOneDim
   evalProb <- c()
 
@@ -454,7 +457,7 @@ splitZOneDim <- function(X, ZOneDim, splitedThetaYList, splitClusInd, splitedClu
       p2 <- -1e-10
     }
     # print(c(p1,p2))
-    prob <- calculateRatio(p1, c(p1, p2))
+    prob <- calculate_ratio_cpp(p1, c(p1, p2))
     # cat("prob = ", prob, "====>\n")
     probVec <- c(prob, 1 - prob)
 
@@ -467,7 +470,7 @@ splitZOneDim <- function(X, ZOneDim, splitedThetaYList, splitClusInd, splitedClu
 
 
 
-#' splitEvalZOneDim
+#' evaluate_split_allocations
 #'
 #' @param ZOneDimSplit ZOneDimSplit
 #' @param ZOneDimSplited ZOneDimSplited
@@ -532,8 +535,9 @@ splitZOneDim <- function(X, ZOneDim, splitedThetaYList, splitClusInd, splitedClu
 #' splitClusInd <- 1
 #' splitedClusInd <- c(1, 2)
 #' ZOneDimSplited <- sample(seq_len(m), n, replace = TRUE)
-#' splitEvalZOneDim(ZOneDimSplit, ZOneDimSplited, splitedThetaYList, splitClusInd, splitedClusInd)
-splitEvalZOneDim <- function(X, ZOneDimSplit, ZOneDimSplited, splitedThetaYList, splitClusInd, splitedClusInd) {
+#' evaluate_split_allocations(ZOneDimSplit, ZOneDimSplited, splitedThetaYList, splitClusInd, splitedClusInd)
+#' @noRd
+evaluate_split_allocations <- function(X, ZOneDimSplit, ZOneDimSplited, splitedThetaYList, splitClusInd, splitedClusInd) {
   evalProb <- c()
 
   splitObsInd <- which(ZOneDimSplit == splitClusInd)
@@ -553,7 +557,7 @@ splitEvalZOneDim <- function(X, ZOneDimSplit, ZOneDimSplited, splitedThetaYList,
       log = T
     )
 
-    prob <- calculateRatio(p1, c(p1, p2))
+    prob <- calculate_ratio_cpp(p1, c(p1, p2))
     # cat("prob = ", prob, "====>\n")
     probVec <- c(prob, 1 - prob)
     # print(prob)
@@ -565,7 +569,7 @@ splitEvalZOneDim <- function(X, ZOneDimSplit, ZOneDimSplited, splitedThetaYList,
 }
 
 
-#' calculateJacobian
+#' calculate_jacobian
 #'
 #' @param p p
 #' @param thetaYList thetaYList
@@ -573,8 +577,7 @@ splitEvalZOneDim <- function(X, ZOneDimSplit, ZOneDimSplited, splitedThetaYList,
 #' @param splitClusInd splitClusInd
 #' @param splitedClusInd splitedClusInd
 #'
-#' @return
-#' @export
+#' @noRd
 #'
 #' @examples
 #' set.seed(100)
@@ -672,8 +675,9 @@ splitEvalZOneDim <- function(X, ZOneDimSplit, ZOneDimSplited, splitedThetaYList,
 #' ), .Dim = c(1L, 10L))))
 #' splitClusInd <- 1
 #' splitedClusInd <- c(1, 2)
-#' calculateJacobian(p, thetaYList, splitedThetaYList, splitClusInd, splitedClusInd)
-calculateJacobian <- function(p, thetaYList, splitedThetaYList, splitClusInd, splitedClusInd) {
+#' calculate_jacobian(p, thetaYList, splitedThetaYList, splitClusInd, splitedClusInd)
+#' @noRd
+calculate_jacobian <- function(p, thetaYList, splitedThetaYList, splitClusInd, splitedClusInd) {
   w1 <- splitedThetaYList@tao[splitedClusInd[1]]
   w2 <- splitedThetaYList@tao[splitedClusInd[2]]
   w <- thetaYList@tao[splitClusInd]

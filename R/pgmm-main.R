@@ -131,18 +131,18 @@ pgmm_rjmcmc <- function(X,
 
   ## priors
   ZOneDim <- kmeans(x = t(X), centers = mInit)$cluster
-  thetaYList <- generatePriorThetaY(mInit, n, p, muBar, hparam, qVec, ZOneDim, constraint)
+  thetaYList <- generate_prior_theta_y(mInit, n, p, muBar, hparam, qVec, ZOneDim, constraint)
 
   ## burn in
   for (i in seq_len(burn)) {
-    MCMCobj <- stayMCMCupdate(X, thetaYList, ZOneDim, hparam, qVec, qnew, dVec, sVec, constraint, clusInd)
+    MCMCobj <- stay_mcmc_update(X, thetaYList, ZOneDim, hparam, qVec, qnew, dVec, sVec, constraint, clusInd)
     ZOneDim <- MCMCobj$ZOneDim
     thetaYList <- MCMCobj$thetaYList
     hparam <- MCMCobj$hparam
     hparam@alpha2 <- max(0.01, hparam@alpha2)
   }
 
-  thetaYList <- clearCurrentThetaYlist(thetaYList, clusInd, mVec[2])
+  thetaYList <- clear_inactive_components(thetaYList, clusInd, mVec[2])
   ##
   alpha1Vec <- c()
   alpha2Vec <- c()
@@ -164,7 +164,7 @@ pgmm_rjmcmc <- function(X,
 
     ## choose m or choose v
     if (Mstep == 1) {
-      MCMCobj <- MstepRJMCMCupdate(X, muBar, p, thetaYList, ZOneDim, hparam, hparamInit, qVec, qnew, dVec, sVec, constraint, clusInd, mVec, "BD")
+      MCMCobj <- mstep_rjmcmc_update(X, muBar, p, thetaYList, ZOneDim, hparam, hparamInit, qVec, qnew, dVec, sVec, constraint, clusInd, mVec, "BD")
       ZOneDim <- MCMCobj$ZOneDim
       thetaYList <- MCMCobj$thetaYList
       hparam <- MCMCobj$hparam
@@ -172,7 +172,7 @@ pgmm_rjmcmc <- function(X,
       clusInd <- MCMCobj$clusInd
       ##
       if (SCind == 1) {
-        MCMCobj <- MstepRJMCMCupdate(X, muBar, p, thetaYList, ZOneDim, hparam, hparamInit, qVec, qnew, dVec, sVec, constraint, clusInd, mVec, "SC")
+        MCMCobj <- mstep_rjmcmc_update(X, muBar, p, thetaYList, ZOneDim, hparam, hparamInit, qVec, qnew, dVec, sVec, constraint, clusInd, mVec, "SC")
         ZOneDim <- MCMCobj$ZOneDim
         thetaYList <- MCMCobj$thetaYList
         hparam <- MCMCobj$hparam
@@ -182,7 +182,7 @@ pgmm_rjmcmc <- function(X,
     }
 
     if (Vstep == 1) {
-      MCMCobj <- VstepRJMCMCupdate(X, muBar, p, thetaYList, ZOneDim, hparam, hparamInit, qVec, qnew, ggamma, dVec, sVec, constraint, clusInd)
+      MCMCobj <- vstep_rjmcmc_update(X, muBar, p, thetaYList, ZOneDim, hparam, hparamInit, qVec, qnew, ggamma, dVec, sVec, constraint, clusInd)
       ZOneDim <- MCMCobj$ZOneDim
       thetaYList <- MCMCobj$thetaYList
       hparam <- MCMCobj$hparam
@@ -190,7 +190,7 @@ pgmm_rjmcmc <- function(X,
     }
 
     # stay step
-    MCMCobj <- stayMCMCupdate(X, thetaYList, ZOneDim, hparam, qVec, qnew, dVec, sVec, constraint, clusInd)
+    MCMCobj <- stay_mcmc_update(X, thetaYList, ZOneDim, hparam, qVec, qnew, dVec, sVec, constraint, clusInd)
     ZOneDim <- MCMCobj$ZOneDim
     thetaYList <- MCMCobj$thetaYList
     hparam <- MCMCobj$hparam

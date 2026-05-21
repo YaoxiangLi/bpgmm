@@ -34,11 +34,11 @@ test_that("prior generators produce valid constrained parameters", {
 
   for (constraint in test_constraints) {
     set.seed(100)
-    psy <- bpgmm:::generatePriorPsi(p, m, delta = 3, bbeta = 2, constraint)
+    psy <- bpgmm:::generate_prior_psi(p, m, delta = 3, bbeta = 2, constraint)
     expect_length(psy, m)
     expect_true(all(vapply(psy, function(x) all(dim(x) == c(p, p)) && all(diag(x) > 0), logical(1))))
 
-    lambda <- bpgmm:::generatePriorLambda(p, m, alpha2 = 3, q_vec, psy, constraint)
+    lambda <- bpgmm:::generate_prior_lambda(p, m, alpha2 = 3, q_vec, psy, constraint)
     expect_length(lambda, m)
     expect_true(all(vapply(lambda, function(x) all(dim(x) == c(p, 1)), logical(1))))
   }
@@ -52,8 +52,8 @@ test_that("prior evaluators return finite log densities across constraints", {
   clus_ind <- c(1, 1)
 
   for (constraint in test_constraints) {
-    expect_true(is.finite(bpgmm:::evaluatePriorPsi(theta@psy, p, m, 3, 2, constraint, clus_ind)))
-    expect_true(is.finite(bpgmm:::evaluatePriorLambda(
+    expect_true(is.finite(bpgmm:::evaluate_prior_psi(theta@psy, p, m, 3, 2, constraint, clus_ind)))
+    expect_true(is.finite(bpgmm:::evaluate_prior_lambda(
       p, m, alpha2 = 3, qVec = q_vec, psy = theta@psy, lambda = theta@lambda,
       constraint = constraint, clusInd = clus_ind
     )))
@@ -69,11 +69,11 @@ test_that("proposal generators and evaluators cover all PGMM covariance constrai
   z <- c(1, 1, 2, 2)
   theta <- test_theta(n)
   hparam <- test_hparam()
-  cxy <- bpgmm:::Calculate_Cxy(m, n, hparam, theta, z, q_vec, x)
+  cxy <- bpgmm:::calculate_cxy(m, n, hparam, theta, z, q_vec, x)
 
   for (constraint in test_constraints) {
     set.seed(100)
-    post <- bpgmm:::Calculate_PostLambdaPsy(m, p, hparam, cxy, theta, q_vec, constraint)
+    post <- bpgmm:::calculate_post_lambda_psi(m, p, hparam, cxy, theta, q_vec, constraint)
     expect_named(post, c("lambda", "psy"))
     expect_length(post$lambda, m)
     expect_length(post$psy, m)
@@ -81,19 +81,19 @@ test_that("proposal generators and evaluators cover all PGMM covariance constrai
     expect_true(all(vapply(post$psy, function(x) all(dim(x) == c(p, p)) && all(diag(x) > 0), logical(1))))
 
     set.seed(101)
-    lambda <- bpgmm:::CalculateProposalLambda(hparam, theta, cxy, constraint, m, p, q_vec)
+    lambda <- bpgmm:::calculate_proposal_lambda(hparam, theta, cxy, constraint, m, p, q_vec)
     expect_length(lambda, m)
     expect_true(all(vapply(lambda, function(x) all(dim(x) == c(p, 1)), logical(1))))
-    expect_true(is.finite(bpgmm:::EvaluateProposalLambda(hparam, theta, cxy, constraint, lambda, m, q_vec, p)))
+    expect_true(is.finite(bpgmm:::evaluate_proposal_lambda(hparam, theta, cxy, constraint, lambda, m, q_vec, p)))
 
     theta_lambda <- theta
     theta_lambda@lambda <- lambda
-    cxy_lambda <- bpgmm:::Calculate_Cxy(m, n, hparam, theta_lambda, z, q_vec, x)
+    cxy_lambda <- bpgmm:::calculate_cxy(m, n, hparam, theta_lambda, z, q_vec, x)
 
     set.seed(102)
-    psy <- bpgmm:::CalculateProposalPsy(hparam, theta_lambda, cxy_lambda, constraint, m, p, q_vec)
+    psy <- bpgmm:::calculate_proposal_psi(hparam, theta_lambda, cxy_lambda, constraint, m, p, q_vec)
     expect_length(psy, m)
     expect_true(all(vapply(psy, function(x) all(dim(x) == c(p, p)) && all(diag(x) > 0), logical(1))))
-    expect_true(is.finite(bpgmm:::EvaluateProposalPsy(hparam, theta_lambda, cxy_lambda, constraint, psy, m, p, q_vec)))
+    expect_true(is.finite(bpgmm:::evaluate_proposal_psi(hparam, theta_lambda, cxy_lambda, constraint, psy, m, p, q_vec)))
   }
 })

@@ -1,3 +1,10 @@
+# bpgmm 1.1.4
+
+* Standardized internal R helper names to snake_case while preserving the exported compatibility wrappers.
+* Added snake_case wrappers around generated Rcpp entry points and routed package internals through those wrappers.
+* Cleaned the source layout by renaming R files to lowercase hyphenated names and removing the ignored duplicate `R/choosem/` tree.
+* Kept result-list names and legacy public arguments stable to avoid breaking existing user code.
+
 # bpgmm 1.1.3
 
 * Fixed `Mstep = 1` by loading the cluster-number proposal helpers as package code rather than leaving them in an ignored nested `R/` directory.

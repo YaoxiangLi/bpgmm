@@ -34,8 +34,8 @@ test_that("old summary function names are deprecated compatibility aliases", {
 test_that("internal allocation summarizer keeps compatibility alias", {
   z_samples <- list(c(1, 1, 2), c(1, 2, 2), c(1, 1, 2))
 
-  expect_equal(bpgmm:::summarizeZ(z_samples), c(1, 1, 2))
-  expect_equal(bpgmm:::sumerizeZ(z_samples), bpgmm:::summarizeZ(z_samples))
+  expect_equal(bpgmm:::summarize_allocations(z_samples), c(1, 1, 2))
+  expect_equal(bpgmm:::summarize_allocations_legacy(z_samples), bpgmm:::summarize_allocations(z_samples))
 })
 
 test_that("summarize_pgmm_rjmcmc validates result structure", {

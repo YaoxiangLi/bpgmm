@@ -1,6 +1,7 @@
 #' (internal)
 #' @noRd
-updatePostThetaY <- function(m, n, p, hparam, thetaYList, ZOneDim, qVec, constraint, X, ggamma) {
+#' @noRd
+update_post_theta_y <- function(m, n, p, hparam, thetaYList, ZOneDim, qVec, constraint, X, ggamma) {
   alpha1 <- hparam@alpha1
   alpha2 <- hparam@alpha2
   bbeta <- hparam@bbeta
@@ -10,7 +11,7 @@ updatePostThetaY <- function(m, n, p, hparam, thetaYList, ZOneDim, qVec, constra
   psy <- thetaYList@psy
 
   ## post for Theta = {tao, M, Lambda, psy}
-  CxyList <- Calculate_Cxy(m, n, hparam, thetaYList, ZOneDim, qVec, X)
+  CxyList <- calculate_cxy(m, n, hparam, thetaYList, ZOneDim, qVec, X)
   Cxxk <- CxyList$Cxxk
   Cxyk <- CxyList$Cxyk
   Cyyk <- CxyList$Cyyk
@@ -23,7 +24,7 @@ updatePostThetaY <- function(m, n, p, hparam, thetaYList, ZOneDim, qVec, constra
   A <- CxyList$A
   nVec <- CxyList$nVec
 
-  Zmat <- getZmat(ZOneDim, m, n)
+  Zmat <- get_z_mat_r(ZOneDim, m, n)
 
 
   # post tao
@@ -36,7 +37,7 @@ updatePostThetaY <- function(m, n, p, hparam, thetaYList, ZOneDim, qVec, constra
   }
 
   ## lambda; psy
-  lambdaPsy <- Calculate_PostLambdaPsy(m, p, hparam, CxyList, thetaYList, qVec, constraint)
+  lambdaPsy <- calculate_post_lambda_psi(m, p, hparam, CxyList, thetaYList, qVec, constraint)
   # lambdaPsy = CalculatePostLambdaPsy(alpha1, alpha2, bbeta, CxyList, M, psy, constraint)
   lambda <- lambdaPsy$lambda
   psy <- lambdaPsy$psy

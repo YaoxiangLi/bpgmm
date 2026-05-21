@@ -83,8 +83,9 @@
 #'   )
 #' qnew <- 1
 #' clusInd <- rep(1, m)
-#' generateNewClusPara(m, n, p, hparam, muBar, qnew, thetaYList, constraint, clusInd)
-generateNewClusPara <- function(m, n, p, hparam, muBar, qnew, thetaYList, constraint, clusInd) {
+#' generate_new_cluster_parameters(m, n, p, hparam, muBar, qnew, thetaYList, constraint, clusInd)
+#' @noRd
+generate_new_cluster_parameters <- function(m, n, p, hparam, muBar, qnew, thetaYList, constraint, clusInd) {
   ggamma <- hparam@ggamma
   delta <- hparam@delta
   bbeta <- hparam@bbeta
@@ -92,7 +93,7 @@ generateNewClusPara <- function(m, n, p, hparam, muBar, qnew, thetaYList, constr
   alpha2 <- hparam@alpha2
 
 
-  lambdaPsyList <- getLambdaPsiForNewClus(m, p, qnew, thetaYList, hparam, constraint, clusInd)
+  lambdaPsyList <- get_lambda_psi_for_new_cluster(m, p, qnew, thetaYList, hparam, constraint, clusInd)
 
   lambda <- lambdaPsyList$lambda
   psy <- lambdaPsyList$psy
@@ -130,7 +131,7 @@ generateNewClusPara <- function(m, n, p, hparam, muBar, qnew, thetaYList, constr
 }
 
 
-#' getLambdaPsiForNewClus
+#' get_lambda_psi_for_new_cluster
 #'
 #' @param m m
 #' @param p p
@@ -213,7 +214,7 @@ generateNewClusPara <- function(m, n, p, hparam, muBar, qnew, thetaYList, constr
 #'   )
 #' qnew <- 1
 #' clusInd <- rep(1, m)
-#' getLambdaPsiForNewClus(
+#' get_lambda_psi_for_new_cluster(
 #'   m,
 #'   p,
 #'   qnew,
@@ -222,7 +223,8 @@ generateNewClusPara <- function(m, n, p, hparam, muBar, qnew, thetaYList, constr
 #'   constraint,
 #'   clusInd
 #' )
-getLambdaPsiForNewClus <- function(m,
+#' @noRd
+get_lambda_psi_for_new_cluster <- function(m,
                                    p,
                                    qnew,
                                    thetaYList,
@@ -270,8 +272,7 @@ getLambdaPsiForNewClus <- function(m,
 #' @param newClusterThetaY newClusterThetaY
 #' @param constraint constraint
 #'
-#' @return
-#' @export
+#' @noRd
 #'
 #' @examples
 #' set.seed(100)
@@ -347,10 +348,11 @@ getLambdaPsiForNewClus <- function(m,
 #' qnew <- 1
 #' clusInd <- rep(1, m)
 #' \donttest{
-#' evaluateNewClusPara(m, p, hparam, muBar, thetaYList, constraint)
+#' evaluate_new_cluster_parameters(m, p, hparam, muBar, thetaYList, constraint)
 #' }
 #'
-evaluateNewClusPara <- function(m, p, hparam, muBar, qnew, thetaYList, newClusterThetaY, constraint) {
+#' @noRd
+evaluate_new_cluster_parameters <- function(m, p, hparam, muBar, qnew, thetaYList, newClusterThetaY, constraint) {
   ggamma <- hparam@ggamma
   delta <- hparam@delta
   bbeta <- hparam@bbeta
@@ -358,7 +360,7 @@ evaluateNewClusPara <- function(m, p, hparam, muBar, qnew, thetaYList, newCluste
   alpha2 <- hparam@alpha2
 
   ## eval lambda psy
-  lambdaPsyEval <- evalLambdaPsiForNewClus(m, p, qnew, thetaYList, newClusterThetaY, hparam, constraint)
+  lambdaPsyEval <- evaluate_lambda_psi_for_new_cluster(m, p, qnew, thetaYList, newClusterThetaY, hparam, constraint)
 
   ## eval tao
   tao <- newClusterThetaY@tao
@@ -381,7 +383,7 @@ evaluateNewClusPara <- function(m, p, hparam, muBar, qnew, thetaYList, newCluste
 
 
 
-#' evalLambdaPsiForNewClus
+#' evaluate_lambda_psi_for_new_cluster
 #'
 #' @param m m
 #' @param p p
@@ -463,7 +465,7 @@ evaluateNewClusPara <- function(m, p, hparam, muBar, qnew, thetaYList, newCluste
 #'   )
 #' qnew <- 1
 #' clusInd <- rep(1, m)
-#' evalLambdaPsiForNewClus(
+#' evaluate_lambda_psi_for_new_cluster(
 #'   m,
 #'   p,
 #'   qnew,
@@ -472,7 +474,8 @@ evaluateNewClusPara <- function(m, p, hparam, muBar, qnew, thetaYList, newCluste
 #'   hparam,
 #'   constraint
 #' )
-evalLambdaPsiForNewClus <- function(m,
+#' @noRd
+evaluate_lambda_psi_for_new_cluster <- function(m,
                                     p,
                                     qnew,
                                     thetaYList,

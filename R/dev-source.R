@@ -21,7 +21,7 @@
 # source("R/pgmmVstep.R")
 # source("R/PGMMmain.R")
 # source("R/prior.R")
-# source("R/updatePostThetaY.R")
+# source("R/update_post_theta_y.R")
 # source("R/utils.R")
 # source("R/posteriorZ.R")
 # source("R/proposalLambda.R")
@@ -33,10 +33,10 @@
 # # Cpp souce
 #
 # sourceCpp("src/utils.cpp")
-# sourceCpp("src/updatePostZ.cpp")
+# sourceCpp("src/update_post_z_r.cpp")
 # sourceCpp("src/calculateCxy.cpp")
 # sourceCpp("src/calculatePostLambdaPsy.cpp")
-# sourceCpp("src/update_Hyperparameter.cpp")
+# sourceCpp("src/update_hyperparameter.cpp")
 #
 #
 #

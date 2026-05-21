@@ -1,5 +1,5 @@
 
-#' proposeCombinedClusters
+#' propose_combined_clusters
 #'
 #' @param X X
 #' @param thetaYList thetaYList
@@ -82,8 +82,9 @@
 #'   )
 #' combineClusInd <- c(1, 1)
 #' combinedClusInd <- 1
-#' proposeCombinedClusters(X, thetaYList, hparam, combineClusInd, combinedClusInd, qVec, constraint)
-proposeCombinedClusters <- function(X, thetaYList, hparam, combineClusInd, combinedClusInd, qVec, constraint) {
+#' propose_combined_clusters(X, thetaYList, hparam, combineClusInd, combinedClusInd, qVec, constraint)
+#' @noRd
+propose_combined_clusters <- function(X, thetaYList, hparam, combineClusInd, combinedClusInd, qVec, constraint) {
   p <- nrow(X)
   n <- ncol(X)
 
@@ -125,7 +126,7 @@ proposeCombinedClusters <- function(X, thetaYList, hparam, combineClusInd, combi
   if (constraint[2] == 1) {
     psy <- thetaYList@psy[combineClusInd[1]]
   } else {
-    psy <- generatePriorPsi(p, 1, delta, bbeta, constraint)
+    psy <- generate_prior_psi(p, 1, delta, bbeta, constraint)
   }
 
   resThetaYList@psy[[combinedClusInd]] <- psy[[1]]
@@ -133,7 +134,7 @@ proposeCombinedClusters <- function(X, thetaYList, hparam, combineClusInd, combi
   if (constraint[1] == 1) {
     lambda <- thetaYList@lambda[combineClusInd[1]]
   } else {
-    lambda <- generatePriorLambda(p, 1, alpha2, qVec, psy, constraint)
+    lambda <- generate_prior_lambda(p, 1, alpha2, qVec, psy, constraint)
   }
 
   resThetaYList@lambda[combinedClusInd] <- lambda
@@ -152,7 +153,7 @@ proposeCombinedClusters <- function(X, thetaYList, hparam, combineClusInd, combi
   return(resThetaYList)
 }
 
-#' evaluateCombinedClusters
+#' evaluate_combined_clusters
 #'
 #' @param X X
 #' @param combinedThetaYList combinedThetaYList
@@ -161,8 +162,7 @@ proposeCombinedClusters <- function(X, thetaYList, hparam, combineClusInd, combi
 #' @param qVec qVec
 #' @param constraint constraint
 #'
-#' @return
-#' @export
+#' @noRd
 #'
 #' @examples
 #' set.seed(100)
@@ -236,8 +236,9 @@ proposeCombinedClusters <- function(X, thetaYList, hparam, combineClusInd, combi
 #'     ))
 #'   )
 #' combinedClusInd <- 1
-#' evaluateCombinedClusters(X, combinedThetaYList, hparam, combinedClusInd, qVec, constraint)
-evaluateCombinedClusters <- function(X, combinedThetaYList, hparam, combinedClusInd, qVec, constraint) {
+#' evaluate_combined_clusters(X, combinedThetaYList, hparam, combinedClusInd, qVec, constraint)
+#' @noRd
+evaluate_combined_clusters <- function(X, combinedThetaYList, hparam, combinedClusInd, qVec, constraint) {
   p <- nrow(X)
   n <- ncol(X)
 
@@ -252,14 +253,14 @@ evaluateCombinedClusters <- function(X, combinedThetaYList, hparam, combinedClus
   psy <- combinedThetaYList@psy[combinedClusInd]
   evalpsy <- 0
   if (constraint[2] == 0) {
-    evalpsy <- evaluatePriorPsi(psy, p, 1, delta, bbeta, constraint, 1)
+    evalpsy <- evaluate_prior_psi(psy, p, 1, delta, bbeta, constraint, 1)
   }
 
   ## eval lambda
   lambda <- combinedThetaYList@lambda[combinedClusInd]
   evallambda <- 0
   if (constraint[1] == 0) {
-    evallambda <- evaluatePriorLambda(p, 1, alpha2, qVec, psy, lambda, constraint, 1)
+    evallambda <- evaluate_prior_lambda(p, 1, alpha2, qVec, psy, lambda, constraint, 1)
   }
 
 
@@ -269,7 +270,7 @@ evaluateCombinedClusters <- function(X, combinedThetaYList, hparam, combinedClus
 
 
 
-#' combineZOneDim
+#' combine_allocations
 #'
 #' @param ZOneDim ZOneDim
 #' @param combineClusInd combineClusInd
@@ -279,8 +280,9 @@ evaluateCombinedClusters <- function(X, combinedThetaYList, hparam, combinedClus
 #' ZOneDim <- c(1, 1, 1, 2, 3, 4)
 #' combineClusInd <- c(1, 2)
 #' combinedClusInd <- 1
-#' combineZOneDim(ZOneDim, combineClusInd, combinedClusInd)
-combineZOneDim <- function(ZOneDim, combineClusInd, combinedClusInd) {
+#' combine_allocations(ZOneDim, combineClusInd, combinedClusInd)
+#' @noRd
+combine_allocations <- function(ZOneDim, combineClusInd, combinedClusInd) {
   ZOneDimNew <- ZOneDim
   ZOneDimNew[ZOneDimNew == combineClusInd[1]] <- combinedClusInd
   ZOneDimNew[ZOneDimNew == combineClusInd[2]] <- combinedClusInd

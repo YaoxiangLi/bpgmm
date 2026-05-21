@@ -1,4 +1,4 @@
-#' CalculateProposalLambda
+#' calculate_proposal_lambda
 #'
 #' @param hparam hparam
 #' @param thetaYList thetaYList
@@ -8,7 +8,8 @@
 #' @param qVec the vector of the number of factors in each clusters
 #' @param p the number of features
 #'
-CalculateProposalLambda <- function(hparam, thetaYList, CxyList, constraint, m, p, qVec) {
+#' @noRd
+calculate_proposal_lambda <- function(hparam, thetaYList, CxyList, constraint, m, p, qVec) {
   alpha1 <- hparam@alpha1
   alpha2 <- hparam@alpha2
 
@@ -171,7 +172,7 @@ CalculateProposalLambda <- function(hparam, thetaYList, CxyList, constraint, m, 
   return(lambda)
 }
 
-#' EvaluateProposalLambda
+#' evaluate_proposal_lambda
 #'
 #' @param hparam hparam
 #' @param thetaYList thetaYList
@@ -182,7 +183,8 @@ CalculateProposalLambda <- function(hparam, thetaYList, CxyList, constraint, m, 
 #' @param qVec the vector of the number of factors in each clusters
 #' @param p the number of features
 #'
-EvaluateProposalLambda <- function(hparam, thetaYList, CxyList, constraint, newlambda, m, qVec, p) {
+#' @noRd
+evaluate_proposal_lambda <- function(hparam, thetaYList, CxyList, constraint, newlambda, m, qVec, p) {
   alpha1 <- hparam@alpha1
   alpha2 <- hparam@alpha2
 

@@ -1,4 +1,4 @@
-#' stayMCMCupdate
+#' stay_mcmc_update
 #'
 #' @param X X
 #' @param thetaYList thetaYList
@@ -11,7 +11,8 @@
 #' @param constraint constraint
 #' @param clusInd clusInd
 #'
-stayMCMCupdate <- function(X,
+#' @noRd
+stay_mcmc_update <- function(X,
                            thetaYList,
                            ZOneDim,
                            hparam,
@@ -27,7 +28,7 @@ stayMCMCupdate <- function(X,
   n <- ncol(X)
   ## transfor to non empty obj
   sampleVec <- which(clusInd == 1)
-  NEthetaYList <- getIndThetaY(thetaYList, sampleVec)
+  NEthetaYList <- subset_theta_y(thetaYList, sampleVec)
 
   NEZOneDim <- ZOneDim
   for (i in 1:length(sampleVec)) {
@@ -35,14 +36,14 @@ stayMCMCupdate <- function(X,
   }
   ## update
 
-  NEthetaYList <- updatePostThetaY(m, n, p, hparam, NEthetaYList, NEZOneDim, qVec[qVec != 0], constraint, X, ggamma)
-  NEZOneDim <- updatePostZ(X, m, n, NEthetaYList)
-  hparam <- update_Hyperparameter(m, p, qnew, hparam, NEthetaYList, dVec, sVec)
+  NEthetaYList <- update_post_theta_y(m, n, p, hparam, NEthetaYList, NEZOneDim, qVec[qVec != 0], constraint, X, ggamma)
+  NEZOneDim <- update_post_z_r(X, m, n, NEthetaYList)
+  hparam <- update_hyperparameter(m, p, qnew, hparam, NEthetaYList, dVec, sVec)
 
 
   ZOneDim <- sampleVec[NEZOneDim]
 
-  thetaYList <- getThetaYWithEmpty(NEthetaYList, clusInd)
+  thetaYList <- theta_y_with_empty_components(NEthetaYList, clusInd)
   return(list(thetaYList = thetaYList, ZOneDim = ZOneDim, hparam = hparam))
 }
 
@@ -50,7 +51,8 @@ stayMCMCupdate <- function(X,
 
 #' (internal)
 #' @noRd
-getThetaYWithEmpty <- function(NEthetaYList, clusInd) {
+#' @noRd
+theta_y_with_empty_components <- function(NEthetaYList, clusInd) {
   thetaYList <- new("ThetaYList")
   j <- 1
   for (i in 1:length(clusInd)) {
@@ -74,10 +76,11 @@ getThetaYWithEmpty <- function(NEthetaYList, clusInd) {
 
 #' (internal)
 #' @noRd
-toNEthetaYlist <- function(thetaYList, ZOneDim, qVec, clusInd) {
+#' @noRd
+to_non_empty_theta_y_list <- function(thetaYList, ZOneDim, qVec, clusInd) {
   ## transfor to non empty obj
   sampleVec <- which(clusInd == 1)
-  NEthetaYList <- getIndThetaY(thetaYList, sampleVec)
+  NEthetaYList <- subset_theta_y(thetaYList, sampleVec)
 
   NEZOneDim <- ZOneDim
   for (i in 1:length(sampleVec)) {
@@ -95,7 +98,8 @@ toNEthetaYlist <- function(thetaYList, ZOneDim, qVec, clusInd) {
 #' @param qnew qnew
 #' @param clusInd clusInd
 #'
-toEthetaYlist <- function(NEthetaYList, NEZOneDim, qnew, clusInd) {
+#' @noRd
+to_empty_theta_y_list <- function(NEthetaYList, NEZOneDim, qnew, clusInd) {
   ## transfor back
   sampleVec <- which(clusInd == 1)
   ZOneDim <- NEZOneDim
@@ -104,6 +108,6 @@ toEthetaYlist <- function(NEthetaYList, NEZOneDim, qnew, clusInd) {
   }
   qVec <- clusInd
   qVec[clusInd == 1] <- qnew
-  thetaYList <- getThetaYWithEmpty(NEthetaYList, clusInd)
+  thetaYList <- theta_y_with_empty_components(NEthetaYList, clusInd)
   return(list(thetaYList = thetaYList, ZOneDim = ZOneDim, qVec = qVec))
 }
