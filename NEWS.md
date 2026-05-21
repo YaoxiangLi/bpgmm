@@ -1,3 +1,8 @@
+# bpgmm 1.2.3
+
+* Added CRAN-safe base R plots to the getting-started, worked-examples, and model-and-sampler vignettes.
+* Visualized simulated clusters, posterior modal allocations, posterior model counts, and mixture-of-factor-analyzers covariance geometry.
+
 # bpgmm 1.2.2
 
 * Optimized the native `Calculate_Cxy()` helper by accumulating cluster sufficient statistics directly from labels instead of building a dense allocation matrix and multiplying through zero weights.
