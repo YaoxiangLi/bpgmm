@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,13 @@
       <small>Source: <a href="https://github.com/YaoxiangLi/bpgmm/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.1" id="bpgmm-121">bpgmm 1.2.1<a class="anchor" aria-label="anchor" href="#bpgmm-121"></a></h2>
+<ul><li>Hardened Rcpp entry points with explicit validation for dimensions, finite numeric inputs, covariance constraints, and native hyperparameter vectors.</li>
+<li>Kept native build settings on the existing CRAN-friendly C++11 baseline while modernizing validation and headers.</li>
+<li>Cleaned native headers and removed stale C++ declarations and debug-only includes/comments.</li>
+<li>Expanded native unit tests for invalid Cxy, posterior lambda/psi, and hyperparameter-update inputs.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.0" id="bpgmm-120">bpgmm 1.2.0<a class="anchor" aria-label="anchor" href="#bpgmm-120"></a></h2>
 <ul><li>Made the public API consistently snake_case now that the package has no CRAN reverse dependencies.</li>

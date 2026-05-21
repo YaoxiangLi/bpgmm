@@ -1,5 +1,17 @@
 # Changelog
 
+## bpgmm 1.2.1
+
+- Hardened Rcpp entry points with explicit validation for dimensions,
+  finite numeric inputs, covariance constraints, and native
+  hyperparameter vectors.
+- Kept native build settings on the existing CRAN-friendly C++11
+  baseline while modernizing validation and headers.
+- Cleaned native headers and removed stale C++ declarations and
+  debug-only includes/comments.
+- Expanded native unit tests for invalid Cxy, posterior lambda/psi, and
+  hyperparameter-update inputs.
+
 ## bpgmm 1.2.0
 
 - Made the public API consistently snake_case now that the package has
