@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,12 @@
       <small>Source: <a href="https://github.com/YaoxiangLi/bpgmm/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.4" id="bpgmm-124">bpgmm 1.2.4<a class="anchor" aria-label="anchor" href="#bpgmm-124"></a></h2>
+<ul><li>Optimized the native allocation sampler by precomputing component covariance factorizations and sampling from normalized log probabilities directly.</li>
+<li>Removed avoidable dense probability/log-density matrices and repeated per-observation covariance validation in <code>update_PostZ()</code>.</li>
+<li>Tightened native helper signatures to avoid unnecessary copies and removed stale debug-only C++ comments from the posterior lambda/psi update.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.3" id="bpgmm-123">bpgmm 1.2.3<a class="anchor" aria-label="anchor" href="#bpgmm-123"></a></h2>
 <ul><li>Added CRAN-safe base R plots to the getting-started, worked-examples, and model-and-sampler vignettes.</li>
