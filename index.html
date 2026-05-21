@@ -24,7 +24,7 @@
 
     <a class="navbar-brand me-2" href="index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -142,9 +142,31 @@
 <li>
 <code>verbose</code>: set to <code>FALSE</code> to suppress per-iteration progress output.</li>
 </ul>
+</div>
+<div class="section level2">
+<h2 id="multi-core-runs">Multi-Core Runs<a class="anchor" aria-label="anchor" href="#multi-core-runs"></a>
+</h2>
+<p>Individual RJMCMC iterations are sequential because each state depends on the previous state. To use multiple cores safely, run independent chains in parallel:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pgmm_rjmcmc_chains.html">pgmm_rjmcmc_chains</a></span><span class="op">(</span></span>
+<span>  X <span class="op">=</span> <span class="va">X</span>,</span>
+<span>  m_init <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  m_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  q_new <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  burn <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  niter <span class="op">=</span> <span class="fl">1000</span>,</span>
+<span>  chains <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  cores <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  seed <span class="op">=</span> <span class="fl">2026</span>,</span>
+<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fits</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 4</span></span></code></pre></div>
+<p>This uses separate worker processes where available and stores deterministic per-chain seeds in <code>attr(fits, "chain_seeds")</code>.</p>
 <p>Starting with version 1.2.0, the public API uses snake_case names throughout. Older camelCase function names and argument names are no longer exported.</p>
 <p>The eight covariance structures in the paper are represented by model labels such as <code>"CCC"</code>, <code>"CUU"</code>, and <code>"UUU"</code>. The package also accepts the legacy three-number constraint encoding:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/constraint_to_model.html">constraint_to_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -161,18 +183,18 @@
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use <code>bpgmm</code> in published work, please cite both the package and the methodology paper. In R, run:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"bpgmm"</span><span class="op">)</span></span></code></pre></div>
 <p>BibTeX for the paper:</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="va">@article</span>{<span class="ot">lu2021bayesian</span>,</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="dt">author</span> = {Lu, Xiang and Li, Yaoxiang and Love, Tanzy},</span>
-<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="dt">title</span> = {On Bayesian Analysis of Parsimonious Gaussian Mixture Models},</span>
-<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="dt">journal</span> = {Journal of Classification},</span>
-<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="dt">year</span> = {2021},</span>
-<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="dt">volume</span> = {38},</span>
-<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="dt">pages</span> = {576--593},</span>
-<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1007/s00357-021-09391-8}</span>
-<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="va">@article</span>{<span class="ot">lu2021bayesian</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="dt">author</span> = {Lu, Xiang and Li, Yaoxiang and Love, Tanzy},</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="dt">title</span> = {On Bayesian Analysis of Parsimonious Gaussian Mixture Models},</span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="dt">journal</span> = {Journal of Classification},</span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="dt">year</span> = {2021},</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="dt">volume</span> = {38},</span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="dt">pages</span> = {576--593},</span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1007/s00357-021-09391-8}</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>

@@ -5,6 +5,8 @@
 - [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md)
   : Bayesian Model-Based Clustering with Parsimonious Gaussian Mixture
   Models
+- [`pgmm_rjmcmc_chains()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc_chains.md)
+  : Run Multiple Independent Bayesian PGMM Chains
 
 ## Summaries
 
