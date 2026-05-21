@@ -66,7 +66,7 @@ double get_positive_finite_slot(Rcpp::S4 obj, const char* slot_name) {
 }
 
 // [[Rcpp::export]]
-arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n){
+arma::mat get_Z_mat(const arma::vec& ZOneDim, int m, int n){
 
   validate_positive_int(m, "m");
   validate_positive_int(n, "n");
@@ -89,9 +89,9 @@ arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n){
 const double log2pi = std::log(2.0 * M_PI);
 
 // [[Rcpp::export]]
-arma::vec dmvnrm_arma(arma::mat x,
-                      arma::rowvec mean,
-                      arma::mat sigma,
+arma::vec dmvnrm_arma(const arma::mat& x,
+                      const arma::rowvec& mean,
+                      const arma::mat& sigma,
                       bool logd) {
   int n = x.n_rows;
   int xdim = x.n_cols;
@@ -131,7 +131,7 @@ arma::vec dmvnrm_arma(arma::mat x,
 }
 
 // [[Rcpp::export]]
-double calculate_Ratio(double logDeno, arma::vec logNume){
+double calculate_Ratio(double logDeno, const arma::vec& logNume){
 
   if (!std::isfinite(logDeno)) {
     Rcpp::stop("logDeno must be finite");
@@ -147,9 +147,7 @@ double calculate_Ratio(double logDeno, arma::vec logNume){
   double maxNume = arma::max(logNume);
   double transDeno = logDeno - maxNume;
 
-  arma::vec repMaxNume = rep(maxNume,n);
-
-  arma::vec transNume = logNume - repMaxNume;
+  arma::vec transNume = logNume - maxNume;
   double ratio = exp(transDeno)/sum(exp(transNume));
 
   return(ratio);

@@ -1,3 +1,9 @@
+# bpgmm 1.2.4
+
+* Optimized the native allocation sampler by precomputing component covariance factorizations and sampling from normalized log probabilities directly.
+* Removed avoidable dense probability/log-density matrices and repeated per-observation covariance validation in `update_PostZ()`.
+* Tightened native helper signatures to avoid unnecessary copies and removed stale debug-only C++ comments from the posterior lambda/psi update.
+
 # bpgmm 1.2.3
 
 * Added CRAN-safe base R plots to the getting-started, worked-examples, and model-and-sampler vignettes.

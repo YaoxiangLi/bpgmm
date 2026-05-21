@@ -77,12 +77,12 @@ BEGIN_RCPP
 END_RCPP
 }
 // get_Z_mat
-arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n);
+arma::mat get_Z_mat(const arma::vec& ZOneDim, int m, int n);
 RcppExport SEXP _bpgmm_get_Z_mat(SEXP ZOneDimSEXP, SEXP mSEXP, SEXP nSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec >::type ZOneDim(ZOneDimSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type ZOneDim(ZOneDimSEXP);
     Rcpp::traits::input_parameter< int >::type m(mSEXP);
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     rcpp_result_gen = Rcpp::wrap(get_Z_mat(ZOneDim, m, n));
@@ -90,27 +90,27 @@ BEGIN_RCPP
 END_RCPP
 }
 // dmvnrm_arma
-arma::vec dmvnrm_arma(arma::mat x, arma::rowvec mean, arma::mat sigma, bool logd);
+arma::vec dmvnrm_arma(const arma::mat& x, const arma::rowvec& mean, const arma::mat& sigma, bool logd);
 RcppExport SEXP _bpgmm_dmvnrm_arma(SEXP xSEXP, SEXP meanSEXP, SEXP sigmaSEXP, SEXP logdSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::rowvec >::type mean(meanSEXP);
-    Rcpp::traits::input_parameter< arma::mat >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const arma::rowvec& >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< const arma::mat& >::type sigma(sigmaSEXP);
     Rcpp::traits::input_parameter< bool >::type logd(logdSEXP);
     rcpp_result_gen = Rcpp::wrap(dmvnrm_arma(x, mean, sigma, logd));
     return rcpp_result_gen;
 END_RCPP
 }
 // calculate_Ratio
-double calculate_Ratio(double logDeno, arma::vec logNume);
+double calculate_Ratio(double logDeno, const arma::vec& logNume);
 RcppExport SEXP _bpgmm_calculate_Ratio(SEXP logDenoSEXP, SEXP logNumeSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< double >::type logDeno(logDenoSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type logNume(logNumeSEXP);
+    Rcpp::traits::input_parameter< const arma::vec& >::type logNume(logNumeSEXP);
     rcpp_result_gen = Rcpp::wrap(calculate_Ratio(logDeno, logNume));
     return rcpp_result_gen;
 END_RCPP

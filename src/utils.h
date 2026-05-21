@@ -3,15 +3,15 @@
 
 #include <RcppArmadillo.h>
 
-arma::vec dmvnrm_arma(arma::mat x,
-                      arma::rowvec mean,
-                      arma::mat sigma,
+arma::vec dmvnrm_arma(const arma::mat& x,
+                      const arma::rowvec& mean,
+                      const arma::mat& sigma,
                       bool logd);
 
 
-arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n);
+arma::mat get_Z_mat(const arma::vec& ZOneDim, int m, int n);
 
-double calculate_Ratio(double logDeno, arma::vec logNume);
+double calculate_Ratio(double logDeno, const arma::vec& logNume);
 
 void validate_positive_int(int value, const char* name);
 
