@@ -270,9 +270,10 @@ for posterior summaries:
 ``` r
 
 names(fit)
-#>  [1] "taoList"        "psyList"        "MList"          "lambdaList"    
-#>  [5] "YList"          "ZmatList"       "constraintList" "alpha1Vec"     
-#>  [9] "alpha2Vec"      "bbetaVec"       "clusIndList"
+#>  [1] "taoList"        "psyList"        "MList"         
+#>  [4] "lambdaList"     "YList"          "ZmatList"      
+#>  [7] "constraintList" "alpha1Vec"      "alpha2Vec"     
+#> [10] "bbetaVec"       "clusIndList"
 names(fit_summary)
 #> [1] "Zalloc"      "nCluster"    "nConstraint" "ari"
 ```
@@ -292,9 +293,9 @@ In R:
 citation("bpgmm")
 #> To cite package 'bpgmm' in publications use:
 #> 
-#>   Lu X, Li Y, Love T (2021). On Bayesian Analysis of Parsimonious
-#>   Gaussian Mixture Models. Journal of Classification, 38, 576-593.
-#>   doi:10.1007/s00357-021-09391-8
+#>   Lu X, Li Y, Love T (2021). On Bayesian Analysis of
+#>   Parsimonious Gaussian Mixture Models. Journal of
+#>   Classification, 38, 576-593. doi:10.1007/s00357-021-09391-8
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 

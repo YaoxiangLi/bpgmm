@@ -132,9 +132,9 @@ methodology paper:
 citation("bpgmm")
 #> To cite package 'bpgmm' in publications use:
 #> 
-#>   Lu X, Li Y, Love T (2021). On Bayesian Analysis of Parsimonious
-#>   Gaussian Mixture Models. Journal of Classification, 38, 576-593.
-#>   doi:10.1007/s00357-021-09391-8
+#>   Lu X, Li Y, Love T (2021). On Bayesian Analysis of
+#>   Parsimonious Gaussian Mixture Models. Journal of
+#>   Classification, 38, 576-593. doi:10.1007/s00357-021-09391-8
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 

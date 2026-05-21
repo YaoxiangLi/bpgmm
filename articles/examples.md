@@ -81,9 +81,10 @@ constraints, component parameters, and hyperparameters.
 ``` r
 
 names(fit)
-#>  [1] "taoList"        "psyList"        "MList"          "lambdaList"    
-#>  [5] "YList"          "ZmatList"       "constraintList" "alpha1Vec"     
-#>  [9] "alpha2Vec"      "bbetaVec"       "clusIndList"
+#>  [1] "taoList"        "psyList"        "MList"         
+#>  [4] "lambdaList"     "YList"          "ZmatList"      
+#>  [7] "constraintList" "alpha1Vec"      "alpha2Vec"     
+#> [10] "bbetaVec"       "clusIndList"
 length(fit$ZmatList)
 #> [1] 3
 ```
