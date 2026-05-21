@@ -97,7 +97,7 @@ evaluate_prior <- function(m,
   ## 2.3: Z
   # adjustTao = thetaYList@tao/sum(thetaYList@tao, na.rm = T)
 
-  Zval <- log(sum(thetaYList@tao[ZOneDim], na.rm = T))
+  Zval <- sum(log(thetaYList@tao[ZOneDim]), na.rm = TRUE)
   # Zval = log(sum(adjustTao[ZOneDim], na.rm = T))
   ## 2.6: tao
   # taoVal = log(gtools::ddirichlet(x = adjustTao[!is.na(adjustTao)], alpha = rep(ggamma, m)))

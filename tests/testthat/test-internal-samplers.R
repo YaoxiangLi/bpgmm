@@ -60,6 +60,29 @@ test_that("prior evaluators return finite log densities across constraints", {
   }
 })
 
+test_that("joint prior uses product of allocation probabilities", {
+  p <- 2
+  m <- 2
+  theta <- test_theta()
+  theta@tao <- c(0.8, 0.2)
+  hparam <- test_hparam()
+  q_vec <- c(1, 1)
+  clus_ind <- c(1, 1)
+  constraint <- c(FALSE, FALSE, FALSE)
+
+  z_same <- c(1, 1, 1, 1)
+  z_mixed <- c(1, 1, 2, 2)
+
+  same_prior <- bpgmm:::evaluate_prior(m, p, c(0, 0), hparam, theta, z_same, q_vec, constraint, clus_ind)
+  mixed_prior <- bpgmm:::evaluate_prior(m, p, c(0, 0), hparam, theta, z_mixed, q_vec, constraint, clus_ind)
+
+  expect_equal(
+    same_prior - mixed_prior,
+    sum(log(theta@tao[z_same])) - sum(log(theta@tao[z_mixed])),
+    tolerance = 1e-10
+  )
+})
+
 test_that("proposal generators and evaluators cover all PGMM covariance constraints", {
   p <- 2
   m <- 2
