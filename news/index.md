@@ -1,5 +1,13 @@
 # Changelog
 
+## bpgmm 1.2.5
+
+- Cleaned native C++ readability without changing sampler behavior.
+- Replaced stale include guards and prototypes, removed selected
+  namespace pollution, and clarified covariance-constraint branch checks
+  with model-label comments.
+- Regenerated Rcpp exports after tightening native helper signatures.
+
 ## bpgmm 1.2.4
 
 - Optimized the native allocation sampler by precomputing component
