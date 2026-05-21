@@ -1,7 +1,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(cpp11)]]
 #include <RcppArmadillo.h>
-#include <iostream>
 #include "calculatePostLambdaPsy.h"
 using namespace Rcpp;
 using namespace arma;
@@ -16,10 +15,14 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
                                    arma::vec qVec,
                                    arma::vec constraint) {
 
-  // double alpha1 = hparam.slot("alpha1");
-  double alpha2 = hparam.slot("alpha2");
-  double bbeta  = hparam.slot("bbeta");
-  double delta  = hparam.slot("delta");
+  validate_positive_int(m, "m");
+  validate_positive_int(p, "p");
+  validate_q_vec(qVec, m);
+  validate_constraint_vec(constraint);
+
+  double alpha2 = get_positive_finite_slot(hparam, "alpha2");
+  double bbeta  = get_positive_finite_slot(hparam, "bbeta");
+  double delta  = get_positive_finite_slot(hparam, "delta");
 
   List Cxxk      = CxyList["Cxxk"];
   List Cxyk      = CxyList["Cxyk"];
@@ -37,6 +40,20 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
   List M      = thetaYList.slot("M");
   List psy    = thetaYList.slot("psy");
+
+  if (Cxxk.size() < m || Cxyk.size() < m || Cyyk.size() < m ||
+      Cytytk.size() < m || Cxtytk.size() < m || CxL1k.size() < m ||
+      Cxmyk.size() < m || A.size() < m || M.size() < m || psy.size() < m) {
+    Rcpp::stop("CxyList and theta_y_list components must have length at least m");
+  }
+  if (nVec.n_elem < static_cast<arma::uword>(m)) {
+    Rcpp::stop("nVec length must be at least m");
+  }
+  validate_finite_matrix(sumCxmyk, "sumCxmyk");
+  validate_finite_matrix(sumCyyk, "sumCyyk");
+  if (!nVec.is_finite()) {
+    Rcpp::stop("nVec must contain only finite values");
+  }
 
   List lambda(m);
 
@@ -156,7 +173,6 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
 
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
-      // ratePara_vec += 1；
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
       Rcpp::NumericMatrix Cxtytk_k = Cxtytk[k];
@@ -307,7 +323,6 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
       shapePara += 0.5 * (nVec[k] + qVec[k] / m + (2 * delta - 2)/m + 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
-      // ratePara_vec += 1；
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
       Rcpp::NumericMatrix Cxtytk_k = Cxtytk[k];
@@ -481,7 +496,6 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
       shapePara = 0.5 * p * (nVec[k] + qVec[k] / m + (2 * delta - 2) / p + 1) + 1;
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
-      // ratePara_vec += 1；
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
       Rcpp::NumericMatrix Cxtytk_k = Cxtytk[k];
@@ -790,7 +804,6 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
       shapePara += 0.5 * p * (nVec[k] + qVec[k] + (2 * delta - 2)/(m * p) + 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
-      // ratePara_vec += 1；
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
       Rcpp::NumericMatrix Cxtytk_k = Cxtytk[k];
@@ -931,7 +944,6 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
       shapePara += 0.5 * (nVec[k] + qVec[k] + (2 * delta - 2)/m + 1);
       // std::cout << "shapePara: "  << std::endl << shapePara << std::endl;
-      // ratePara_vec += 1；
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
       Rcpp::NumericMatrix Cxtytk_k = Cxtytk[k];

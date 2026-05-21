@@ -1,7 +1,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(cpp11)]]
 #include <RcppArmadillo.h>
-#include <iostream>
 #include "utils.h"
 using namespace Rcpp;
 
@@ -15,13 +14,56 @@ Rcpp::List Calculate_Cxy(int m,
                          arma::vec qVec,
                          arma::mat X){
 
-  double alpha1 = hparam.slot("alpha1");
-  double alpha2 = hparam.slot("alpha2");
+  validate_positive_int(m, "m");
+  validate_positive_int(n, "n");
+  if (X.n_rows < 1) {
+    Rcpp::stop("X must have at least one row");
+  }
+  if (X.n_cols != static_cast<arma::uword>(n)) {
+    Rcpp::stop("n must equal the number of columns in X");
+  }
+  validate_finite_matrix(X, "X");
+  validate_q_vec(qVec, m);
+
+  double alpha1 = get_positive_finite_slot(hparam, "alpha1");
+  double alpha2 = get_positive_finite_slot(hparam, "alpha2");
 
   List Y      = thetaYList.slot("Y");
   List lambda = thetaYList.slot("lambda");
   List M      = thetaYList.slot("M");
   List psy    = thetaYList.slot("psy");
+
+  if (Y.size() < m || lambda.size() < m || M.size() < m || psy.size() < m) {
+    Rcpp::stop("theta_y_list slots must each have length at least m");
+  }
+
+  arma::uword p = X.n_rows;
+  for (int k = 0; k < m; ++k) {
+    arma::uword q_k = static_cast<arma::uword>(qVec(k));
+    arma::mat y_k = Y(k);
+    arma::mat lambda_k = lambda(k);
+    arma::vec m_k = M(k);
+    arma::mat psy_k = psy(k);
+
+    if (y_k.n_rows != q_k || y_k.n_cols != static_cast<arma::uword>(n)) {
+      Rcpp::stop("Y matrices must have q_vec[k] rows and n columns");
+    }
+    if (lambda_k.n_rows != p || lambda_k.n_cols != q_k) {
+      Rcpp::stop("lambda matrices must have nrow(X) rows and q_vec[k] columns");
+    }
+    if (m_k.n_elem != p) {
+      Rcpp::stop("M vectors must have length nrow(X)");
+    }
+    if (psy_k.n_rows != p || psy_k.n_cols != p) {
+      Rcpp::stop("psy matrices must be square with dimension nrow(X)");
+    }
+    validate_finite_matrix(y_k, "Y");
+    validate_finite_matrix(lambda_k, "lambda");
+    validate_finite_matrix(psy_k, "psy");
+    if (!m_k.is_finite()) {
+      Rcpp::stop("M must contain only finite values");
+    }
+  }
 
   arma::mat Zmat = get_Z_mat(ZOneDim, m, n);
   List A(m);

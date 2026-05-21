@@ -111,3 +111,71 @@ test_that("Rcpp update_post_z_cpp validates dimensions and mixture weights", {
     "n"
   )
 })
+
+test_that("Rcpp calculate_cxy validates native inputs", {
+  theta <- new(
+    "ThetaYList",
+    tao = c(1),
+    psy = list(diag(2)),
+    M = list(c(0, 0)),
+    lambda = list(matrix(c(0.1, 0.2), nrow = 2)),
+    Y = list(matrix(c(0.3, 0.4), nrow = 1, ncol = 2))
+  )
+  hparam <- new("Hparam", alpha1 = 2, alpha2 = 3, bbeta = 2, delta = 3, ggamma = 1)
+  x <- matrix(c(1, 2, 3, 4), nrow = 2)
+
+  expect_error(
+    bpgmm:::calculate_cxy(1, 2, hparam, theta, c(1, 1), c(0), x),
+    "q_vec entries must be positive"
+  )
+  x_bad <- x
+  x_bad[1, 1] <- Inf
+  expect_error(
+    bpgmm:::calculate_cxy(1, 2, hparam, theta, c(1, 1), c(1), x_bad),
+    "X must contain only finite values"
+  )
+})
+
+test_that("Rcpp posterior lambda/psi update validates constraints", {
+  theta <- new(
+    "ThetaYList",
+    tao = c(1),
+    psy = list(diag(2)),
+    M = list(c(0, 0)),
+    lambda = list(matrix(c(0.1, 0.2), nrow = 2)),
+    Y = list(matrix(c(0.3, 0.4), nrow = 1, ncol = 2))
+  )
+  hparam <- new("Hparam", alpha1 = 2, alpha2 = 3, bbeta = 2, delta = 3, ggamma = 1)
+  x <- matrix(c(1, 2, 3, 4), nrow = 2)
+  cxy <- bpgmm:::calculate_cxy(1, 2, hparam, theta, c(1, 1), c(1), x)
+
+  expect_error(
+    bpgmm:::calculate_post_lambda_psi(1, 2, hparam, cxy, theta, c(1), c(1, 0)),
+    "constraint must have length 3"
+  )
+  expect_error(
+    bpgmm:::calculate_post_lambda_psi(1, 2, hparam, cxy, theta, c(1), c(1, 0, 2)),
+    "constraint entries must be 0/1"
+  )
+})
+
+test_that("Rcpp hyperparameter update validates native hyperparameters", {
+  theta <- new(
+    "ThetaYList",
+    tao = c(1),
+    psy = list(diag(2)),
+    M = list(c(0, 0)),
+    lambda = list(matrix(c(0.1, 0.2), nrow = 2)),
+    Y = list(matrix(c(0.3, 0.4), nrow = 1, ncol = 2))
+  )
+  hparam <- new("Hparam", alpha1 = 2, alpha2 = 3, bbeta = 2, delta = 3, ggamma = 1)
+
+  expect_error(
+    bpgmm:::update_hyperparameter(1, 2, 1, hparam, theta, c(1, 1), c(1, 1, 1)),
+    "d_vec must have length 3"
+  )
+  expect_error(
+    bpgmm:::update_hyperparameter(1, 2, 1, hparam, theta, c(1, 1, 1), c(1, NA, 1)),
+    "s_vec entries must be positive finite values"
+  )
+})

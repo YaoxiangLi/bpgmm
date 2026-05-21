@@ -5,16 +5,71 @@
 #include "utils.h"
 using namespace Rcpp;
 
+void validate_positive_int(int value, const char* name) {
+  if (value < 1) {
+    Rcpp::stop("%s must be a positive integer", name);
+  }
+}
+
+void validate_finite_matrix(const arma::mat& x, const char* name) {
+  if (!x.is_finite()) {
+    Rcpp::stop("%s must contain only finite values", name);
+  }
+}
+
+void validate_q_vec(const arma::vec& q_vec, int m) {
+  if (q_vec.n_elem < static_cast<arma::uword>(m)) {
+    Rcpp::stop("q_vec length must be at least m");
+  }
+
+  for (int k = 0; k < m; ++k) {
+    double q = q_vec(static_cast<arma::uword>(k));
+    if (!std::isfinite(q) || q < 1 || q != std::floor(q)) {
+      Rcpp::stop("q_vec entries must be positive integers");
+    }
+  }
+}
+
+void validate_constraint_vec(const arma::vec& constraint) {
+  if (constraint.n_elem != 3) {
+    Rcpp::stop("constraint must have length 3");
+  }
+
+  for (arma::uword i = 0; i < constraint.n_elem; ++i) {
+    double value = constraint(i);
+    if (!std::isfinite(value) || (value != 0.0 && value != 1.0)) {
+      Rcpp::stop("constraint entries must be 0/1");
+    }
+  }
+}
+
+void validate_positive_finite_vec(const arma::vec& x,
+                                  arma::uword expected_length,
+                                  const char* name) {
+  if (x.n_elem != expected_length) {
+    Rcpp::stop("%s must have length %d", name, static_cast<int>(expected_length));
+  }
+
+  for (arma::uword i = 0; i < x.n_elem; ++i) {
+    if (!std::isfinite(x(i)) || x(i) <= 0.0) {
+      Rcpp::stop("%s entries must be positive finite values", name);
+    }
+  }
+}
+
+double get_positive_finite_slot(Rcpp::S4 obj, const char* slot_name) {
+  Rcpp::NumericVector value = obj.slot(slot_name);
+  if (value.size() != 1 || !std::isfinite(value[0]) || value[0] <= 0.0) {
+    Rcpp::stop("%s must be a positive finite scalar", slot_name);
+  }
+  return value[0];
+}
 
 // [[Rcpp::export]]
 arma::mat get_Z_mat(arma::vec ZOneDim, int m, int n){
 
-  if (m < 1) {
-    Rcpp::stop("m must be a positive integer");
-  }
-  if (n < 1) {
-    Rcpp::stop("n must be a positive integer");
-  }
+  validate_positive_int(m, "m");
+  validate_positive_int(n, "n");
   if (ZOneDim.n_elem != static_cast<arma::uword>(n)) {
     Rcpp::stop("length of ZOneDim must equal n");
   }
@@ -99,5 +154,4 @@ double calculate_Ratio(double logDeno, arma::vec logNume){
 
   return(ratio);
 }
-
 

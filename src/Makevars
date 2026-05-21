@@ -1,4 +1,4 @@
-# Use Armadillo with the compiler's current C++ standard
+# Use Armadillo with the compiler's C++ standard.
 PKG_CPPFLAGS = -DARMA_USE_CURRENT
 
 # Armadillo-backed linear algebra uses R's BLAS/LAPACK libraries.

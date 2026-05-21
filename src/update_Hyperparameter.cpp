@@ -1,7 +1,6 @@
 // [[Rcpp::depends(RcppArmadillo)]]
 // [[Rcpp::plugins(cpp11)]]
 #include <RcppArmadillo.h>
-#include <iostream>
 #include "utils.h"
 using namespace Rcpp;
 
@@ -18,12 +17,44 @@ S4 update_Hyperparameter(
   ){
 
 
-  // extract value from s4 obj
-  double delta   = hparam.slot("delta");
-  double ggamma  = hparam.slot("ggamma");
+  validate_positive_int(m, "m");
+  validate_positive_int(p, "p");
+  validate_positive_int(q, "q");
+  validate_positive_finite_vec(dVec, 3, "d_vec");
+  validate_positive_finite_vec(sVec, 3, "s_vec");
+
+  double delta   = get_positive_finite_slot(hparam, "delta");
+  double ggamma  = get_positive_finite_slot(hparam, "ggamma");
   List M         = thetaYList.slot("M");
   List lambda    = thetaYList.slot("lambda");
   List psy       = thetaYList.slot("psy");
+
+  if (M.size() < m || lambda.size() < m || psy.size() < m) {
+    Rcpp::stop("theta_y_list slots must each have length at least m");
+  }
+
+  for (int k = 0; k < m; ++k) {
+    arma::vec Mk = M(k);
+    arma::mat lambdak = lambda(k);
+    arma::mat psyk = psy(k);
+
+    if (Mk.n_elem != static_cast<arma::uword>(p)) {
+      Rcpp::stop("M vectors must have length p");
+    }
+    if (lambdak.n_rows != static_cast<arma::uword>(p) ||
+        lambdak.n_cols != static_cast<arma::uword>(q)) {
+      Rcpp::stop("lambda matrices must have p rows and q columns");
+    }
+    if (psyk.n_rows != static_cast<arma::uword>(p) ||
+        psyk.n_cols != static_cast<arma::uword>(p)) {
+      Rcpp::stop("psy matrices must be square with dimension p");
+    }
+    if (!Mk.is_finite()) {
+      Rcpp::stop("M must contain only finite values");
+    }
+    validate_finite_matrix(lambdak, "lambda");
+    validate_finite_matrix(psyk, "psy");
+  }
 
   // update alpha1
   double alpha1Rate = 0;
