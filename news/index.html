@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,6 +37,13 @@
       <small>Source: <a href="https://github.com/YaoxiangLi/bpgmm/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.4" id="bpgmm-114">bpgmm 1.1.4<a class="anchor" aria-label="anchor" href="#bpgmm-114"></a></h2>
+<ul><li>Standardized internal R helper names to snake_case while preserving the exported compatibility wrappers.</li>
+<li>Added snake_case wrappers around generated Rcpp entry points and routed package internals through those wrappers.</li>
+<li>Cleaned the source layout by renaming R files to lowercase hyphenated names and removing the ignored duplicate <code>R/choosem/</code> tree.</li>
+<li>Kept result-list names and legacy public arguments stable to avoid breaking existing user code.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.3" id="bpgmm-113">bpgmm 1.1.3<a class="anchor" aria-label="anchor" href="#bpgmm-113"></a></h2>
 <ul><li>Fixed <code>Mstep = 1</code> by loading the cluster-number proposal helpers as package code rather than leaving them in an ignored nested <code>R/</code> directory.</li>
