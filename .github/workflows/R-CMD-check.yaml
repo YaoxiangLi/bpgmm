@@ -10,6 +10,9 @@ name: R-CMD-check
 permissions:
   contents: read
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   R-CMD-check:
     runs-on: ubuntu-latest
@@ -32,4 +35,3 @@ jobs:
         with:
           args: 'c("--no-manual", "--as-cran")'
           error-on: '"warning"'
-

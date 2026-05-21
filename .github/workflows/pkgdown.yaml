@@ -8,6 +8,9 @@ name: pkgdown
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 concurrency:
   group: pkgdown
   cancel-in-progress: false
