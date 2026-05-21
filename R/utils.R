@@ -105,6 +105,38 @@ calculateVarList <- function(psyList, lambdaList) {
   return(varList)
 }
 
+#' (internal)
+#' @noRd
+updateY <- function(X, thetaYList, ZOneDim, clusInd, qVec) {
+  n <- ncol(X)
+  active <- which(clusInd == 1)
+  Zmat <- getZmat(ZOneDim, length(qVec), n)
+  Y <- thetaYList@Y
+
+  for (k in active) {
+    lambda <- thetaYList@lambda[[k]]
+    psy <- thetaYList@psy[[k]]
+    qk <- qVec[k]
+    D <- t(lambda) %*% solve(psy + lambda %*% t(lambda), tol = 1e-100)
+    Sigma <- diag(qk) - D %*% lambda
+    Y[[k]] <- matrix(NA_real_, qk, n)
+
+    for (i in seq_len(n)) {
+      if (Zmat[k, i] == 0) {
+        Y[[k]][, i] <- mvtnorm::rmvnorm(1, mean = rep(0, qk), sigma = diag(qk))
+      } else {
+        Y[[k]][, i] <- mvtnorm::rmvnorm(
+          1,
+          mean = D %*% t(X[, i] - thetaYList@M[[k]]),
+          sigma = Sigma
+        )
+      }
+    }
+  }
+
+  Y
+}
+
 
 #' (internal)
 #' @noRd

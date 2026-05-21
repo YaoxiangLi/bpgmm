@@ -58,6 +58,53 @@ test_that("pgmm_rjmcmc honors zero posterior iterations", {
   expect_length(fit$alpha1Vec, 0)
 })
 
+test_that("pgmm_rjmcmc can run cluster-number and covariance RJMCMC steps", {
+  set.seed(7)
+  x <- cbind(
+    matrix(rnorm(8, mean = -2, sd = 0.2), nrow = 2),
+    matrix(rnorm(8, mean = 2, sd = 0.2), nrow = 2)
+  )
+
+  fit <- pgmm_rjmcmc(
+    x,
+    mInit = 2,
+    mVec = c(1, 3),
+    qnew = 1,
+    burn = 0,
+    niter = 1,
+    Mstep = 1,
+    Vstep = 1,
+    verbose = FALSE
+  )
+
+  expect_length(fit$ZmatList, 1)
+  expect_length(fit$clusIndList, 1)
+  expect_length(fit$constraintList, 1)
+})
+
+test_that("pgmm_rjmcmc can run split/combine RJMCMC moves", {
+  set.seed(1)
+  x <- cbind(
+    matrix(rnorm(8, mean = -2, sd = 0.2), nrow = 2),
+    matrix(rnorm(8, mean = 2, sd = 0.2), nrow = 2)
+  )
+
+  fit <- pgmm_rjmcmc(
+    x,
+    mInit = 2,
+    mVec = c(1, 3),
+    qnew = 1,
+    burn = 0,
+    niter = 1,
+    Mstep = 1,
+    SCind = 1,
+    verbose = FALSE
+  )
+
+  expect_length(fit$ZmatList, 1)
+  expect_length(fit$clusIndList, 1)
+})
+
 test_that("pgmm_rjmcmc validates user-facing inputs", {
   x <- matrix(rnorm(12), nrow = 2)
 

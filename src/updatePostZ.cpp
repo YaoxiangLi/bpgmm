@@ -2,7 +2,7 @@
 // [[Rcpp::plugins(cpp11)]]
 #include <RcppArmadillo.h>
 #include <RcppArmadilloExtensions/sample.h>
-#include <iostream>
+#include <cmath>
 #include "utils.h"
 using namespace Rcpp;
 
@@ -15,13 +15,25 @@ Rcpp::IntegerVector update_PostZ(
                      Rcpp::S4 thetaYList){
 
   List lambda   = thetaYList.slot("lambda");
-  List Y        = thetaYList.slot("Y");
   List M        = thetaYList.slot("M");
   List psy      = thetaYList.slot("psy");
   arma::vec tao = thetaYList.slot("tao");
 
-
-
+  if (m < 1) {
+    Rcpp::stop("m must be a positive integer");
+  }
+  if (n < 1) {
+    Rcpp::stop("n must be a positive integer");
+  }
+  if (X.n_cols != static_cast<arma::uword>(n)) {
+    Rcpp::stop("n must equal the number of columns in X");
+  }
+  if (tao.n_elem < static_cast<arma::uword>(m)) {
+    Rcpp::stop("tao must contain at least m mixture weights");
+  }
+  if (lambda.size() < m || M.size() < m || psy.size() < m) {
+    Rcpp::stop("thetaYList parameter lists must contain at least m components");
+  }
 
   arma::mat pMat(m, n);
   arma::mat dMat(m, n);
@@ -31,11 +43,24 @@ Rcpp::IntegerVector update_PostZ(
 
 //std::cout  << "1" << std::endl;
   for(int k = 0; k < m; k++ ){
+    double taok = tao(k);
+    if (!std::isfinite(taok) || taok <= 0.0) {
+      Rcpp::stop("tao must contain positive finite mixture weights");
+    }
     for(int i = 0; i < n; i++){
 
       arma::vec Mk = M(k);
       arma::mat lambdak = lambda(k);
       arma::mat psyk = psy(k);
+      if (Mk.n_elem != X.n_rows) {
+        Rcpp::stop("each M component must have length matching nrow(X)");
+      }
+      if (lambdak.n_rows != X.n_rows) {
+        Rcpp::stop("each lambda component must have nrow matching nrow(X)");
+      }
+      if (psyk.n_rows != X.n_rows || psyk.n_cols != X.n_rows) {
+        Rcpp::stop("each psy component must be a square matrix matching nrow(X)");
+      }
       arma::mat var = psyk + lambdak * trans(lambdak);
        // std::cout  << k << std::endl;
       arma::vec temp = dmvnrm_arma(trans(X.col(i)), trans(Mk), var, true);
@@ -57,7 +82,7 @@ Rcpp::IntegerVector update_PostZ(
 //     std::cout  << dMat(3, 0) << std::endl;
 //   std::cout  << "2" << std::endl;
   for(int k = 0; k < m; k++ ){
-    double taok = tao(k);
+    double taok = std::log(tao(k));
     arma::vec taokvec = rep(taok, n);
     dMat.row(k) += trans(taokvec);
   }

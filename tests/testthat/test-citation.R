@@ -1,5 +1,5 @@
 test_that("package citation includes the methodology paper DOI", {
-  cites <- citation("bpgmm")
+  cites <- suppressWarnings(citation("bpgmm"))
   dois <- vapply(cites, function(x) {
     doi <- x$doi
     if (is.null(doi)) {

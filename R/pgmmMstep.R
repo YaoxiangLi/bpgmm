@@ -86,7 +86,7 @@ MstepRJMCMCupdate <- function(X,
     oldDensity <- likelihood(thetaYList, ZOneDim, qVec, muBar, X) + evaluatePrior(m, p, muBar, hparam, thetaYList, ZOneDim, qVec, constraint, clusInd)
     newDensity <- likelihood(combinedThetaList, ZOneDim, qVecNew, muBar, X) + evaluatePrior(m + 1, p, muBar, hparam, combinedThetaList, ZOneDim, qVecNew, constraint, clusIndNew)
 
-    newClusterThetaYEval <- evaluateNewClusPara(m, p, hparam, muBar, newClusterThetaY, constraint)
+    newClusterThetaYEval <- evaluateNewClusPara(m, p, hparam, muBar, qnew, thetaYList, newClusterThetaY, constraint)
 
     emptyZ <- setdiff(which(clusIndNew == 1), ZOneDim)
 
@@ -134,11 +134,11 @@ MstepRJMCMCupdate <- function(X,
 
 
     dropCluster <- getIndThetaY(thetaYList, deathInd)
-    dropClusterDval <- evaluateNewClusPara(m - 1, p, hparam, muBar, dropCluster, constraint)
 
     ## adjust tao
 
     leftThetaY <- getRemovedIndThetaY(thetaYList, deathInd)
+    dropClusterDval <- evaluateNewClusPara(m - 1, p, hparam, muBar, qnew, leftThetaY, dropCluster, constraint)
 
     jacobianAdj <- (m - 1) * log(1 - dropCluster@tao)
 
@@ -208,7 +208,7 @@ MstepRJMCMCupdate <- function(X,
 
     ## eval split
 
-    evalZProb <- splitEvalZOneDim(ZOneDimNew, ZOneDim, thetaYList, combinedClusInd, combineClusInd)
+    evalZProb <- splitEvalZOneDim(X, ZOneDimNew, ZOneDim, thetaYList, combinedClusInd, combineClusInd)
 
     # update Y
     combinedThetaYList@Y <- updateY(X, combinedThetaYList, ZOneDimNew, clusIndNew, qVecNew)
@@ -282,7 +282,7 @@ MstepRJMCMCupdate <- function(X,
 
     ## split Z
 
-    splitZObj <- splitZOneDim(ZOneDim, splitedThetaYList, splitClusInd, splitedClusInd)
+    splitZObj <- splitZOneDim(X, ZOneDim, splitedThetaYList, splitClusInd, splitedClusInd)
 
     ZOneDimNew <- splitZObj$ZOneDim
     evalZProb <- splitZObj$evalProb

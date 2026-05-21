@@ -30,10 +30,84 @@ test_that("Rcpp dmvnrm_arma matches mvtnorm::dmvnorm", {
   )
 })
 
+test_that("Rcpp dmvnrm_arma validates dimensions and covariance", {
+  x <- matrix(c(1, 2), nrow = 1)
+
+  expect_error(
+    bpgmm:::dmvnrm_arma(x, mean = 0, sigma = diag(2), logd = TRUE),
+    "mean length"
+  )
+  expect_error(
+    bpgmm:::dmvnrm_arma(x, mean = c(0, 0), sigma = diag(3), logd = TRUE),
+    "sigma"
+  )
+  expect_error(
+    bpgmm:::dmvnrm_arma(
+      x,
+      mean = c(0, 0),
+      sigma = matrix(c(1, 2, 2, 1), nrow = 2),
+      logd = TRUE
+    ),
+    "positive definite"
+  )
+})
+
 test_that("Rcpp calculate_Ratio is stable for large log probabilities", {
   expect_equal(
     bpgmm:::calculate_Ratio(1000, c(1000, 1001, 1002)),
     exp(1000 - 1002) / sum(exp(c(1000, 1001, 1002) - 1002)),
     tolerance = 1e-12
+  )
+})
+
+test_that("Rcpp calculate_Ratio validates finite log inputs", {
+  expect_error(
+    bpgmm:::calculate_Ratio(0, numeric()),
+    "logNume"
+  )
+  expect_error(
+    bpgmm:::calculate_Ratio(Inf, c(0, 1)),
+    "finite"
+  )
+  expect_error(
+    bpgmm:::calculate_Ratio(0, c(0, NA)),
+    "finite"
+  )
+})
+
+test_that("Rcpp update_PostZ uses log mixture weights", {
+  n <- 2000
+  theta <- new(
+    "ThetaYList",
+    tao = c(0.99, 0.01),
+    psy = list(matrix(1), matrix(1)),
+    M = list(0, 0),
+    lambda = list(matrix(0), matrix(0)),
+    Y = list(matrix(0, nrow = 1, ncol = n), matrix(0, nrow = 1, ncol = n))
+  )
+
+  set.seed(22)
+  labels <- bpgmm:::update_PostZ(matrix(0, nrow = 1, ncol = n), m = 2, n = n, theta)
+
+  expect_gt(mean(labels == 1), 0.95)
+})
+
+test_that("Rcpp update_PostZ validates dimensions and mixture weights", {
+  theta <- new(
+    "ThetaYList",
+    tao = c(1, 0),
+    psy = list(matrix(1), matrix(1)),
+    M = list(0, 0),
+    lambda = list(matrix(0), matrix(0)),
+    Y = list(matrix(0, nrow = 1, ncol = 1), matrix(0, nrow = 1, ncol = 1))
+  )
+
+  expect_error(
+    bpgmm:::update_PostZ(matrix(0, nrow = 1, ncol = 1), m = 2, n = 1, theta),
+    "tao"
+  )
+  expect_error(
+    bpgmm:::update_PostZ(matrix(0, nrow = 1, ncol = 2), m = 2, n = 1, theta),
+    "n"
   )
 })

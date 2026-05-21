@@ -40,8 +40,27 @@ arma::vec dmvnrm_arma(arma::mat x,
                       bool logd) {
   int n = x.n_rows;
   int xdim = x.n_cols;
+
+  if (xdim < 1) {
+    Rcpp::stop("x must have at least one column");
+  }
+  if (mean.n_elem != static_cast<arma::uword>(xdim)) {
+    Rcpp::stop("mean length must equal the number of columns in x");
+  }
+  if (sigma.n_rows != sigma.n_cols || sigma.n_rows != static_cast<arma::uword>(xdim)) {
+    Rcpp::stop("sigma must be a square matrix with dimension matching x");
+  }
+  if (!x.is_finite() || !mean.is_finite() || !sigma.is_finite()) {
+    Rcpp::stop("x, mean, and sigma must contain only finite values");
+  }
+
   arma::vec out(n);
-  arma::mat rooti = arma::trans(arma::inv(trimatu(arma::chol(sigma))));
+  arma::mat sigma_chol;
+  if (!arma::chol(sigma_chol, sigma)) {
+    Rcpp::stop("sigma must be positive definite");
+  }
+
+  arma::mat rooti = arma::trans(arma::inv(trimatu(sigma_chol)));
   double rootisum = arma::sum(log(rooti.diag()));
   double constants = -(static_cast<double>(xdim)/2.0) * log2pi;
 
@@ -59,6 +78,16 @@ arma::vec dmvnrm_arma(arma::mat x,
 // [[Rcpp::export]]
 double calculate_Ratio(double logDeno, arma::vec logNume){
 
+  if (!std::isfinite(logDeno)) {
+    Rcpp::stop("logDeno must be finite");
+  }
+  if (logNume.n_elem < 1) {
+    Rcpp::stop("logNume must contain at least one value");
+  }
+  if (!logNume.is_finite()) {
+    Rcpp::stop("logNume must contain only finite values");
+  }
+
   int n = logNume.n_elem;
   double maxNume = arma::max(logNume);
   double transDeno = logDeno - maxNume;
@@ -70,6 +99,5 @@ double calculate_Ratio(double logDeno, arma::vec logNume){
 
   return(ratio);
 }
-
 
 
