@@ -9,7 +9,7 @@ downloads](https://cranlogs.r-pkg.org/badges/grand-total/bpgmm)](https://cran.r-
 release](https://img.shields.io/github/v/release/YaoxiangLi/bpgmm?display_name=tag&sort=semver)](https://github.com/YaoxiangLi/bpgmm/releases)
 [![pkgdown](https://github.com/YaoxiangLi/bpgmm/actions/workflows/pkgdown.yaml/badge.svg)](https://github.com/YaoxiangLi/bpgmm/actions/workflows/pkgdown.yaml)
 [![License:
-GPL-3](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+GPL-3](https://img.shields.io/badge/license-GPL--3-blue.svg)](https://cran.r-project.org/web/licenses/GPL-3)
 [![DOI](https://img.shields.io/badge/DOI-10.1007%2Fs00357--021--09391--8-blue)](https://doi.org/10.1007/s00357-021-09391-8)
 [![Lifecycle:
 stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)

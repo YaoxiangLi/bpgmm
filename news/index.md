@@ -1,5 +1,11 @@
 # Changelog
 
+## bpgmm 1.1.5
+
+- Fixed the allocation prior contribution in RJMCMC acceptance
+  calculations to use the log product of allocated mixture weights,
+  matching the paper’s joint posterior.
+
 ## bpgmm 1.1.4
 
 - Standardized internal R helper names to snake_case while preserving
