@@ -26,16 +26,8 @@ reference:
     contents:
       - model_to_constraint
       - constraint_to_model
-  - title: Internal and advanced helpers
+  - title: Classes
     contents:
-      - CalculateProposalLambda
-      - CalculateProposalPsy
-      - EvaluateProposalLambda
-      - generatePriorLambda
-      - generatePriorPsi
-      - generatePriorThetaY
-      - stayMCMCupdate
-      - toEthetaYlist
       - Hparam-class
       - ThetaYList
 
