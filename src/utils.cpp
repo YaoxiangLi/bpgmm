@@ -143,7 +143,6 @@ double calculate_Ratio(double logDeno, const arma::vec& logNume){
     Rcpp::stop("logNume must contain only finite values");
   }
 
-  int n = logNume.n_elem;
   double maxNume = arma::max(logNume);
   double transDeno = logDeno - maxNume;
 

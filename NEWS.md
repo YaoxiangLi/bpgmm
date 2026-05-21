@@ -1,3 +1,8 @@
+# bpgmm 1.2.6
+
+* Added `pgmm_rjmcmc_chains()` for CRAN-safe multi-core execution of independent RJMCMC chains.
+* Added deterministic per-chain seeding and unit tests for the independent-chain wrapper.
+
 # bpgmm 1.2.5
 
 * Cleaned native C++ readability without changing sampler behavior.

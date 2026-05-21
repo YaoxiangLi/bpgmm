@@ -3,6 +3,7 @@
 export(constraint_to_model)
 export(model_to_constraint)
 export(pgmm_rjmcmc)
+export(pgmm_rjmcmc_chains)
 export(summarize_pgmm_rjmcmc)
 import(MASS)
 import(fabMix)

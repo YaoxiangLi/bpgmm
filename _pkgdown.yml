@@ -23,6 +23,7 @@ reference:
   - title: Model fitting
     contents:
       - pgmm_rjmcmc
+      - pgmm_rjmcmc_chains
   - title: Summaries
     contents:
       - summarize_pgmm_rjmcmc

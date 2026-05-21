@@ -104,6 +104,33 @@ The main user-facing function is `pgmm_rjmcmc()`. Important settings include:
   covariance-model, and split/combine RJMCMC moves.
 - `verbose`: set to `FALSE` to suppress per-iteration progress output.
 
+## Multi-Core Runs
+
+Individual RJMCMC iterations are sequential because each state depends on the
+previous state. To use multiple cores safely, run independent chains in
+parallel:
+
+```r
+fits <- pgmm_rjmcmc_chains(
+  X = X,
+  m_init = 2,
+  m_range = c(1, 3),
+  q_new = 1,
+  burn = 100,
+  niter = 1000,
+  chains = 4,
+  cores = 4,
+  seed = 2026,
+  verbose = FALSE
+)
+
+length(fits)
+#> [1] 4
+```
+
+This uses separate worker processes where available and stores deterministic
+per-chain seeds in `attr(fits, "chain_seeds")`.
+
 Starting with version 1.2.0, the public API uses snake_case names throughout.
 Older camelCase function names and argument names are no longer exported.
 
