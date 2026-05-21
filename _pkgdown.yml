@@ -1,13 +1,17 @@
 url: https://yaoxiangli.github.io/bpgmm/
 
 template:
+  package: tidytemplate
   bootstrap: 5
-  bootswatch: flatly
 
 navbar:
   structure:
-    left: [intro, reference, articles, news]
+    left: [home, get-started, reference, articles, news]
     right: [search, github]
+  components:
+    get-started:
+      text: Get Started
+      href: articles/getting-started.html
 
 home:
   title: "bpgmm: Bayesian inference for parsimonious Gaussian mixture models"
