@@ -1,3 +1,8 @@
+# bpgmm 1.1.6
+
+* Added a model-and-sampler vignette that explains the mixture-of-factor-analyzers likelihood, PGMM covariance constraints, conjugate priors, allocation update, RJMCMC moves, and package output fields with formulas and runnable examples.
+* Linked the new mathematical vignette from the getting-started guide and pkgdown article index.
+
 # bpgmm 1.1.5
 
 * Fixed the allocation prior contribution in RJMCMC acceptance calculations to use the log product of allocated mixture weights, matching the paper's joint posterior.

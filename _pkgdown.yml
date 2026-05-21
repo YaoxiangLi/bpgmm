@@ -36,4 +36,5 @@ articles:
     navbar: ~
     contents:
       - getting-started
+      - model-and-sampler
       - examples

@@ -19,6 +19,9 @@ clustering. It targets three posterior inference goals described by Lu, Li, and
 Love (2021): the partition of observations, the number of clusters, and the
 cluster covariance structure.
 
+For the model equations, prior distributions, PGMM covariance labels, and
+RJMCMC move types, see `vignette("model-and-sampler", package = "bpgmm")`.
+
 ## Fit a model
 
 Input data should be a numeric matrix with variables in rows and observations
