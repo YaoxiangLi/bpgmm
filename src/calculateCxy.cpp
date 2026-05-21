@@ -65,79 +65,90 @@ Rcpp::List Calculate_Cxy(int m,
     }
   }
 
-  arma::mat Zmat = get_Z_mat(ZOneDim, m, n);
   List A(m);
   arma::vec nVec(m);
 
   for(int k=0; k<m; ++k) {
-    nVec(k) = sum(Zmat.row(k));
-    arma::vec alpha1_vec(1);
-
-    A(k) =  diagmat(join_cols(alpha1_vec.fill(alpha1), arma::ones(qVec(k)) * alpha2));
+    arma::uword q_k = static_cast<arma::uword>(qVec(k));
+    arma::vec prior_diag(q_k + 1);
+    prior_diag(0) = alpha1;
+    prior_diag.subvec(1, q_k).fill(alpha2);
+    A(k) = diagmat(prior_diag);
   };
 
-  List Cxxk;
-  List Cxyk;
-  List Cyyk;
-  List Cytytk;
-  List Cxtytk;
-  List CxL1k;
-  List Cxmyk;
-
-  for (int k=0; k<m; ++k) {
-    arma::mat Cxxkk;
-    arma::mat Cxykk;
-    arma::mat Cyykk;
-    arma::mat Cytytkk;
-    arma::mat Cxtytkk;
-    arma::mat CxL1kk;
-    arma::mat Cxmykk;
-    arma::mat y_k = Y(k);
-    arma::vec m_k = M(k);
-    arma::mat lambda_k = lambda(k);
-    arma::vec one_vec(1);
-
-    for (int i=0; i<n; ++i) {
-      if(i == 0){
-        Cxxkk =  Zmat(k,i) * (X.col(i) * trans(X.col(i)));
-        Cxykk =  Zmat(k,i) * (X.col(i) * trans(y_k.col(i)));
-        Cyykk =  Zmat(k,i) * (y_k.col(i) * trans(y_k.col(i)));
-        Cxtytkk =  Zmat(k,i) * (X.col(i) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
-        Cytytkk =  Zmat(k,i) * (join_cols(one_vec.fill(1), y_k.col(i)) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
-        Cxmykk =  Zmat(k,i) * ((X.col(i) - m_k) * trans(y_k.col(i)));
-        CxL1kk = Zmat(k,i) * (X.col(i) -  (lambda_k * y_k.col(i)));
-
-      }else{
-        Cxxkk = Cxxkk + Zmat(k,i) * (X.col(i) * trans(X.col(i)));
-        Cxykk = Cxykk + Zmat(k,i) * (X.col(i) * trans(y_k.col(i)));
-        Cyykk = Cyykk +  Zmat(k,i) * (y_k.col(i) * trans(y_k.col(i)));
-        Cxtytkk = Cxtytkk + Zmat(k,i) * (X.col(i) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
-        Cytytkk = Cytytkk + Zmat(k,i) * (join_cols(one_vec.fill(1), y_k.col(i)) * trans(join_cols(one_vec.fill(1), y_k.col(i))));
-        Cxmykk = Cxmykk + Zmat(k,i) * ((X.col(i) - m_k) * trans(y_k.col(i)));
-        CxL1kk = CxL1kk + Zmat(k,i) * (X.col(i) -  (lambda_k * y_k.col(i)));
-      }
+  if (ZOneDim.n_elem != static_cast<arma::uword>(n)) {
+    Rcpp::stop("length of ZOneDim must equal n");
+  }
+  nVec.zeros();
+  arma::uvec labels(n);
+  for (int i = 0; i < n; ++i) {
+    double label = ZOneDim(static_cast<arma::uword>(i));
+    if (!std::isfinite(label) || label < 1 || label > m || label != std::floor(label)) {
+      Rcpp::stop("cluster labels must be integers in 1:m");
     }
-    Cxxk.push_back(Cxxkk);
-    Cxyk.push_back(Cxykk);
-    Cyyk.push_back(Cyykk);
-    Cxtytk.push_back(Cxtytkk);
-    Cytytk.push_back(Cytytkk);
-    Cxmyk.push_back(Cxmykk);
-    CxL1k.push_back(CxL1kk);
+    labels(static_cast<arma::uword>(i)) = static_cast<arma::uword>(label - 1);
   }
 
+  List Cxxk(m);
+  List Cxyk(m);
+  List Cyyk(m);
+  List Cytytk(m);
+  List Cxtytk(m);
+  List CxL1k(m);
+  List Cxmyk(m);
   arma::mat sumCxmyk;
   arma::mat sumCyyk;
 
   for (int k=0; k<m; ++k) {
-      arma::mat cxmyk_k = Cxmyk[k];
-      arma::mat cyyk_k = Cyyk[k];
+    arma::uword q_k = static_cast<arma::uword>(qVec(k));
+    arma::mat Cxxkk(p, p, arma::fill::zeros);
+    arma::mat Cxykk(p, q_k, arma::fill::zeros);
+    arma::mat Cyykk(q_k, q_k, arma::fill::zeros);
+    arma::mat Cytytkk(q_k + 1, q_k + 1, arma::fill::zeros);
+    arma::mat Cxtytkk(p, q_k + 1, arma::fill::zeros);
+    arma::mat CxL1kk(p, 1, arma::fill::zeros);
+    arma::mat Cxmykk(p, q_k, arma::fill::zeros);
+    arma::mat y_k = Y(k);
+    arma::vec m_k = M(k);
+    arma::mat lambda_k = lambda(k);
+
+    for (int i = 0; i < n; ++i) {
+      if (labels(static_cast<arma::uword>(i)) != static_cast<arma::uword>(k)) {
+        continue;
+      }
+      const arma::vec x_i = X.col(i);
+      const arma::vec y_i = y_k.col(i);
+
+      nVec(k) += 1.0;
+      Cxxkk += x_i * x_i.t();
+      Cxykk += x_i * y_i.t();
+      Cyykk += y_i * y_i.t();
+      Cxtytkk.col(0) += x_i;
+      Cxtytkk.cols(1, q_k) += x_i * y_i.t();
+      Cytytkk(0, 0) += 1.0;
+      Cytytkk.submat(0, 1, 0, q_k) += y_i.t();
+      Cytytkk.submat(1, 0, q_k, 0) += y_i;
+      Cytytkk.submat(1, 1, q_k, q_k) += y_i * y_i.t();
+      Cxmykk += (x_i - m_k) * y_i.t();
+      CxL1kk += x_i - lambda_k * y_i;
+    }
+
+    Cxxk(k) = Cxxkk;
+    Cxyk(k) = Cxykk;
+    Cyyk(k) = Cyykk;
+    Cxtytk(k) = Cxtytkk;
+    Cytytk(k) = Cytytkk;
+    Cxmyk(k) = Cxmykk;
+    CxL1k(k) = CxL1kk;
+
+    arma::mat prior_cyy(q_k, q_k, arma::fill::eye);
+    prior_cyy *= alpha2;
     if (k == 0) {
-      sumCxmyk = cxmyk_k;
-      sumCyyk  = cyyk_k + diagmat( arma::ones(qVec(k))) * alpha2;
+      sumCxmyk = Cxmykk;
+      sumCyyk = Cyykk + prior_cyy;
     } else {
-      sumCxmyk = sumCxmyk + cxmyk_k;
-      sumCyyk  = sumCyyk + cyyk_k + diagmat(arma::ones(qVec(k))) * alpha2;
+      sumCxmyk += Cxmykk;
+      sumCyyk += Cyykk + prior_cyy;
     }
   }
 
