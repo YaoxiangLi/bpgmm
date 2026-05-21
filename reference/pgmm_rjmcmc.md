@@ -21,7 +21,8 @@ pgmm_rjmcmc(
   sVec = c(1, 1, 1),
   Mstep = 0,
   Vstep = 0,
-  SCind = 0
+  SCind = 0,
+  verbose = TRUE
 )
 
 pgmmRJMCMC(
@@ -38,7 +39,8 @@ pgmmRJMCMC(
   sVec = c(1, 1, 1),
   Mstep = 0,
   Vstep = 0,
-  SCind = 0
+  SCind = 0,
+  verbose = TRUE
 )
 ```
 
@@ -78,7 +80,8 @@ pgmmRJMCMC(
 
 - constraint:
 
-  initial PGMM covariance constraint, a numeric vector of length three
+  initial PGMM covariance constraint. Use a three-letter model label
+  such as \`"CCC"\` or \`"UUU"\`, or a numeric vector of length three
   with binary entries. For example, \`c(1, 1, 1)\` is \`CCC\`, the fully
   constrained model, and \`c(0, 0, 0)\` is \`UUU\`, the fully
   unconstrained model.
@@ -105,6 +108,10 @@ pgmmRJMCMC(
 
   indicator for using split/combine moves in the cluster-number RJMCMC
   step
+
+- verbose:
+
+  logical; if \`TRUE\`, print iteration progress.
 
 ## Details
 

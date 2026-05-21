@@ -30,5 +30,10 @@
   results from `bpgmm`.
 - Added unit tests for the public API, covariance-constraint mapping,
   summary helpers, and native C++ wrappers.
+- Fixed zero-iteration handling in
+  [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md)
+  and added validation for sampler inputs and summary result objects.
+- Added a `verbose` argument to suppress per-iteration progress output
+  in examples, tests, and scripted workflows.
 - Updated C++ build settings and validation for current R/Rcpp best
   practices.

@@ -67,11 +67,12 @@ fit_log <- capture.output({
     niter = 3,
     constraint = constraint,
     Mstep = 0,
-    Vstep = 0
+    Vstep = 0,
+    verbose = FALSE
   )
 })
 tail(fit_log, 1)
-#> [1] "iter =  3 ======>"
+#> character(0)
 ```
 
 The returned object stores posterior samples for allocations, covariance
@@ -130,7 +131,8 @@ fit <- pgmm_rjmcmc(
   constraint = model_to_constraint("UUU"),
   Mstep = 1,
   Vstep = 1,
-  SCind = 1
+  SCind = 1,
+  verbose = FALSE
 )
 
 summarize_pgmm_rjmcmc(fit, trueCluster = known_labels)

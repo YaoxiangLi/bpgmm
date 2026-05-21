@@ -83,7 +83,8 @@ fit <- pgmm_rjmcmc(
   niter = 3,
   constraint = model_to_constraint("UUU"),
   Mstep = 0,
-  Vstep = 0
+  Vstep = 0,
+  verbose = FALSE
 )
 
 fit_summary <- summarize_pgmm_rjmcmc(fit, trueCluster = known_labels)
@@ -113,6 +114,7 @@ Important settings include:
   [`model_to_constraint()`](https://yaoxiangli.github.io/bpgmm/reference/model_to_constraint.md).
 - `Mstep`, `Vstep`, and `SCind`: switches for cluster-number,
   covariance-model, and split/combine RJMCMC moves.
+- `verbose`: set to `FALSE` to suppress per-iteration progress output.
 
 The older names
 [`pgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md),
