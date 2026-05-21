@@ -2,9 +2,20 @@
 // [[Rcpp::plugins(cpp11)]]
 #include <RcppArmadillo.h>
 #include "calculatePostLambdaPsy.h"
-using namespace Rcpp;
 using namespace arma;
 
+namespace {
+
+bool constraint_matches(const arma::vec &constraint,
+                        int lambda_constraint,
+                        int psi_constraint,
+                        int isotropic_constraint) {
+  return constraint(0) == lambda_constraint &&
+         constraint(1) == psi_constraint &&
+         constraint(2) == isotropic_constraint;
+}
+
+} // namespace
 
 // [[Rcpp::export]]
 Rcpp::List Calculate_PostLambdaPsy(int m,
@@ -24,22 +35,22 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
   double bbeta  = get_positive_finite_slot(hparam, "bbeta");
   double delta  = get_positive_finite_slot(hparam, "delta");
 
-  List Cxxk      = CxyList["Cxxk"];
-  List Cxyk      = CxyList["Cxyk"];
-  List Cyyk      = CxyList["Cyyk"];
-  List Cytytk    = CxyList["Cytytk"];
-  List Cxtytk    = CxyList["Cxtytk"];
-  List CxL1k     = CxyList["CxL1k"];
-  List Cxmyk     = CxyList["Cxmyk"];
+  Rcpp::List Cxxk      = CxyList["Cxxk"];
+  Rcpp::List Cxyk      = CxyList["Cxyk"];
+  Rcpp::List Cyyk      = CxyList["Cyyk"];
+  Rcpp::List Cytytk    = CxyList["Cytytk"];
+  Rcpp::List Cxtytk    = CxyList["Cxtytk"];
+  Rcpp::List CxL1k     = CxyList["CxL1k"];
+  Rcpp::List Cxmyk     = CxyList["Cxmyk"];
 
   arma::mat sumCxmyk  = CxyList["sumCxmyk"];
   arma::mat sumCyyk   = CxyList["sumCyyk"];
 
-  List A         = CxyList["A"];
+  Rcpp::List A   = CxyList["A"];
   arma::vec nVec = CxyList["nVec"];
 
-  List M      = thetaYList.slot("M");
-  List psy    = thetaYList.slot("psy");
+  Rcpp::List M   = thetaYList.slot("M");
+  Rcpp::List psy = thetaYList.slot("psy");
 
   if (Cxxk.size() < m || Cxyk.size() < m || Cyyk.size() < m ||
       Cytytk.size() < m || Cxtytk.size() < m || CxL1k.size() < m ||
@@ -55,28 +66,18 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
     Rcpp::stop("nVec must contain only finite values");
   }
 
-  List lambda(m);
+  Rcpp::List lambda(m);
 
-
-
-  // Obtaining namespace of rmvnorm function
   Rcpp::Environment mvtnorm = Rcpp::Environment::namespace_env("mvtnorm");
-  // Picking up rmvnorm() function from rmvnorm package
   Rcpp::Function rmvnorm = mvtnorm["rmvnorm"];
-
 
   Rcpp::Environment base = Rcpp::Environment::namespace_env("base");
   Rcpp::Function kronecker = base["kronecker"];
   Rcpp::Function c = base["c"];
   Rcpp::Function matrix = base["matrix"];
 
-
-
-
-
-
-  if ((constraint[0] == 1) && (constraint[1] == 1) && (constraint[2] == 1)) {
-    // Model 1
+  if (constraint_matches(constraint, 1, 1, 1)) {
+    // Model CCC
     sumCxmyk = sumCxmyk.zeros();
     sumCyyk = sumCyyk.zeros();
 
@@ -99,9 +100,9 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
         Rcpp::NumericMatrix sigma_mat = kronecker(sumCyyk.i(), psy[k]);
 
 
-        lambda[k] = rmvnorm(Named("n", 1),
-                            Named("mean", mean_vec),
-                            Named("sigma", sigma_mat));
+        lambda[k] = rmvnorm(Rcpp::Named("n", 1),
+                            Rcpp::Named("mean", mean_vec),
+                            Rcpp::Named("sigma", sigma_mat));
         Rcpp::NumericMatrix lambdak = lambda[k];
         lambda[k] = matrix(lambdak, p, qVec[k]);
 
@@ -112,7 +113,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
 
-    List tildaLambda(m);
+    Rcpp::List tildaLambda(m);
     for (int k=0; k<m; ++k) {
       Rcpp::NumericMatrix lambda_k = lambda[k];
       Rcpp::NumericVector m_k = M[k];
@@ -125,19 +126,15 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // Post psy
 
-    List post_psy(m);
+    Rcpp::List post_psy(m);
 
     double shapePara = 0;
     arma::vec ratePara_vec(p, arma::fill::zeros);
 
     for (int k=0; k<m; ++k) {
 
-      // double nVec_k = nVec[k];
 
       shapePara += 0.5 * p * (nVec[k] + qVec[k] / m + (2 * delta - 2) / (m * p) + 1);
-
-
-
 
       Rcpp::NumericMatrix Cxxk_k = Cxxk[k];
       Rcpp::NumericMatrix Cxtytk_k = Cxtytk[k];
@@ -160,11 +157,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka / m) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
       ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
-
-
-
 
     }
     shapePara += 1;
@@ -172,21 +165,20 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
     double scalePara = 1 / ratePara;
     double invpsy = sum(arma::randg( 1, distr_param(shapePara, scalePara) ));
 
-    // double invpsy = rgamma(Named("n", 1), Named("shape", shapePara), Named("rate", ratePara));
 
     for (int k=0; k<m; ++k) {
       arma::mat post_psy_eye(p, p, arma::fill::eye);
 
       post_psy(k) = 1/invpsy * post_psy_eye;
     }
-    List res = Rcpp::List::create(Named("lambda") = lambda,
-                                  Named("psy")    = post_psy);
+    Rcpp::List res = Rcpp::List::create(Rcpp::Named("lambda") = lambda,
+                                  Rcpp::Named("psy")    = post_psy);
 
     return(res);
 
-  } else if ((constraint[0] == 1) && (constraint[1] == 1) && (constraint[2] == 0)) {
+  } else if (constraint_matches(constraint, 1, 1, 0)) {
 
-    // Model 2
+    // Model CCU
 
     sumCxmyk = sumCxmyk.zeros();
     sumCyyk = sumCyyk.zeros();
@@ -208,9 +200,9 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
         Rcpp::NumericMatrix sigma_mat = kronecker(sumCyyk.i(), psy[k]);
 
 
-        lambda[k] = rmvnorm(Named("n", 1),
-                            Named("mean", mean_vec),
-                            Named("sigma", sigma_mat));
+        lambda[k] = rmvnorm(Rcpp::Named("n", 1),
+                            Rcpp::Named("mean", mean_vec),
+                            Rcpp::Named("sigma", sigma_mat));
         Rcpp::NumericMatrix lambdak = lambda[k];
         lambda[k] = matrix(lambdak, p, qVec[k]);
 
@@ -221,7 +213,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
 
-    List tildaLambda(m);
+    Rcpp::List tildaLambda(m);
     for (int k=0; k<m; ++k) {
       Rcpp::NumericMatrix lambda_k = lambda[k];
       Rcpp::NumericVector m_k = M[k];
@@ -234,16 +226,12 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // Post psy
 
-    List post_psy(m);
+    Rcpp::List post_psy(m);
 
     double shapePara = 0;
     arma::vec ratePara_vec(p, arma::fill::zeros);
 
     for (int k=0; k<m; ++k) {
-
-      // double nVec_k = nVec[k];
-
-
 
 
       shapePara += 0.5 * (nVec[k] + qVec[k] / m + (2 * delta - 2)/m + 1);
@@ -267,11 +255,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       bbeta_eye = (2 * bbeta / m) * bbeta_eye;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka/m) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
       ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
-
-
-
 
     }
     shapePara += 1;
@@ -292,11 +276,11 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       post_psy(k) = diagmat(1/invpsy);
 
     }
-    List res = Rcpp::List::create(Named("lambda") = lambda,
-                                  Named("psy")    = post_psy);
+    Rcpp::List res = Rcpp::List::create(Rcpp::Named("lambda") = lambda,
+                                  Rcpp::Named("psy")    = post_psy);
 
     return(res);
-  } else if ((constraint[0] == 1) && (constraint[1] == 0) && (constraint[2] == 1)) {
+  } else if (constraint_matches(constraint, 1, 0, 1)) {
     arma::mat Cxmyk_0 = Cxmyk[0];
     arma::mat Cyyk_0 = Cyyk[0];
 
@@ -331,9 +315,9 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
         Rcpp::NumericMatrix sigma_mat = kronecker(sumPhiCyy.i(), p_eye);
 
 
-        lambda[k] = rmvnorm(Named("n", 1),
-                            Named("mean", mean_vec),
-                            Named("sigma", sigma_mat));
+        lambda[k] = rmvnorm(Rcpp::Named("n", 1),
+                            Rcpp::Named("mean", mean_vec),
+                            Rcpp::Named("sigma", sigma_mat));
         Rcpp::NumericMatrix lambdak = lambda[k];
         lambda[k] = matrix(lambdak, p, qVec[k]);
 
@@ -344,7 +328,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
 
-    List tildaLambda(m);
+    Rcpp::List tildaLambda(m);
     for (int k=0; k<m; ++k) {
       Rcpp::NumericMatrix lambda_k = lambda[k];
       Rcpp::NumericVector m_k = M[k];
@@ -357,16 +341,12 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // Post psy
 
-    List post_psy(m);
+    Rcpp::List post_psy(m);
 
     double shapePara = 0;
     arma::vec ratePara_vec(p, arma::fill::zeros);
 
     for (int k=0; k<m; ++k) {
-
-      // double nVec_k = nVec[k];
-
-
 
 
       shapePara = 0.5 * p * (nVec[k] + qVec[k] / m + (2 * delta - 2) / p + 1) + 1;
@@ -390,7 +370,6 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       bbeta_eye = 2 * (bbeta / p) * bbeta_eye;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
       ratePara_vec = arma::diagvec(ratePara_k) * 0.5;
 
 
@@ -402,15 +381,14 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     }
 
-    // double invpsy = rgamma(Named("n", 1), Named("shape", shapePara), Named("rate", ratePara));
 
 
-    List res = Rcpp::List::create(Named("lambda") = lambda,
-                                  Named("psy")    = post_psy);
+    Rcpp::List res = Rcpp::List::create(Rcpp::Named("lambda") = lambda,
+                                  Rcpp::Named("psy")    = post_psy);
 
     return(res);
 
-  } else if ((constraint[0] == 1) && (constraint[1] == 0) && (constraint[2] == 0)) {
+  } else if (constraint_matches(constraint, 1, 0, 0)) {
     arma::mat sumVar;
     arma::mat B;
 
@@ -449,9 +427,9 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     for (int k=0; k<m; ++k) {
       if (k == 0) {
-        lambda[k] = rmvnorm(Named("n", 1),
-                            Named("mean", lambdaMean),
-                            Named("sigma", lambdaVar));
+        lambda[k] = rmvnorm(Rcpp::Named("n", 1),
+                            Rcpp::Named("mean", lambdaMean),
+                            Rcpp::Named("sigma", lambdaVar));
         Rcpp::NumericMatrix lambdak = lambda[k];
         lambda[k] = matrix(lambdak, p, qVec[k]);
 
@@ -462,7 +440,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
 
-    List tildaLambda(m);
+    Rcpp::List tildaLambda(m);
     for (int k=0; k<m; ++k) {
       Rcpp::NumericMatrix lambda_k = lambda[k];
       Rcpp::NumericVector m_k = M[k];
@@ -475,16 +453,12 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // Post psy
 
-    List post_psy(m);
+    Rcpp::List post_psy(m);
 
     double shapePara = 0;
     arma::vec ratePara_vec(p, arma::fill::zeros);
 
     for (int k=0; k<m; ++k) {
-
-      // double nVec_k = nVec[k];
-
-
 
 
       shapePara = 0.5 * (nVec[k] + qVec[k] / m + 2 * delta - 1) + 1;
@@ -522,11 +496,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
       //
 
-
-
       post_psy(k) = diagmat(1/invpsy);
-
-
 
     }
 
@@ -536,12 +506,12 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
     //
     // }
 
-    List res = Rcpp::List::create(Named("lambda") = lambda,
-                                  Named("psy")    = post_psy);
+    Rcpp::List res = Rcpp::List::create(Rcpp::Named("lambda") = lambda,
+                                  Rcpp::Named("psy")    = post_psy);
 
     return(res);
 
-  } else if ((constraint[0] == 0) && (constraint[1] == 1) && (constraint[2] == 1)) {
+  } else if (constraint_matches(constraint, 0, 1, 1)) {
     for (int k=0; k<m; ++k) {
 
 
@@ -562,16 +532,16 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       Rcpp::NumericMatrix sigma_mat = kronecker(Cyyk_ka.i(), psy[k]);
 
 
-      lambda[k] = rmvnorm(Named("n", 1),
-                          Named("mean", mean_vec),
-                          Named("sigma", sigma_mat));
+      lambda[k] = rmvnorm(Rcpp::Named("n", 1),
+                          Rcpp::Named("mean", mean_vec),
+                          Rcpp::Named("sigma", sigma_mat));
       Rcpp::NumericMatrix lambdak = lambda[k];
       lambda[k] = matrix(lambdak, p, qVec[k]);
     }
 
     // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
 
-    List tildaLambda(m);
+    Rcpp::List tildaLambda(m);
     for (int k=0; k<m; ++k) {
       Rcpp::NumericMatrix lambda_k = lambda[k];
       Rcpp::NumericVector m_k = M[k];
@@ -584,16 +554,12 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // Post psy
 
-    List post_psy(m);
+    Rcpp::List post_psy(m);
 
     double shapePara = 0;
     arma::vec ratePara_vec(p, arma::fill::zeros);
 
     for (int k=0; k<m; ++k) {
-
-      // double nVec_k = nVec[k];
-
-
 
 
       shapePara += 0.5 * p * (nVec[k] + qVec[k] + (2 * delta - 2)/(m * p) + 1);
@@ -617,11 +583,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       bbeta_eye = 2 * (bbeta / (m * p)) * bbeta_eye;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
       ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
-
-
-
 
     }
     shapePara += 1;
@@ -629,20 +591,19 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
     double scalePara = 1 / ratePara;
     double invpsy = sum(arma::randg( 1, distr_param(shapePara, scalePara) ));
 
-    // double invpsy = rgamma(Named("n", 1), Named("shape", shapePara), Named("rate", ratePara));
 
     for (int k=0; k<m; ++k) {
       arma::mat post_psy_eye(p, p, arma::fill::eye);
 
       post_psy(k) = 1/invpsy * post_psy_eye;
     }
-    List res = Rcpp::List::create(Named("lambda") = lambda,
-                                  Named("psy")    = post_psy);
+    Rcpp::List res = Rcpp::List::create(Rcpp::Named("lambda") = lambda,
+                                  Rcpp::Named("psy")    = post_psy);
 
     return(res);
 
 
-  } else if ((constraint[0] == 0) && (constraint[1] == 1) && (constraint[2] == 0)) {
+  } else if (constraint_matches(constraint, 0, 1, 0)) {
 
     for (int k=0; k<m; ++k) {
 
@@ -664,16 +625,16 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       Rcpp::NumericMatrix sigma_mat = kronecker(Cyyk_ka.i(), psy[k]);
 
 
-      lambda[k] = rmvnorm(Named("n", 1),
-                          Named("mean", mean_vec),
-                          Named("sigma", sigma_mat));
+      lambda[k] = rmvnorm(Rcpp::Named("n", 1),
+                          Rcpp::Named("mean", mean_vec),
+                          Rcpp::Named("sigma", sigma_mat));
       Rcpp::NumericMatrix lambdak = lambda[k];
       lambda[k] = matrix(lambdak, p, qVec[k]);
     }
 
     // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
 
-    List tildaLambda(m);
+    Rcpp::List tildaLambda(m);
     for (int k=0; k<m; ++k) {
       Rcpp::NumericMatrix lambda_k = lambda[k];
       Rcpp::NumericVector m_k = M[k];
@@ -686,16 +647,12 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // Post psy
 
-    List post_psy(m);
+    Rcpp::List post_psy(m);
 
     double shapePara = 0;
     arma::vec ratePara_vec(p, arma::fill::zeros);
 
     for (int k=0; k<m; ++k) {
-
-      // double nVec_k = nVec[k];
-
-
 
 
       shapePara += 0.5 * (nVec[k] + qVec[k] + (2 * delta - 2)/m + 1);
@@ -719,11 +676,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       bbeta_eye = 2 * (bbeta / m) * bbeta_eye;
 
       arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
-      // ratePara_k = arma::diagvec(ratePara_k) * 0.5;
       ratePara_vec += arma::diagvec(ratePara_k) * 0.5;
-
-
-
 
     }
     shapePara += 1;
@@ -741,12 +694,12 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       post_psy(k) = diagmat(1/invpsy);
     }
 
-    List res = Rcpp::List::create(Named("lambda") = lambda,
-                                  Named("psy")    = post_psy);
+    Rcpp::List res = Rcpp::List::create(Rcpp::Named("lambda") = lambda,
+                                  Rcpp::Named("psy")    = post_psy);
 
     return(res);
 
-  } else if ((constraint[0] == 0) && (constraint[1] == 0) && (constraint[2] == 1)) {
+  } else if (constraint_matches(constraint, 0, 0, 1)) {
 
 
     for (int k=0; k<m; ++k) {
@@ -769,16 +722,16 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       Rcpp::NumericMatrix sigma_mat = kronecker(Cyyk_ka.i(), psy[k]);
 
 
-      lambda[k] = rmvnorm(Named("n", 1),
-                          Named("mean", mean_vec),
-                          Named("sigma", sigma_mat));
+      lambda[k] = rmvnorm(Rcpp::Named("n", 1),
+                          Rcpp::Named("mean", mean_vec),
+                          Rcpp::Named("sigma", sigma_mat));
       Rcpp::NumericMatrix lambdak = lambda[k];
       lambda[k] = matrix(lambdak, p, qVec[k]);
     }
 
     // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
 
-    List tildaLambda(m);
+    Rcpp::List tildaLambda(m);
     for (int k=0; k<m; ++k) {
       Rcpp::NumericMatrix lambda_k = lambda[k];
       Rcpp::NumericVector m_k = M[k];
@@ -791,7 +744,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // Post psy
 
-    List post_psy(m);
+    Rcpp::List post_psy(m);
 
     double shapePara = 0;
     arma::vec ratePara_vec(p, arma::fill::zeros);
@@ -831,12 +784,12 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     }
 
-    List res = Rcpp::List::create(Named("lambda") = lambda,
-                                  Named("psy")    = post_psy);
+    Rcpp::List res = Rcpp::List::create(Rcpp::Named("lambda") = lambda,
+                                  Rcpp::Named("psy")    = post_psy);
 
     return(res);
 
-  } else if ((constraint[0] == 0) && (constraint[1] == 0) && (constraint[2] == 0)) {
+  } else if (constraint_matches(constraint, 0, 0, 0)) {
 
     for (int k=0; k<m; ++k) {
 
@@ -858,16 +811,16 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       Rcpp::NumericMatrix sigma_mat = kronecker(Cyyk_ka.i(), psy[k]);
 
 
-      lambda[k] = rmvnorm(Named("n", 1),
-                          Named("mean", mean_vec),
-                          Named("sigma", sigma_mat));
+      lambda[k] = rmvnorm(Rcpp::Named("n", 1),
+                          Rcpp::Named("mean", mean_vec),
+                          Rcpp::Named("sigma", sigma_mat));
       Rcpp::NumericMatrix lambdak = lambda[k];
       lambda[k] = matrix(lambdak, p, qVec[k]);
     }
 
     // post tilda lambda_k = {mu_k, lambda_k}, first column is mu_k
 
-    List tildaLambda(m);
+    Rcpp::List tildaLambda(m);
     for (int k=0; k<m; ++k) {
       Rcpp::NumericMatrix lambda_k = lambda[k];
       Rcpp::NumericVector m_k = M[k];
@@ -880,7 +833,7 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     // Post psy
 
-    List post_psy(m);
+    Rcpp::List post_psy(m);
 
     double shapePara = 0;
     arma::vec ratePara_vec(p, arma::fill::zeros);
@@ -923,8 +876,6 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
       //                                     Name("shape", shapePara),
       //                                     Name("rate", ratePara));
 
-
-
       arma::vec invpsy(p);
       for (int j=0; j<p; ++j) {
         double ratePara_j = ratePara[j];
@@ -937,12 +888,12 @@ Rcpp::List Calculate_PostLambdaPsy(int m,
 
     }
 
-    List res = Rcpp::List::create(Named("lambda") = lambda,
-                                  Named("psy")    = post_psy);
+    Rcpp::List res = Rcpp::List::create(Rcpp::Named("lambda") = lambda,
+                                  Rcpp::Named("psy")    = post_psy);
     return(res);
   }
 
-  List res = Rcpp::List::create(Named("lambda") = lambda,
-                                Named("psy")    = psy);
+  Rcpp::List res = Rcpp::List::create(Rcpp::Named("lambda") = lambda,
+                                Rcpp::Named("psy")    = psy);
   return(res);
 }

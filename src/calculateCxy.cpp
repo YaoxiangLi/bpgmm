@@ -2,7 +2,6 @@
 // [[Rcpp::plugins(cpp11)]]
 #include <RcppArmadillo.h>
 #include "utils.h"
-using namespace Rcpp;
 
 
 // [[Rcpp::export]]
@@ -28,10 +27,10 @@ Rcpp::List Calculate_Cxy(int m,
   double alpha1 = get_positive_finite_slot(hparam, "alpha1");
   double alpha2 = get_positive_finite_slot(hparam, "alpha2");
 
-  List Y      = thetaYList.slot("Y");
-  List lambda = thetaYList.slot("lambda");
-  List M      = thetaYList.slot("M");
-  List psy    = thetaYList.slot("psy");
+  Rcpp::List Y = thetaYList.slot("Y");
+  Rcpp::List lambda = thetaYList.slot("lambda");
+  Rcpp::List M = thetaYList.slot("M");
+  Rcpp::List psy = thetaYList.slot("psy");
 
   if (Y.size() < m || lambda.size() < m || M.size() < m || psy.size() < m) {
     Rcpp::stop("theta_y_list slots must each have length at least m");
@@ -65,7 +64,7 @@ Rcpp::List Calculate_Cxy(int m,
     }
   }
 
-  List A(m);
+  Rcpp::List A(m);
   arma::vec nVec(m);
 
   for(int k=0; k<m; ++k) {
@@ -89,13 +88,13 @@ Rcpp::List Calculate_Cxy(int m,
     labels(static_cast<arma::uword>(i)) = static_cast<arma::uword>(label - 1);
   }
 
-  List Cxxk(m);
-  List Cxyk(m);
-  List Cyyk(m);
-  List Cytytk(m);
-  List Cxtytk(m);
-  List CxL1k(m);
-  List Cxmyk(m);
+  Rcpp::List Cxxk(m);
+  Rcpp::List Cxyk(m);
+  Rcpp::List Cyyk(m);
+  Rcpp::List Cytytk(m);
+  Rcpp::List Cxtytk(m);
+  Rcpp::List CxL1k(m);
+  Rcpp::List Cxmyk(m);
   arma::mat sumCxmyk;
   arma::mat sumCyyk;
 
@@ -152,17 +151,18 @@ Rcpp::List Calculate_Cxy(int m,
     }
   }
 
-  List res = Rcpp::List::create(Named("A")        = A,
-                                Named("nVec")     = nVec,
-                                Named("Cxxk")     = Cxxk,
-                                Named("Cxyk")     = Cxyk,
-                                Named("Cyyk")     = Cyyk,
-                                Named("Cytytk")   = Cytytk,
-                                Named("Cxtytk")   = Cxtytk,
-                                Named("CxL1k")    = CxL1k,
-                                Named("Cxmyk")    = Cxmyk,
-                                Named("sumCxmyk") = sumCxmyk,
-                                Named("sumCyyk")  = sumCyyk);
+  Rcpp::List res = Rcpp::List::create(
+    Rcpp::Named("A") = A,
+    Rcpp::Named("nVec") = nVec,
+    Rcpp::Named("Cxxk") = Cxxk,
+    Rcpp::Named("Cxyk") = Cxyk,
+    Rcpp::Named("Cyyk") = Cyyk,
+    Rcpp::Named("Cytytk") = Cytytk,
+    Rcpp::Named("Cxtytk") = Cxtytk,
+    Rcpp::Named("CxL1k") = CxL1k,
+    Rcpp::Named("Cxmyk") = Cxmyk,
+    Rcpp::Named("sumCxmyk") = sumCxmyk,
+    Rcpp::Named("sumCyyk") = sumCyyk);
 
   return(res);
 }

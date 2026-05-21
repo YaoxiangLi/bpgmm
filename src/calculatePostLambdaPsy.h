@@ -1,5 +1,5 @@
-#ifndef __BPGMM_CALCULATEPOSTLAMBDAPSY__
-#define __BPGMM_CALCULATEPOSTLAMBDAPSY__
+#ifndef BPGMM_CALCULATE_POST_LAMBDA_PSY_H
+#define BPGMM_CALCULATE_POST_LAMBDA_PSY_H
 
 #include <RcppArmadillo.h>
 #include "utils.h"

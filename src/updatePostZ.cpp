@@ -4,19 +4,17 @@
 #include <cmath>
 #include <vector>
 #include "utils.h"
-using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-Rcpp::IntegerVector update_PostZ(
-                     arma::mat X,
-                     int m,
-                     int n,
-                     Rcpp::S4 thetaYList){
+Rcpp::IntegerVector update_PostZ(arma::mat X,
+                                 int m,
+                                 int n,
+                                 Rcpp::S4 thetaYList) {
 
-  List lambda   = thetaYList.slot("lambda");
-  List M        = thetaYList.slot("M");
-  List psy      = thetaYList.slot("psy");
+  Rcpp::List lambda = thetaYList.slot("lambda");
+  Rcpp::List M = thetaYList.slot("M");
+  Rcpp::List psy = thetaYList.slot("psy");
   arma::vec tao = thetaYList.slot("tao");
   arma::uword p = X.n_rows;
 
