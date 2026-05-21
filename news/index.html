@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.5</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.6</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -19,6 +19,7 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/getting-started.html">Getting started with bpgmm</a></li>
+    <li><a class="dropdown-item" href="../articles/model-and-sampler.html">Model and sampler details</a></li>
     <li><a class="dropdown-item" href="../articles/examples.html">Worked examples</a></li>
   </ul></li>
 <li class="active nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -37,6 +38,11 @@
       <small>Source: <a href="https://github.com/YaoxiangLi/bpgmm/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.1.6" id="bpgmm-116">bpgmm 1.1.6<a class="anchor" aria-label="anchor" href="#bpgmm-116"></a></h2>
+<ul><li>Added a model-and-sampler vignette that explains the mixture-of-factor-analyzers likelihood, PGMM covariance constraints, conjugate priors, allocation update, RJMCMC moves, and package output fields with formulas and runnable examples.</li>
+<li>Linked the new mathematical vignette from the getting-started guide and pkgdown article index.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.5" id="bpgmm-115">bpgmm 1.1.5<a class="anchor" aria-label="anchor" href="#bpgmm-115"></a></h2>
 <ul><li>Fixed the allocation prior contribution in RJMCMC acceptance calculations to use the log product of allocated mixture weights, matching the paper’s joint posterior.</li>

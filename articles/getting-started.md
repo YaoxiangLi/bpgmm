@@ -5,6 +5,10 @@ model-based clustering. It targets three posterior inference goals
 described by Lu, Li, and Love (2021): the partition of observations, the
 number of clusters, and the cluster covariance structure.
 
+For the model equations, prior distributions, PGMM covariance labels,
+and RJMCMC move types, see
+[`vignette("model-and-sampler", package = "bpgmm")`](https://yaoxiangli.github.io/bpgmm/articles/model-and-sampler.md).
+
 ## Fit a model
 
 Input data should be a numeric matrix with variables in rows and
@@ -15,7 +19,7 @@ quickly; use larger `burn` and `niter` values for real analysis.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.1.5 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.1.6 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
