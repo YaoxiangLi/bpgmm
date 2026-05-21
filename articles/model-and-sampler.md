@@ -45,9 +45,9 @@ In
 [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md):
 
 - `X` is the $`p \times n`$ data matrix.
-- `mInit` is the starting value of $`m`$.
-- `mVec` is the allowed range of $`m`$.
-- `qnew` is the factor dimension assigned to a newly proposed cluster.
+- `m_init` is the starting value of $`m`$.
+- `m_range` is the allowed range of $`m`$.
+- `q_new` is the factor dimension assigned to a newly proposed cluster.
 - `constraint` is the starting covariance model.
 
 ## PGMM covariance constraints
@@ -66,7 +66,7 @@ The eight PGMM models are:
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.1.6 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 models <- c("CCC", "CCU", "CUC", "CUU", "UCC", "UCU", "UUC", "UUU")
 data.frame(
@@ -129,8 +129,8 @@ and
 The package samples the hyperparameters $`\alpha_1`$, $`\alpha_2`$, and
 $`\beta`$, with gamma hyperpriors controlled by:
 
-- `dVec`: shape parameters.
-- `sVec`: rate parameters.
+- `d_vec`: shape parameters.
+- `s_vec`: rate parameters.
 - `delta`: inverse-gamma shape for the noise covariance.
 - `ggamma`: Dirichlet concentration for mixture weights.
 
@@ -184,9 +184,9 @@ The covariance-structure moves toggle one constraint at a time:
 In
 [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md):
 
-- `Mstep = 1` enables birth/death moves for $`m`$.
-- `SCind = 1` adds split/combine moves when `Mstep = 1`.
-- `Vstep = 1` enables covariance-constraint moves.
+- `m_step = 1` enables birth/death moves for $`m`$.
+- `split_combine = 1` adds split/combine moves when `m_step = 1`.
+- `v_step = 1` enables covariance-constraint moves.
 
 ## Minimal runnable example
 
@@ -205,23 +205,23 @@ known_labels <- rep(1:2, each = 4)
 
 fit <- pgmm_rjmcmc(
   X = X,
-  mInit = 2,
-  mVec = c(1, 3),
-  qnew = 1,
+  m_init = 2,
+  m_range = c(1, 3),
+  q_new = 1,
   burn = 1,
   niter = 3,
   constraint = model_to_constraint("UUU"),
-  Mstep = 0,
-  Vstep = 0,
+  m_step = 0,
+  v_step = 0,
   verbose = FALSE
 )
 
-fit_summary <- summarize_pgmm_rjmcmc(fit, trueCluster = known_labels)
-fit_summary$nCluster
+fit_summary <- summarize_pgmm_rjmcmc(fit, true_cluster = known_labels)
+fit_summary$n_clusters
 #> 
 #> 2 
 #> 3
-fit_summary$nConstraint
+fit_summary$n_constraints
 #> 
 #> UUU 
 #>   3
@@ -229,22 +229,22 @@ fit_summary$ari
 #> [1] 1
 ```
 
-The examples above keep `Mstep = 0` and `Vstep = 0` to make the vignette
-fast. A full model-selection run uses the same interface:
+The examples above keep `m_step = 0` and `v_step = 0` to make the
+vignette fast. A full model-selection run uses the same interface:
 
 ``` r
 
 fit <- pgmm_rjmcmc(
   X = your_data_matrix,
-  mInit = 5,
-  mVec = c(1, 10),
-  qnew = 4,
+  m_init = 5,
+  m_range = c(1, 10),
+  q_new = 4,
   burn = 5000,
   niter = 15000,
   constraint = model_to_constraint("UUU"),
-  Mstep = 1,
-  Vstep = 1,
-  SCind = 1,
+  m_step = 1,
+  v_step = 1,
+  split_combine = 1,
   verbose = FALSE
 )
 ```
@@ -254,14 +254,14 @@ fit <- pgmm_rjmcmc(
 The sampler returns posterior samples as lists. The most commonly used
 fields are:
 
-| Field            | Meaning                                |
-|------------------|----------------------------------------|
-| `ZmatList`       | sampled cluster allocations $`Z`$      |
-| `constraintList` | sampled PGMM covariance constraints    |
-| `taoList`        | sampled mixture weights $`\tau`$       |
-| `MList`          | sampled cluster means $`\mu_k`$        |
-| `lambdaList`     | sampled loading matrices $`\Lambda_k`$ |
-| `psyList`        | sampled noise covariances $`\Psi_k`$   |
+| Field                | Meaning                                |
+|----------------------|----------------------------------------|
+| `allocation_samples` | sampled cluster allocations $`Z`$      |
+| `constraint_samples` | sampled PGMM covariance constraints    |
+| `tau_samples`        | sampled mixture weights $`\tau`$       |
+| `mean_samples`       | sampled cluster means $`\mu_k`$        |
+| `lambda_samples`     | sampled loading matrices $`\Lambda_k`$ |
+| `psi_samples`        | sampled noise covariances $`\Psi_k`$   |
 
 Use
 [`summarize_pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md)
@@ -270,12 +270,14 @@ for posterior summaries:
 ``` r
 
 names(fit)
-#>  [1] "taoList"        "psyList"        "MList"         
-#>  [4] "lambdaList"     "YList"          "ZmatList"      
-#>  [7] "constraintList" "alpha1Vec"      "alpha2Vec"     
-#> [10] "bbetaVec"       "clusIndList"
+#>  [1] "tau_samples"            "psi_samples"           
+#>  [3] "mean_samples"           "lambda_samples"        
+#>  [5] "factor_score_samples"   "allocation_samples"    
+#>  [7] "constraint_samples"     "alpha1_samples"        
+#>  [9] "alpha2_samples"         "beta_samples"          
+#> [11] "active_cluster_samples"
 names(fit_summary)
-#> [1] "Zalloc"      "nCluster"    "nConstraint" "ari"
+#> [1] "allocation"    "n_clusters"    "n_constraints" "ari"
 ```
 
 ## Citation

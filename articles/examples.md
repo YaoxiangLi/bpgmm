@@ -13,7 +13,7 @@ columns. The code below creates two compact clusters in two dimensions.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.1.6 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -51,8 +51,8 @@ constraint_to_model(constraint)
 ## Fit a short RJMCMC chain
 
 This vignette uses only three posterior iterations so it runs quickly.
-For research use, increase `burn` and `niter`, and set `Mstep = 1` and
-`Vstep = 1` when you want RJMCMC model selection for the number of
+For research use, increase `burn` and `niter`, and set `m_step = 1` and
+`v_step = 1` when you want RJMCMC model selection for the number of
 clusters and covariance structure.
 
 ``` r
@@ -60,14 +60,14 @@ clusters and covariance structure.
 fit_log <- capture.output({
   fit <- pgmm_rjmcmc(
     X = X,
-    mInit = 2,
-    mVec = c(1, 3),
-    qnew = 1,
+    m_init = 2,
+    m_range = c(1, 3),
+    q_new = 1,
     burn = 1,
     niter = 3,
     constraint = constraint,
-    Mstep = 0,
-    Vstep = 0,
+    m_step = 0,
+    v_step = 0,
     verbose = FALSE
   )
 })
@@ -81,11 +81,13 @@ constraints, component parameters, and hyperparameters.
 ``` r
 
 names(fit)
-#>  [1] "taoList"        "psyList"        "MList"         
-#>  [4] "lambdaList"     "YList"          "ZmatList"      
-#>  [7] "constraintList" "alpha1Vec"      "alpha2Vec"     
-#> [10] "bbetaVec"       "clusIndList"
-length(fit$ZmatList)
+#>  [1] "tau_samples"            "psi_samples"           
+#>  [3] "mean_samples"           "lambda_samples"        
+#>  [5] "factor_score_samples"   "allocation_samples"    
+#>  [7] "constraint_samples"     "alpha1_samples"        
+#>  [9] "alpha2_samples"         "beta_samples"          
+#> [11] "active_cluster_samples"
+length(fit$allocation_samples)
 #> [1] 3
 ```
 
@@ -98,15 +100,15 @@ adjusted Rand index.
 
 ``` r
 
-fit_summary <- summarize_pgmm_rjmcmc(fit, trueCluster = known_labels)
+fit_summary <- summarize_pgmm_rjmcmc(fit, true_cluster = known_labels)
 
-fit_summary$Zalloc
+fit_summary$allocation
 #> [1] 2 2 2 2 1 1 1 1
-fit_summary$nCluster
+fit_summary$n_clusters
 #> 
 #> 2 
 #> 3
-fit_summary$nConstraint
+fit_summary$n_constraints
 #> 
 #> UUU 
 #>   3
@@ -124,17 +126,17 @@ diagnostics.
 
 fit <- pgmm_rjmcmc(
   X = your_data_matrix,
-  mInit = 2,
-  mVec = c(1, 10),
-  qnew = 4,
+  m_init = 2,
+  m_range = c(1, 10),
+  q_new = 4,
   burn = 5000,
   niter = 15000,
   constraint = model_to_constraint("UUU"),
-  Mstep = 1,
-  Vstep = 1,
-  SCind = 1,
+  m_step = 1,
+  v_step = 1,
+  split_combine = 1,
   verbose = FALSE
 )
 
-summarize_pgmm_rjmcmc(fit, trueCluster = known_labels)
+summarize_pgmm_rjmcmc(fit, true_cluster = known_labels)
 ```

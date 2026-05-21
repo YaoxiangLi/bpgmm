@@ -19,7 +19,7 @@ quickly; use larger `burn` and `niter` values for real analysis.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.1.6 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -32,14 +32,14 @@ known_labels <- rep(1:2, each = 4)
 fit_log <- capture.output({
   fit <- pgmm_rjmcmc(
     X = X,
-    mInit = 2,
-    mVec = c(1, 3),
-    qnew = 1,
+    m_init = 2,
+    m_range = c(1, 3),
+    q_new = 1,
     burn = 1,
     niter = 3,
     constraint = model_to_constraint("UUU"),
-    Mstep = 0,
-    Vstep = 0,
+    m_step = 0,
+    v_step = 0,
     verbose = FALSE
   )
 })
@@ -49,12 +49,13 @@ tail(fit_log, 1)
 
 The arguments control the sampler:
 
-- `mInit` is the initial number of clusters.
-- `mVec` is the allowed range for the number of clusters.
-- `qnew` is the number of latent factors for a new cluster.
+- `m_init` is the initial number of clusters.
+- `m_range` is the allowed range for the number of clusters.
+- `q_new` is the number of latent factors for a new cluster.
 - `constraint` selects the starting covariance model.
-- `Mstep = 1` allows RJMCMC updates for the number of clusters.
-- `Vstep = 1` allows RJMCMC updates across covariance-constraint models.
+- `m_step = 1` allows RJMCMC updates for the number of clusters.
+- `v_step = 1` allows RJMCMC updates across covariance-constraint
+  models.
 
 A longer run for applied work might look like this:
 
@@ -62,13 +63,13 @@ A longer run for applied work might look like this:
 
 fit <- pgmm_rjmcmc(
   X = methylation_matrix,
-  mInit = 2,
-  mVec = c(1, 6),
-  qnew = 2,
+  m_init = 2,
+  m_range = c(1, 6),
+  q_new = 2,
   burn = 100,
   niter = 1000,
-  Mstep = 1,
-  Vstep = 1,
+  m_step = 1,
+  v_step = 1,
   verbose = FALSE
 )
 ```
@@ -77,15 +78,15 @@ fit <- pgmm_rjmcmc(
 
 ``` r
 
-summary <- summarize_pgmm_rjmcmc(fit, trueCluster = known_labels)
+summary <- summarize_pgmm_rjmcmc(fit, true_cluster = known_labels)
 
-summary$Zalloc
+summary$allocation
 #> [1] 2 2 2 2 1 1 1 1
-summary$nCluster
+summary$n_clusters
 #> 
 #> 2 
 #> 3
-summary$nConstraint
+summary$n_constraints
 #> 
 #> UUU 
 #>   3
@@ -93,7 +94,7 @@ summary$ari
 #> [1] 1
 ```
 
-If a reference partition is available, pass it as `trueCluster` to
+If a reference partition is available, pass it as `true_cluster` to
 calculate the adjusted Rand index.
 
 ## Work with covariance constraints
@@ -110,17 +111,13 @@ constraint_to_model(c(1, 0, 0))
 #> [1] "CUU"
 ```
 
-## Deprecated names
+## Naming convention
 
-The old names
-[`pgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md),
-[`summarizePgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md),
-and
-[`summerizePgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md)
-remain available as compatibility wrappers, but new code should use
-[`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md)
-and
-[`summarize_pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md).
+Starting with version 1.2.0, the public API uses snake_case names
+throughout. Use
+[`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md),
+[`summarize_pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md),
+and snake_case argument names such as `m_init`, `m_range`, and `q_new`.
 
 ## Citation
 

@@ -9,37 +9,19 @@ model selection.
 ``` r
 pgmm_rjmcmc(
   X,
-  mInit,
-  mVec,
-  qnew,
+  m_init,
+  m_range,
+  q_new,
   delta = 2,
   ggamma = 2,
   burn = 20,
   niter = 1000,
   constraint = c(0, 0, 0),
-  dVec = c(1, 1, 1),
-  sVec = c(1, 1, 1),
-  Mstep = 0,
-  Vstep = 0,
-  SCind = 0,
-  verbose = TRUE
-)
-
-pgmmRJMCMC(
-  X,
-  mInit,
-  mVec,
-  qnew,
-  delta = 2,
-  ggamma = 2,
-  burn = 20,
-  niter = 1000,
-  constraint = c(0, 0, 0),
-  dVec = c(1, 1, 1),
-  sVec = c(1, 1, 1),
-  Mstep = 0,
-  Vstep = 0,
-  SCind = 0,
+  d_vec = c(1, 1, 1),
+  s_vec = c(1, 1, 1),
+  m_step = 0,
+  v_step = 0,
+  split_combine = 0,
   verbose = TRUE
 )
 ```
@@ -48,19 +30,20 @@ pgmmRJMCMC(
 
 - X:
 
-  the observation matrix with size p \* m
+  the observation matrix with variables in rows and observations in
+  columns.
 
-- mInit:
+- m_init:
 
-  the number of initial clusters
+  the number of initial clusters.
 
-- mVec:
+- m_range:
 
-  the range of the number of clusters
+  the allowed range for the number of clusters.
 
-- qnew:
+- q_new:
 
-  the number of latent factors for a new cluster
+  the number of latent factors for a new cluster.
 
 - delta:
 
@@ -86,32 +69,40 @@ pgmmRJMCMC(
   constrained model, and \`c(0, 0, 0)\` is \`UUU\`, the fully
   unconstrained model.
 
-- dVec:
+- d_vec:
 
   a vector of hyperparameters with length three, shape parameters for
   alpha1, alpha2 and bbeta respectively
 
-- sVec:
+- s_vec:
 
   a vector of hyperparameters with length three, rate parameters for
   alpha1, alpha2 and bbeta respectively
 
-- Mstep:
+- m_step:
 
-  indicator for RJMCMC model selection on the number of clusters
+  indicator for RJMCMC model selection on the number of clusters.
 
-- Vstep:
+- v_step:
 
-  indicator for RJMCMC model selection on covariance structures
+  indicator for RJMCMC model selection on covariance structures.
 
-- SCind:
+- split_combine:
 
   indicator for using split/combine moves in the cluster-number RJMCMC
-  step
+  step.
 
 - verbose:
 
   logical; if \`TRUE\`, print iteration progress.
+
+## Value
+
+A list of posterior samples with snake_case fields: \`tau_samples\`,
+\`psi_samples\`, \`mean_samples\`, \`lambda_samples\`,
+\`factor_score_samples\`, \`allocation_samples\`,
+\`constraint_samples\`, \`alpha1_samples\`, \`alpha2_samples\`,
+\`beta_samples\`, and \`active_cluster_samples\`.
 
 ## Details
 

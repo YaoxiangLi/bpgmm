@@ -76,22 +76,22 @@ known_labels <- rep(1:2, each = 4)
 
 fit <- pgmm_rjmcmc(
   X = X,
-  mInit = 2,
-  mVec = c(1, 3),
-  qnew = 1,
+  m_init = 2,
+  m_range = c(1, 3),
+  q_new = 1,
   burn = 1,
   niter = 3,
   constraint = model_to_constraint("UUU"),
-  Mstep = 0,
-  Vstep = 0,
+  m_step = 0,
+  v_step = 0,
   verbose = FALSE
 )
 
-fit_summary <- summarize_pgmm_rjmcmc(fit, trueCluster = known_labels)
-as.integer(fit_summary$nCluster["2"])
+fit_summary <- summarize_pgmm_rjmcmc(fit, true_cluster = known_labels)
+as.integer(fit_summary$n_clusters["2"])
 #> [1] 3
 
-as.integer(fit_summary$nConstraint["UUU"])
+as.integer(fit_summary$n_constraints["UUU"])
 #> [1] 3
 
 fit_summary$ari
@@ -99,33 +99,26 @@ fit_summary$ari
 ```
 
 Here `X` is a numeric matrix with variables in rows and observations in
-columns. Set `Mstep = 1` to allow RJMCMC updates for the number of
-clusters and `Vstep = 1` to allow updates for the variance structure.
+columns. Set `m_step = 1` to allow RJMCMC updates for the number of
+clusters and `v_step = 1` to allow updates for the variance structure.
 
 The main user-facing function is
 [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md).
 Important settings include:
 
-- `mInit`: initial number of clusters.
-- `mVec`: allowed cluster range, such as `c(1, 6)`.
-- `qnew`: number of latent factors for a newly proposed cluster.
+- `m_init`: initial number of clusters.
+- `m_range`: allowed cluster range, such as `c(1, 6)`.
+- `q_new`: number of latent factors for a newly proposed cluster.
 - `burn` and `niter`: burn-in and posterior sampling iterations.
 - `constraint`: initial covariance model, usually set with
   [`model_to_constraint()`](https://yaoxiangli.github.io/bpgmm/reference/model_to_constraint.md).
-- `Mstep`, `Vstep`, and `SCind`: switches for cluster-number,
+- `m_step`, `v_step`, and `split_combine`: switches for cluster-number,
   covariance-model, and split/combine RJMCMC moves.
 - `verbose`: set to `FALSE` to suppress per-iteration progress output.
 
-The older names
-[`pgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md),
-[`summarizePgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md),
-and the misspelled
-[`summerizePgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md)
-are deprecated compatibility wrappers. They still work, but new code
-should use
-[`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md)
-and
-[`summarize_pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md).
+Starting with version 1.2.0, the public API uses snake_case names
+throughout. Older camelCase function names and argument names are no
+longer exported.
 
 The eight covariance structures in the paper are represented by model
 labels such as `"CCC"`, `"CUU"`, and `"UUU"`. The package also accepts

@@ -8,24 +8,20 @@ the adjusted Rand index against a known reference partition.
 ## Usage
 
 ``` r
-summarize_pgmm_rjmcmc(pgmmResList, trueCluster = NULL)
-
-summarizePgmmRJMCMC(pgmmResList, trueCluster = NULL)
-
-summerizePgmmRJMCMC(pgmmResList, trueCluster = NULL)
+summarize_pgmm_rjmcmc(fit, true_cluster = NULL)
 ```
 
 ## Arguments
 
-- pgmmResList:
+- fit:
 
   Result list from \[pgmm_rjmcmc()\].
 
-- trueCluster:
+- true_cluster:
 
   Optional true or reference cluster allocation.
 
 ## Value
 
-A list with \`Zalloc\`, \`nCluster\`, \`nConstraint\`, and optionally
-\`ari\`.
+A list with \`allocation\`, \`n_clusters\`, \`n_constraints\`, and
+optionally \`ari\`.

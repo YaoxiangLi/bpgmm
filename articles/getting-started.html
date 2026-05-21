@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -87,7 +87,7 @@ quickly; use larger <code>burn</code> and <code>niter</code> values for
 real analysis.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.1.6 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.2.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span></span>
@@ -100,14 +100,14 @@ real analysis.</p>
 <span><span class="va">fit_log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>    X <span class="op">=</span> <span class="va">X</span>,</span>
-<span>    mInit <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>    mVec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span>    qnew <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>    m_init <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>    m_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>    q_new <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    burn <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    niter <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>    constraint <span class="op">=</span> <span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span>,</span>
-<span>    Mstep <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>    Vstep <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    m_step <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>    v_step <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
@@ -116,33 +116,33 @@ real analysis.</p>
 <p>The arguments control the sampler:</p>
 <ul>
 <li>
-<code>mInit</code> is the initial number of clusters.</li>
+<code>m_init</code> is the initial number of clusters.</li>
 <li>
-<code>mVec</code> is the allowed range for the number of
+<code>m_range</code> is the allowed range for the number of
 clusters.</li>
 <li>
-<code>qnew</code> is the number of latent factors for a new
+<code>q_new</code> is the number of latent factors for a new
 cluster.</li>
 <li>
 <code>constraint</code> selects the starting covariance model.</li>
 <li>
-<code>Mstep = 1</code> allows RJMCMC updates for the number of
+<code>m_step = 1</code> allows RJMCMC updates for the number of
 clusters.</li>
 <li>
-<code>Vstep = 1</code> allows RJMCMC updates across
+<code>v_step = 1</code> allows RJMCMC updates across
 covariance-constraint models.</li>
 </ul>
 <p>A longer run for applied work might look like this:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">methylation_matrix</span>,</span>
-<span>  mInit <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  mVec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span>  qnew <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  m_init <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  m_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">)</span>,</span>
+<span>  q_new <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  burn <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  niter <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  Mstep <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  Vstep <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  m_step <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  v_step <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -150,22 +150,22 @@ covariance-constraint models.</li>
 <h2 id="summarize-posterior-samples">Summarize posterior samples<a class="anchor" aria-label="anchor" href="#summarize-posterior-samples"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, trueCluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, true_cluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">summary</span><span class="op">$</span><span class="va">Zalloc</span></span>
+<span><span class="va">summary</span><span class="op">$</span><span class="va">allocation</span></span>
 <span><span class="co">#&gt; [1] 2 2 2 2 1 1 1 1</span></span>
-<span><span class="va">summary</span><span class="op">$</span><span class="va">nCluster</span></span>
+<span><span class="va">summary</span><span class="op">$</span><span class="va">n_clusters</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 2 </span></span>
 <span><span class="co">#&gt; 3</span></span>
-<span><span class="va">summary</span><span class="op">$</span><span class="va">nConstraint</span></span>
+<span><span class="va">summary</span><span class="op">$</span><span class="va">n_constraints</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; UUU </span></span>
 <span><span class="co">#&gt;   3</span></span>
 <span><span class="va">summary</span><span class="op">$</span><span class="va">ari</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
 <p>If a reference partition is available, pass it as
-<code>trueCluster</code> to calculate the adjusted Rand index.</p>
+<code>true_cluster</code> to calculate the adjusted Rand index.</p>
 </div>
 <div class="section level2">
 <h2 id="work-with-covariance-constraints">Work with covariance constraints<a class="anchor" aria-label="anchor" href="#work-with-covariance-constraints"></a>
@@ -182,13 +182,13 @@ constraint vectors.</p>
 <span><span class="co">#&gt; [1] "CUU"</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="deprecated-names">Deprecated names<a class="anchor" aria-label="anchor" href="#deprecated-names"></a>
+<h2 id="naming-convention">Naming convention<a class="anchor" aria-label="anchor" href="#naming-convention"></a>
 </h2>
-<p>The old names <code><a href="../reference/pgmm_rjmcmc.html">pgmmRJMCMC()</a></code>,
-<code><a href="../reference/summarize_pgmm_rjmcmc.html">summarizePgmmRJMCMC()</a></code>, and
-<code><a href="../reference/summarize_pgmm_rjmcmc.html">summerizePgmmRJMCMC()</a></code> remain available as compatibility
-wrappers, but new code should use <code><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code> and
-<code><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc()</a></code>.</p>
+<p>Starting with version 1.2.0, the public API uses snake_case names
+throughout. Use <code><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code>,
+<code><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc()</a></code>, and snake_case argument names such
+as <code>m_init</code>, <code>m_range</code>, and
+<code>q_new</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>

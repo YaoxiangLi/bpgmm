@@ -13,7 +13,7 @@ against a known reference partition."></head><body>
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -55,28 +55,24 @@ against a known reference partition.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">summarize_pgmm_rjmcmc</span><span class="op">(</span><span class="va">pgmmResList</span>, trueCluster <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">summarizePgmmRJMCMC</span><span class="op">(</span><span class="va">pgmmResList</span>, trueCluster <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu">summerizePgmmRJMCMC</span><span class="op">(</span><span class="va">pgmmResList</span>, trueCluster <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">summarize_pgmm_rjmcmc</span><span class="op">(</span><span class="va">fit</span>, true_cluster <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
 
 
-<dl><dt id="arg-pgmmreslist">pgmmResList<a class="anchor" aria-label="anchor" href="#arg-pgmmreslist"></a></dt>
+<dl><dt id="arg-fit">fit<a class="anchor" aria-label="anchor" href="#arg-fit"></a></dt>
 <dd><p>Result list from [pgmm_rjmcmc()].</p></dd>
 
 
-<dt id="arg-truecluster">trueCluster<a class="anchor" aria-label="anchor" href="#arg-truecluster"></a></dt>
+<dt id="arg-true-cluster">true_cluster<a class="anchor" aria-label="anchor" href="#arg-true-cluster"></a></dt>
 <dd><p>Optional true or reference cluster allocation.</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A list with `Zalloc`, `nCluster`, `nConstraint`, and optionally
+    <p>A list with `allocation`, `n_clusters`, `n_constraints`, and optionally
   `ari`.</p>
     </div>
 

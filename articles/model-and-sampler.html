@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -119,13 +119,13 @@ is the number of clusters.</p>
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>×</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">p \times n</annotation></semantics></math>
 data matrix.</li>
 <li>
-<code>mInit</code> is the starting value of
+<code>m_init</code> is the starting value of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>.</li>
 <li>
-<code>mVec</code> is the allowed range of
+<code>m_range</code> is the allowed range of
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>.</li>
 <li>
-<code>qnew</code> is the factor dimension assigned to a newly
+<code>q_new</code> is the factor dimension assigned to a newly
 proposed cluster.</li>
 <li>
 <code>constraint</code> is the starting covariance model.</li>
@@ -181,7 +181,7 @@ for unconstrained.</p>
 <p>The eight PGMM models are:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.1.6 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.2.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CCC"</span>, <span class="st">"CCU"</span>, <span class="st">"CUC"</span>, <span class="st">"CUU"</span>, <span class="st">"UCC"</span>, <span class="st">"UCU"</span>, <span class="st">"UUC"</span>, <span class="st">"UUU"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -238,9 +238,9 @@ and
 with gamma hyperpriors controlled by:</p>
 <ul>
 <li>
-<code>dVec</code>: shape parameters.</li>
+<code>d_vec</code>: shape parameters.</li>
 <li>
-<code>sVec</code>: rate parameters.</li>
+<code>s_vec</code>: rate parameters.</li>
 <li>
 <code>delta</code>: inverse-gamma shape for the noise
 covariance.</li>
@@ -321,13 +321,13 @@ is isotropic or diagonal.</li>
 <p>In <code><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code>:</p>
 <ul>
 <li>
-<code>Mstep = 1</code> enables birth/death moves for
+<code>m_step = 1</code> enables birth/death moves for
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>.</li>
 <li>
-<code>SCind = 1</code> adds split/combine moves when
-<code>Mstep = 1</code>.</li>
+<code>split_combine = 1</code> adds split/combine moves when
+<code>m_step = 1</code>.</li>
 <li>
-<code>Vstep = 1</code> enables covariance-constraint moves.</li>
+<code>v_step = 1</code> enables covariance-constraint moves.</li>
 </ul>
 </div>
 <div class="section level2">
@@ -347,43 +347,43 @@ quickly. For real analyses, increase <code>burn</code> and
 <span></span>
 <span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">X</span>,</span>
-<span>  mInit <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  mVec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span>  qnew <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  m_init <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  m_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  q_new <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  burn <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  niter <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  constraint <span class="op">=</span> <span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span>,</span>
-<span>  Mstep <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  Vstep <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  m_step <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  v_step <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">fit_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, trueCluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
-<span><span class="va">fit_summary</span><span class="op">$</span><span class="va">nCluster</span></span>
+<span><span class="va">fit_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, true_cluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
+<span><span class="va">fit_summary</span><span class="op">$</span><span class="va">n_clusters</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; 2 </span></span>
 <span><span class="co">#&gt; 3</span></span>
-<span><span class="va">fit_summary</span><span class="op">$</span><span class="va">nConstraint</span></span>
+<span><span class="va">fit_summary</span><span class="op">$</span><span class="va">n_constraints</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; UUU </span></span>
 <span><span class="co">#&gt;   3</span></span>
 <span><span class="va">fit_summary</span><span class="op">$</span><span class="va">ari</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>The examples above keep <code>Mstep = 0</code> and
-<code>Vstep = 0</code> to make the vignette fast. A full model-selection
-run uses the same interface:</p>
+<p>The examples above keep <code>m_step = 0</code> and
+<code>v_step = 0</code> to make the vignette fast. A full
+model-selection run uses the same interface:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">your_data_matrix</span>,</span>
-<span>  mInit <span class="op">=</span> <span class="fl">5</span>,</span>
-<span>  mVec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>,</span>
-<span>  qnew <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  m_init <span class="op">=</span> <span class="fl">5</span>,</span>
+<span>  m_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">10</span><span class="op">)</span>,</span>
+<span>  q_new <span class="op">=</span> <span class="fl">4</span>,</span>
 <span>  burn <span class="op">=</span> <span class="fl">5000</span>,</span>
 <span>  niter <span class="op">=</span> <span class="fl">15000</span>,</span>
 <span>  constraint <span class="op">=</span> <span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span>,</span>
-<span>  Mstep <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  Vstep <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  SCind <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  m_step <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  v_step <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  split_combine <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -399,35 +399,35 @@ used fields are:</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td><code>ZmatList</code></td>
+<td><code>allocation_samples</code></td>
 <td>sampled cluster allocations
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
 </td>
 </tr>
 <tr class="even">
-<td><code>constraintList</code></td>
+<td><code>constraint_samples</code></td>
 <td>sampled PGMM covariance constraints</td>
 </tr>
 <tr class="odd">
-<td><code>taoList</code></td>
+<td><code>tau_samples</code></td>
 <td>sampled mixture weights
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
 </td>
 </tr>
 <tr class="even">
-<td><code>MList</code></td>
+<td><code>mean_samples</code></td>
 <td>sampled cluster means
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\mu_k</annotation></semantics></math>
 </td>
 </tr>
 <tr class="odd">
-<td><code>lambdaList</code></td>
+<td><code>lambda_samples</code></td>
 <td>sampled loading matrices
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Lambda_k</annotation></semantics></math>
 </td>
 </tr>
 <tr class="even">
-<td><code>psyList</code></td>
+<td><code>psi_samples</code></td>
 <td>sampled noise covariances
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Psi_k</annotation></semantics></math>
 </td>
@@ -437,12 +437,14 @@ used fields are:</p>
 <p>Use <code><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc()</a></code> for posterior summaries:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "taoList"        "psyList"        "MList"         </span></span>
-<span><span class="co">#&gt;  [4] "lambdaList"     "YList"          "ZmatList"      </span></span>
-<span><span class="co">#&gt;  [7] "constraintList" "alpha1Vec"      "alpha2Vec"     </span></span>
-<span><span class="co">#&gt; [10] "bbetaVec"       "clusIndList"</span></span>
+<span><span class="co">#&gt;  [1] "tau_samples"            "psi_samples"           </span></span>
+<span><span class="co">#&gt;  [3] "mean_samples"           "lambda_samples"        </span></span>
+<span><span class="co">#&gt;  [5] "factor_score_samples"   "allocation_samples"    </span></span>
+<span><span class="co">#&gt;  [7] "constraint_samples"     "alpha1_samples"        </span></span>
+<span><span class="co">#&gt;  [9] "alpha2_samples"         "beta_samples"          </span></span>
+<span><span class="co">#&gt; [11] "active_cluster_samples"</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "Zalloc"      "nCluster"    "nConstraint" "ari"</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] "allocation"    "n_clusters"    "n_constraints" "ari"</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>

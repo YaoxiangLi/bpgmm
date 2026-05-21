@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.1.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.0</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,6 +40,14 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.0" id="bpgmm-120">bpgmm 1.2.0<a class="anchor" aria-label="anchor" href="#bpgmm-120"></a></h2>
+<ul><li>Made the public API consistently snake_case now that the package has no CRAN reverse dependencies.</li>
+<li>Removed legacy exported wrappers <code>pgmmRJMCMC()</code>, <code>summarizePgmmRJMCMC()</code>, and <code>summerizePgmmRJMCMC()</code>.</li>
+<li>Renamed public sampler arguments from camelCase to snake_case: <code>m_init</code>, <code>m_range</code>, <code>q_new</code>, <code>d_vec</code>, <code>s_vec</code>, <code>m_step</code>, <code>v_step</code>, and <code>split_combine</code>.</li>
+<li>Renamed summary arguments and result fields to snake_case, including <code>true_cluster</code>, <code>allocation</code>, <code>n_clusters</code>, <code>n_constraints</code>, <code>allocation_samples</code>, and <code>constraint_samples</code>.</li>
+<li>Updated README, pkgdown articles, examples, and tests for the breaking 1.2.0 API.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.6" id="bpgmm-116">bpgmm 1.1.6<a class="anchor" aria-label="anchor" href="#bpgmm-116"></a></h2>
 <ul><li>Added a model-and-sampler vignette that explains the mixture-of-factor-analyzers likelihood, PGMM covariance constraints, conjugate priors, allocation update, RJMCMC moves, and package output fields with formulas and runnable examples.</li>
 <li>Linked the new mathematical vignette from the getting-started guide and pkgdown article index.</li>
@@ -66,9 +74,9 @@
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.1.2" id="bpgmm-112">bpgmm 1.1.2<a class="anchor" aria-label="anchor" href="#bpgmm-112"></a></h2>
 <ul><li>Modernized README with badges, installation guidance, paper citation, and model-constraint helper examples.</li>
-<li>Added <code><a href="../reference/summarize_pgmm_rjmcmc.html">summarizePgmmRJMCMC()</a></code> as the correctly spelled summary function and retained <code><a href="../reference/summarize_pgmm_rjmcmc.html">summerizePgmmRJMCMC()</a></code> for backward compatibility.</li>
+<li>Added <code>summarizePgmmRJMCMC()</code> as the correctly spelled summary function and retained <code>summerizePgmmRJMCMC()</code> for backward compatibility.</li>
 <li>Added tidyverse-style <code><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code> and <code><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc()</a></code> as the preferred public API.</li>
-<li>Deprecated <code><a href="../reference/pgmm_rjmcmc.html">pgmmRJMCMC()</a></code>, <code><a href="../reference/summarize_pgmm_rjmcmc.html">summarizePgmmRJMCMC()</a></code>, and <code><a href="../reference/summarize_pgmm_rjmcmc.html">summerizePgmmRJMCMC()</a></code>; these names remain available as compatibility wrappers.</li>
+<li>Deprecated <code>pgmmRJMCMC()</code>, <code>summarizePgmmRJMCMC()</code>, and <code>summerizePgmmRJMCMC()</code>; these names remain available as compatibility wrappers.</li>
 <li>Added helpers <code><a href="../reference/model_to_constraint.html">model_to_constraint()</a></code> and <code><a href="../reference/constraint_to_model.html">constraint_to_model()</a></code> for translating between paper model labels and legacy constraint vectors.</li>
 <li>Improved package startup citation guidance for users publishing results from <code>bpgmm</code>.</li>
 <li>Added unit tests for the public API, covariance-constraint mapping, summary helpers, and native C++ wrappers.</li>

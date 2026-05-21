@@ -1,5 +1,20 @@
 # Changelog
 
+## bpgmm 1.2.0
+
+- Made the public API consistently snake_case now that the package has
+  no CRAN reverse dependencies.
+- Removed legacy exported wrappers `pgmmRJMCMC()`,
+  `summarizePgmmRJMCMC()`, and `summerizePgmmRJMCMC()`.
+- Renamed public sampler arguments from camelCase to snake_case:
+  `m_init`, `m_range`, `q_new`, `d_vec`, `s_vec`, `m_step`, `v_step`,
+  and `split_combine`.
+- Renamed summary arguments and result fields to snake_case, including
+  `true_cluster`, `allocation`, `n_clusters`, `n_constraints`,
+  `allocation_samples`, and `constraint_samples`.
+- Updated README, pkgdown articles, examples, and tests for the breaking
+  1.2.0 API.
+
 ## bpgmm 1.1.6
 
 - Added a model-and-sampler vignette that explains the
@@ -46,22 +61,17 @@
 
 - Modernized README with badges, installation guidance, paper citation,
   and model-constraint helper examples.
-- Added
-  [`summarizePgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md)
-  as the correctly spelled summary function and retained
-  [`summerizePgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md)
-  for backward compatibility.
+- Added `summarizePgmmRJMCMC()` as the correctly spelled summary
+  function and retained `summerizePgmmRJMCMC()` for backward
+  compatibility.
 - Added tidyverse-style
   [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md)
   and
   [`summarize_pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md)
   as the preferred public API.
-- Deprecated
-  [`pgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md),
-  [`summarizePgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md),
-  and
-  [`summerizePgmmRJMCMC()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md);
-  these names remain available as compatibility wrappers.
+- Deprecated `pgmmRJMCMC()`, `summarizePgmmRJMCMC()`, and
+  `summerizePgmmRJMCMC()`; these names remain available as compatibility
+  wrappers.
 - Added helpers
   [`model_to_constraint()`](https://yaoxiangli.github.io/bpgmm/reference/model_to_constraint.md)
   and
