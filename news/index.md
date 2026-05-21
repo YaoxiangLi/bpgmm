@@ -1,5 +1,21 @@
 # Changelog
 
+## bpgmm 1.1.3
+
+- Fixed `Mstep = 1` by loading the cluster-number proposal helpers as
+  package code rather than leaving them in an ignored nested `R/`
+  directory.
+- Fixed split/combine RJMCMC moves by passing `X` explicitly to
+  split-allocation helpers and adding the missing latent-factor update
+  helper.
+- Fixed the C++ allocation update to add `log(tao)` to component log
+  densities instead of adding raw mixture weights.
+- Added C++ input validation for multivariate normal densities,
+  log-ratio calculations, allocation dimensions, and mixture weights.
+- Expanded unit coverage for all eight PGMM covariance constraints, C++
+  helpers, cluster-number RJMCMC, covariance RJMCMC, and split/combine
+  moves.
+
 ## bpgmm 1.1.2
 
 - Modernized README with badges, installation guidance, paper citation,
