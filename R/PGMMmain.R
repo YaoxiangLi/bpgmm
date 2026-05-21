@@ -21,9 +21,10 @@
 #' @param ggamma scalar hyperparameter used in covariance-structure proposals
 #' @param burn the number of burn-in iterations
 #' @param niter the number of posterior sampling iterations
-#' @param constraint initial PGMM covariance constraint, a numeric vector of
-#'   length three with binary entries. For example, `c(1, 1, 1)` is `CCC`, the
-#'   fully constrained model, and `c(0, 0, 0)` is `UUU`, the fully unconstrained
+#' @param constraint initial PGMM covariance constraint. Use a three-letter
+#'   model label such as `"CCC"` or `"UUU"`, or a numeric vector of length
+#'   three with binary entries. For example, `c(1, 1, 1)` is `CCC`, the fully
+#'   constrained model, and `c(0, 0, 0)` is `UUU`, the fully unconstrained
 #'   model.
 #' @param dVec a vector of hyperparameters with length three, shape parameters
 #'   for alpha1, alpha2 and bbeta respectively
@@ -33,6 +34,7 @@
 #' @param Vstep indicator for RJMCMC model selection on covariance structures
 #' @param SCind indicator for using split/combine moves in the cluster-number
 #'   RJMCMC step
+#' @param verbose logical; if `TRUE`, print iteration progress.
 #' @name pgmm_rjmcmc
 #' @export
 
@@ -49,7 +51,62 @@ pgmm_rjmcmc <- function(X,
                        sVec = c(1, 1, 1),
                        Mstep = 0,
                        Vstep = 0,
-                       SCind = 0) {
+                       SCind = 0,
+                       verbose = TRUE) {
+  if (!is.matrix(X) || !is.numeric(X)) {
+    stop("X must be a numeric matrix with variables in rows and observations in columns", call. = FALSE)
+  }
+  if (any(!is.finite(X))) {
+    stop("X must contain only finite numeric values", call. = FALSE)
+  }
+  if (!isTRUE(length(mVec) == 2L) || any(!is.finite(mVec)) || any(mVec < 1) || mVec[1] > mVec[2]) {
+    stop("mVec must be a length-two increasing positive numeric vector", call. = FALSE)
+  }
+  if (!isTRUE(length(mInit) == 1L) || !is.finite(mInit) || mInit < 1) {
+    stop("mInit must be a positive scalar", call. = FALSE)
+  }
+  if (mInit < mVec[1] || mInit > mVec[2]) {
+    stop("mInit must lie within mVec", call. = FALSE)
+  }
+  if (mInit > ncol(X)) {
+    stop("mInit cannot exceed the number of observations in X", call. = FALSE)
+  }
+  if (!isTRUE(length(qnew) == 1L) || !is.finite(qnew) || qnew < 1) {
+    stop("qnew must be a positive scalar", call. = FALSE)
+  }
+  if (!isTRUE(length(burn) == 1L) || !is.finite(burn) || burn < 0) {
+    stop("burn must be a non-negative scalar", call. = FALSE)
+  }
+  if (!isTRUE(length(niter) == 1L) || !is.finite(niter) || niter < 0) {
+    stop("niter must be a non-negative scalar", call. = FALSE)
+  }
+  if (!is.logical(verbose) || length(verbose) != 1L || is.na(verbose)) {
+    stop("verbose must be TRUE or FALSE", call. = FALSE)
+  }
+  if (!isTRUE(length(Mstep) == 1L) || is.na(Mstep) || !(Mstep %in% c(0, 1))) {
+    stop("Mstep must be 0 or 1", call. = FALSE)
+  }
+  if (!isTRUE(length(Vstep) == 1L) || is.na(Vstep) || !(Vstep %in% c(0, 1))) {
+    stop("Vstep must be 0 or 1", call. = FALSE)
+  }
+  if (!isTRUE(length(SCind) == 1L) || is.na(SCind) || !(SCind %in% c(0, 1))) {
+    stop("SCind must be 0 or 1", call. = FALSE)
+  }
+
+  mInit <- as.integer(mInit)
+  mVec <- as.integer(mVec)
+  qnew <- as.integer(qnew)
+  burn <- as.integer(burn)
+  niter <- as.integer(niter)
+  Mstep <- as.integer(Mstep)
+  Vstep <- as.integer(Vstep)
+  SCind <- as.integer(SCind)
+  if (is.character(constraint)) {
+    constraint <- model_to_constraint(constraint)
+  } else {
+    constraint <- model_to_constraint(constraint_to_model(constraint))
+  }
+
   n <- ncol(X)
   p <- nrow(X)
 
@@ -61,7 +118,7 @@ pgmm_rjmcmc <- function(X,
 
   hparamInit <- hparam
 
-  muBar <- X[, sample(1:n, 1)]
+  muBar <- X[, sample.int(n, 1)]
 
   ## cluster indicator
   clusInd <- rep(0, mVec[2])
@@ -77,7 +134,7 @@ pgmm_rjmcmc <- function(X,
   thetaYList <- generatePriorThetaY(mInit, n, p, muBar, hparam, qVec, ZOneDim, constraint)
 
   ## burn in
-  for (i in 1:burn) {
+  for (i in seq_len(burn)) {
     MCMCobj <- stayMCMCupdate(X, thetaYList, ZOneDim, hparam, qVec, qnew, dVec, sVec, constraint, clusInd)
     ZOneDim <- MCMCobj$ZOneDim
     thetaYList <- MCMCobj$thetaYList
@@ -100,8 +157,10 @@ pgmm_rjmcmc <- function(X,
   clusIndList <- list()
   ##
 
-  for (h in 1:niter) {
-    cat("iter = ", h, "======>\n")
+  for (h in seq_len(niter)) {
+    if (verbose) {
+      cat("iter = ", h, "======>\n")
+    }
 
     ## choose m or choose v
     if (Mstep == 1) {
@@ -174,7 +233,8 @@ pgmmRJMCMC <- function(X,
                        sVec = c(1, 1, 1),
                        Mstep = 0,
                        Vstep = 0,
-                       SCind = 0) {
+                       SCind = 0,
+                       verbose = TRUE) {
   .Deprecated("pgmm_rjmcmc")
   pgmm_rjmcmc(
     X = X,
@@ -190,6 +250,7 @@ pgmmRJMCMC <- function(X,
     sVec = sVec,
     Mstep = Mstep,
     Vstep = Vstep,
-    SCind = SCind
+    SCind = SCind,
+    verbose = verbose
   )
 }

@@ -37,3 +37,15 @@ test_that("internal allocation summarizer keeps compatibility alias", {
   expect_equal(bpgmm:::summarizeZ(z_samples), c(1, 1, 2))
   expect_equal(bpgmm:::sumerizeZ(z_samples), bpgmm:::summarizeZ(z_samples))
 })
+
+test_that("summarize_pgmm_rjmcmc validates result structure", {
+  expect_error(summarize_pgmm_rjmcmc(list()), "ZmatList")
+  expect_error(
+    summarize_pgmm_rjmcmc(list(ZmatList = list(), constraintList = list())),
+    "ZmatList"
+  )
+  expect_error(
+    summarize_pgmm_rjmcmc(list(ZmatList = list(c(1, 2)), constraintList = list())),
+    "constraintList"
+  )
+})

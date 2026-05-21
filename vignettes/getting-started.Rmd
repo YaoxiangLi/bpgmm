@@ -47,7 +47,8 @@ fit_log <- capture.output({
     niter = 3,
     constraint = model_to_constraint("UUU"),
     Mstep = 0,
-    Vstep = 0
+    Vstep = 0,
+    verbose = FALSE
   )
 })
 tail(fit_log, 1)
@@ -73,7 +74,8 @@ fit <- pgmm_rjmcmc(
   burn = 100,
   niter = 1000,
   Mstep = 1,
-  Vstep = 1
+  Vstep = 1,
+  verbose = FALSE
 )
 ```
 

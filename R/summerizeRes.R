@@ -14,6 +14,16 @@
 #' @name summarize_pgmm_rjmcmc
 #' @export
 summarize_pgmm_rjmcmc <- function(pgmmResList, trueCluster = NULL) {
+  if (!is.list(pgmmResList)) {
+    stop("pgmmResList must be a result list from pgmm_rjmcmc()", call. = FALSE)
+  }
+  if (!is.list(pgmmResList$ZmatList) || length(pgmmResList$ZmatList) == 0L) {
+    stop("pgmmResList$ZmatList must contain at least one allocation sample", call. = FALSE)
+  }
+  if (!is.list(pgmmResList$constraintList) || length(pgmmResList$constraintList) != length(pgmmResList$ZmatList)) {
+    stop("pgmmResList$constraintList must match pgmmResList$ZmatList", call. = FALSE)
+  }
+
   Zalloc <- summarizeZ(pgmmResList$ZmatList)
 
   nCluster <- table(sapply(pgmmResList$ZmatList, function(x) {
