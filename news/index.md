@@ -1,5 +1,14 @@
 # Changelog
 
+## bpgmm 1.2.2
+
+- Optimized the native `Calculate_Cxy()` helper by accumulating cluster
+  sufficient statistics directly from labels instead of building a dense
+  allocation matrix and multiplying through zero weights.
+- Removed repeated temporary vector construction inside the Cxy
+  accumulation loop.
+- Preserved the existing C++11 baseline for CRAN portability.
+
 ## bpgmm 1.2.1
 
 - Hardened Rcpp entry points with explicit validation for dimensions,
