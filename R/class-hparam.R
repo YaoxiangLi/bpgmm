@@ -6,6 +6,7 @@
 #' @slot delta Shape parameter used in prior updates.
 #' @slot ggamma Prior rate parameter used in covariance updates.
 #' @slot bbeta Prior scale parameter used in covariance updates.
+#' @keywords internal
 #'
 setClass(
   "Hparam",

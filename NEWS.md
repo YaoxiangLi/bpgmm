@@ -1,3 +1,11 @@
+# bpgmm 1.2.0
+
+* Made the public API consistently snake_case now that the package has no CRAN reverse dependencies.
+* Removed legacy exported wrappers `pgmmRJMCMC()`, `summarizePgmmRJMCMC()`, and `summerizePgmmRJMCMC()`.
+* Renamed public sampler arguments from camelCase to snake_case: `m_init`, `m_range`, `q_new`, `d_vec`, `s_vec`, `m_step`, `v_step`, and `split_combine`.
+* Renamed summary arguments and result fields to snake_case, including `true_cluster`, `allocation`, `n_clusters`, `n_constraints`, `allocation_samples`, and `constraint_samples`.
+* Updated README, pkgdown articles, examples, and tests for the breaking 1.2.0 API.
+
 # bpgmm 1.1.6
 
 * Added a model-and-sampler vignette that explains the mixture-of-factor-analyzers likelihood, PGMM covariance constraints, conjugate priors, allocation update, RJMCMC moves, and package output fields with formulas and runnable examples.

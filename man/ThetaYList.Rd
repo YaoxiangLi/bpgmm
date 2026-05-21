@@ -21,3 +21,4 @@ Parameter set for sampled PGMM component parameters.
 \item{\code{Y}}{List of latent factor score matrices.}
 }}
 
+\keyword{internal}

@@ -8,6 +8,7 @@
 #' @slot M List of component mean vectors.
 #' @slot lambda List of component factor loading matrices.
 #' @slot Y List of latent factor score matrices.
+#' @keywords internal
 setClass(
   "ThetaYList",
   slots = c(

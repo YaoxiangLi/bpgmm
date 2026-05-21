@@ -2,11 +2,8 @@
 
 export(constraint_to_model)
 export(model_to_constraint)
-export(pgmmRJMCMC)
 export(pgmm_rjmcmc)
-export(summarizePgmmRJMCMC)
 export(summarize_pgmm_rjmcmc)
-export(summerizePgmmRJMCMC)
 import(MASS)
 import(fabMix)
 import(label.switching)

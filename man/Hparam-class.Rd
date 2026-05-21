@@ -21,3 +21,4 @@ Hyperparameter set for the Bayesian PGMM sampler.
 \item{\code{bbeta}}{Prior scale parameter used in covariance updates.}
 }}
 
+\keyword{internal}

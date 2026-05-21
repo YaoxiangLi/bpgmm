@@ -21,21 +21,21 @@
 # X <- t(syntheticDataset$data)
 #
 # # delta = 2; ggamma = 2
-# # dVec = c(1,1,1)
-# # sVec = c(1,1,1)
+# # d_vec = c(1,1,1)
+# # s_vec = c(1,1,1)
 #
-# qnew <- 4
+# q_new <- 4
 #
-# Mstep <- 1
-# Vstep <- 1
+# m_step <- 1
+# v_step <- 1
 # constraint <- c(0, 0, 0)
 #
-# mInit <- 20
-# mVec <- c(1, 20)
+# m_init <- 20
+# m_range <- c(1, 20)
 #
-# res <- pgmm_rjmcmc(X, mInit, mVec, qnew,
+# res <- pgmm_rjmcmc(X, m_init, m_range, q_new,
 #   niter = nsim, burn = burn, constraint = constraint,
-#   Mstep = Mstep, Vstep = Vstep
+#   m_step = m_step, v_step = v_step
 # )
 #
-# summarize_pgmm_rjmcmc(res, syntheticDataset$class)
+# summarize_pgmm_rjmcmc(res, true_cluster = syntheticDataset$class)

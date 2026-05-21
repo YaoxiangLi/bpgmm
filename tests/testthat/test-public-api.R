@@ -4,9 +4,12 @@ test_that("documented public API remains exported", {
   expect_true(all(c(
     "pgmm_rjmcmc",
     "summarize_pgmm_rjmcmc",
-    "pgmmRJMCMC",
     "constraint_to_model",
-    "model_to_constraint",
+    "model_to_constraint"
+  ) %in% exports))
+
+  expect_false(any(c(
+    "pgmmRJMCMC",
     "summarizePgmmRJMCMC",
     "summerizePgmmRJMCMC"
   ) %in% exports))

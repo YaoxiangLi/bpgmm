@@ -2,23 +2,17 @@
 % Please edit documentation in R/summarize-result.R
 \name{summarize_pgmm_rjmcmc}
 \alias{summarize_pgmm_rjmcmc}
-\alias{summarizePgmmRJMCMC}
-\alias{summerizePgmmRJMCMC}
 \title{Summarize RJMCMC Samples from a Bayesian PGMM Fit}
 \usage{
-summarize_pgmm_rjmcmc(pgmmResList, trueCluster = NULL)
-
-summarizePgmmRJMCMC(pgmmResList, trueCluster = NULL)
-
-summerizePgmmRJMCMC(pgmmResList, trueCluster = NULL)
+summarize_pgmm_rjmcmc(fit, true_cluster = NULL)
 }
 \arguments{
-\item{pgmmResList}{Result list from [pgmm_rjmcmc()].}
+\item{fit}{Result list from [pgmm_rjmcmc()].}
 
-\item{trueCluster}{Optional true or reference cluster allocation.}
+\item{true_cluster}{Optional true or reference cluster allocation.}
 }
 \value{
-A list with `Zalloc`, `nCluster`, `nConstraint`, and optionally
+A list with `allocation`, `n_clusters`, `n_constraints`, and optionally
   `ari`.
 }
 \description{
