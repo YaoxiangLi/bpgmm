@@ -66,18 +66,18 @@ double get_positive_finite_slot(Rcpp::S4 obj, const char* slot_name) {
 }
 
 // [[Rcpp::export]]
-arma::mat get_Z_mat(const arma::vec& ZOneDim, int m, int n){
+arma::mat get_z_matrix_native(const arma::vec& z, int m, int n){
 
   validate_positive_int(m, "m");
   validate_positive_int(n, "n");
-  if (ZOneDim.n_elem != static_cast<arma::uword>(n)) {
-    Rcpp::stop("length of ZOneDim must equal n");
+  if (z.n_elem != static_cast<arma::uword>(n)) {
+    Rcpp::stop("length of z must equal n");
   }
 
   arma::mat Zmat = arma::zeros<arma::mat>(m, n);
 
   for (int j = 0; j < n; j++) {
-    double label = ZOneDim(j);
+    double label = z(j);
     if (!std::isfinite(label) || label < 1 || label > m || label != std::floor(label)) {
       Rcpp::stop("cluster labels must be integers in 1:m");
     }
@@ -89,7 +89,7 @@ arma::mat get_Z_mat(const arma::vec& ZOneDim, int m, int n){
 const double log2pi = std::log(2.0 * M_PI);
 
 // [[Rcpp::export]]
-arma::vec dmvnrm_arma(const arma::mat& x,
+arma::vec multivariate_normal_density_native(const arma::mat& x,
                       const arma::rowvec& mean,
                       const arma::mat& sigma,
                       bool logd) {
@@ -131,23 +131,23 @@ arma::vec dmvnrm_arma(const arma::mat& x,
 }
 
 // [[Rcpp::export]]
-double calculate_Ratio(double logDeno, const arma::vec& logNume){
+double calculate_ratio_native(double log_denominator, const arma::vec& log_numerator){
 
-  if (!std::isfinite(logDeno)) {
-    Rcpp::stop("logDeno must be finite");
+  if (!std::isfinite(log_denominator)) {
+    Rcpp::stop("log_denominator must be finite");
   }
-  if (logNume.n_elem < 1) {
-    Rcpp::stop("logNume must contain at least one value");
+  if (log_numerator.n_elem < 1) {
+    Rcpp::stop("log_numerator must contain at least one value");
   }
-  if (!logNume.is_finite()) {
-    Rcpp::stop("logNume must contain only finite values");
+  if (!log_numerator.is_finite()) {
+    Rcpp::stop("log_numerator must contain only finite values");
   }
 
-  double maxNume = arma::max(logNume);
-  double transDeno = logDeno - maxNume;
+  double max_numerator = arma::max(log_numerator);
+  double shifted_denominator = log_denominator - max_numerator;
 
-  arma::vec transNume = logNume - maxNume;
-  double ratio = exp(transDeno)/sum(exp(transNume));
+  arma::vec shifted_numerator = log_numerator - max_numerator;
+  double ratio = exp(shifted_denominator)/sum(exp(shifted_numerator));
 
   return(ratio);
 }

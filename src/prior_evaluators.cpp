@@ -9,7 +9,7 @@ namespace {
 bool is_active(const arma::vec &clus_ind, int k) {
   const double value = clus_ind(static_cast<arma::uword>(k));
   if (!std::isfinite(value) || (value != 0.0 && value != 1.0)) {
-    Rcpp::stop("clusInd entries must be 0/1");
+    Rcpp::stop("clus_ind entries must be 0/1");
   }
   return value == 1.0;
 }
@@ -48,7 +48,7 @@ double log_mvn_column(const arma::vec &x,
                       const arma::mat &sigma) {
   arma::mat row_x = x.t();
   arma::rowvec mean = arma::zeros<arma::rowvec>(x.n_elem);
-  return dmvnrm_arma(row_x, mean, sigma, true)(0);
+  return multivariate_normal_density_native(row_x, mean, sigma, true)(0);
 }
 
 arma::mat harmonic_psi_average(const Rcpp::List &psy, int p, int m, const arma::vec &clus_ind) {
@@ -64,21 +64,21 @@ arma::mat harmonic_psi_average(const Rcpp::List &psy, int p, int m, const arma::
 } // namespace
 
 // [[Rcpp::export]]
-double Evaluate_PriorPsi(Rcpp::List psy,
+double evaluate_prior_psi_native(Rcpp::List psy,
                          int p,
                          int m,
                          double delta,
                          double bbeta,
                          arma::vec constraint,
-                         arma::vec clusInd) {
+                         arma::vec clus_ind) {
   validate_positive_int(p, "p");
   validate_positive_int(m, "m");
   validate_constraint_vec(constraint);
   if (!std::isfinite(delta) || delta <= 0.0 || !std::isfinite(bbeta) || bbeta <= 0.0) {
     Rcpp::stop("delta and bbeta must be positive finite values");
   }
-  if (psy.size() < m || clusInd.n_elem < static_cast<arma::uword>(m)) {
-    Rcpp::stop("psy and clusInd must contain at least m entries");
+  if (psy.size() < m || clus_ind.n_elem < static_cast<arma::uword>(m)) {
+    Rcpp::stop("psy and clus_ind must contain at least m entries");
   }
 
   double value = 0.0;
@@ -86,7 +86,7 @@ double Evaluate_PriorPsi(Rcpp::List psy,
   const bool isotropic = constraint(2) == 1.0;
 
   for (int k = 0; k < m; ++k) {
-    if (!is_active(clusInd, k) || (common_psi && k != 0)) {
+    if (!is_active(clus_ind, k) || (common_psi && k != 0)) {
       continue;
     }
 
@@ -105,35 +105,35 @@ double Evaluate_PriorPsi(Rcpp::List psy,
 }
 
 // [[Rcpp::export]]
-double Evaluate_PriorLambda(int p,
+double evaluate_prior_lambda_native(int p,
                             int m,
                             double alpha2,
-                            arma::vec qVec,
+                            arma::vec q_vec,
                             Rcpp::List psy,
                             Rcpp::List lambda,
                             arma::vec constraint,
-                            arma::vec clusInd) {
+                            arma::vec clus_ind) {
   validate_positive_int(p, "p");
   validate_positive_int(m, "m");
-  validate_q_vec(qVec, m);
+  validate_q_vec(q_vec, m);
   validate_constraint_vec(constraint);
   if (!std::isfinite(alpha2) || alpha2 <= 0.0) {
     Rcpp::stop("alpha2 must be a positive finite value");
   }
-  if (psy.size() < m || lambda.size() < m || clusInd.n_elem < static_cast<arma::uword>(m)) {
-    Rcpp::stop("psy, lambda, and clusInd must contain at least m entries");
+  if (psy.size() < m || lambda.size() < m || clus_ind.n_elem < static_cast<arma::uword>(m)) {
+    Rcpp::stop("psy, lambda, and clus_ind must contain at least m entries");
   }
 
   const bool common_lambda = constraint(0) == 1.0;
   const bool common_psi = constraint(1) == 1.0;
   arma::mat shared_psi_average;
   if (common_lambda && !common_psi) {
-    shared_psi_average = harmonic_psi_average(psy, p, m, clusInd);
+    shared_psi_average = harmonic_psi_average(psy, p, m, clus_ind);
   }
 
   double value = 0.0;
   for (int k = 0; k < m; ++k) {
-    if (!is_active(clusInd, k) || (common_lambda && k != 0)) {
+    if (!is_active(clus_ind, k) || (common_lambda && k != 0)) {
       continue;
     }
 

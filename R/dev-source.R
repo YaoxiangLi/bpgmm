@@ -30,12 +30,13 @@
 # source("R/paramClass.R")
 # source("R/choosem/proposalFunctions.R")
 #
-# # Cpp souce
+# # C++ source
 #
 # sourceCpp("src/utils.cpp")
-# sourceCpp("src/update_post_z_r.cpp")
-# sourceCpp("src/calculateCxy.cpp")
-# sourceCpp("src/calculatePostLambdaPsy.cpp")
+# sourceCpp("src/update_post_z.cpp")
+# sourceCpp("src/calculate_cxy.cpp")
+# sourceCpp("src/calculate_post_lambda_psi.cpp")
+# sourceCpp("src/update_latent_scores.cpp")
 # sourceCpp("src/update_hyperparameter.cpp")
 #
 #

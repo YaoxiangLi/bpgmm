@@ -4,12 +4,12 @@
 #include <RcppArmadillo.h>
 #include "utils.h"
 
-Rcpp::List Calculate_PostLambdaPsy(int m,
+Rcpp::List calculate_post_lambda_psi_native(int m,
                                    int p,
                                    Rcpp::S4 hparam,
-                                   Rcpp::List CxyList,
-                                   Rcpp::S4 thetaYList,
-                                   arma::vec qVec,
+                                   Rcpp::List cxy_list,
+                                   Rcpp::S4 theta_y_list,
+                                   arma::vec q_vec,
                                    arma::vec constraint);
 
 

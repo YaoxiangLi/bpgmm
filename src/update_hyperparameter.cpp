@@ -6,28 +6,28 @@ using namespace Rcpp;
 
 
 // [[Rcpp::export]]
-S4 update_Hyperparameter(
+S4 update_hyperparameter_native(
     int m,
     int p,
     int q,
     Rcpp::S4 hparam,
-    Rcpp::S4 thetaYList,
-    arma::vec dVec,
-    arma::vec sVec
+    Rcpp::S4 theta_y_list,
+    arma::vec d_vec,
+    arma::vec s_vec
   ){
 
 
   validate_positive_int(m, "m");
   validate_positive_int(p, "p");
   validate_positive_int(q, "q");
-  validate_positive_finite_vec(dVec, 3, "d_vec");
-  validate_positive_finite_vec(sVec, 3, "s_vec");
+  validate_positive_finite_vec(d_vec, 3, "d_vec");
+  validate_positive_finite_vec(s_vec, 3, "s_vec");
 
   double delta   = get_positive_finite_slot(hparam, "delta");
   double ggamma  = get_positive_finite_slot(hparam, "ggamma");
-  List M         = thetaYList.slot("M");
-  List lambda    = thetaYList.slot("lambda");
-  List psy       = thetaYList.slot("psy");
+  List M         = theta_y_list.slot("M");
+  List lambda    = theta_y_list.slot("lambda");
+  List psy       = theta_y_list.slot("psy");
 
   if (M.size() < m || lambda.size() < m || psy.size() < m) {
     Rcpp::stop("theta_y_list slots must each have length at least m");
@@ -65,9 +65,9 @@ S4 update_Hyperparameter(
     alpha1RateTemp = 0.5 * trans(Mk) * arma::inv(psyk) * Mk;
     alpha1Rate += alpha1RateTemp(0);
   }
-  alpha1Rate += sVec(0);
+  alpha1Rate += s_vec(0);
 
-  double alpha1Shape = m*p/2.0 + dVec(0);
+  double alpha1Shape = m*p/2.0 + d_vec(0);
   double alpha1Scale = 1.0/alpha1Rate;
 
   // Rcpp::rgamma(n, shape  , scale), scale = 1/rate;
@@ -84,9 +84,9 @@ S4 update_Hyperparameter(
     alpha2RateMat += alpha2RateTemp;
   }
 
-  alpha2Rate += sVec(1) + sum(alpha2RateMat.diag());
+  alpha2Rate += s_vec(1) + sum(alpha2RateMat.diag());
 
-  double alpha2Shape = q*p/2.0 + dVec(1);
+  double alpha2Shape = q*p/2.0 + d_vec(1);
   double alpha2Scale = 1.0/alpha2Rate;
 
   //Rcpp::rgamma(n, shape  , scale), scale = 1/rate;
@@ -101,9 +101,9 @@ S4 update_Hyperparameter(
     bbetaRateTemp = arma::inv(psyk);
     bbetaRate  += sum(bbetaRateTemp.diag());
   }
-  bbetaRate += dVec(2);
+  bbetaRate += d_vec(2);
 
-  double bbetaShape = m*p*delta + dVec(2);
+  double bbetaShape = m*p*delta + d_vec(2);
   double bbetaScale = 1.0/bbetaRate;
 
   arma::vec bbetaVec =  Rcpp::rgamma(1, bbetaShape, bbetaScale);

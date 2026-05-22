@@ -3,14 +3,14 @@
 
 #include <RcppArmadillo.h>
 
-arma::vec dmvnrm_arma(const arma::mat &x,
+arma::vec multivariate_normal_density_native(const arma::mat &x,
                       const arma::rowvec &mean,
                       const arma::mat &sigma,
                       bool logd);
 
-arma::mat get_Z_mat(const arma::vec &ZOneDim, int m, int n);
+arma::mat get_z_matrix_native(const arma::vec &z, int m, int n);
 
-double calculate_Ratio(double logDeno, const arma::vec &logNume);
+double calculate_ratio_native(double log_denominator, const arma::vec &log_numerator);
 
 void validate_positive_int(int value, const char* name);
 
@@ -26,56 +26,56 @@ void validate_positive_finite_vec(const arma::vec &x,
 
 double get_positive_finite_slot(Rcpp::S4 obj, const char* slot_name);
 
-Rcpp::IntegerVector update_PostZ(arma::mat X,
+Rcpp::IntegerVector update_post_z_native(arma::mat X,
                                  int m,
                                  int n,
-                                 Rcpp::S4 thetaYList);
+                                 Rcpp::S4 theta_y_list);
 
-Rcpp::List Update_LatentScores(arma::mat X,
-                               Rcpp::S4 thetaYList,
-                               arma::vec ZOneDim,
-                               arma::vec clusInd,
-                               arma::vec qVec);
+Rcpp::List update_latent_scores_native(arma::mat X,
+                               Rcpp::S4 theta_y_list,
+                               arma::vec z,
+                               arma::vec clus_ind,
+                               arma::vec q_vec);
 
-double Evaluate_PriorPsi(Rcpp::List psy,
+double evaluate_prior_psi_native(Rcpp::List psy,
                          int p,
                          int m,
                          double delta,
                          double bbeta,
                          arma::vec constraint,
-                         arma::vec clusInd);
+                         arma::vec clus_ind);
 
-double Evaluate_PriorLambda(int p,
+double evaluate_prior_lambda_native(int p,
                             int m,
                             double alpha2,
-                            arma::vec qVec,
+                            arma::vec q_vec,
                             Rcpp::List psy,
                             Rcpp::List lambda,
                             arma::vec constraint,
-                            arma::vec clusInd);
+                            arma::vec clus_ind);
 
-Rcpp::List Calculate_Cxy(int m,
+Rcpp::List calculate_cxy_native(int m,
                          int n,
                          Rcpp::S4 hparam,
-                         Rcpp::S4 thetaYList,
-                         arma::vec ZOneDim,
-                         arma::vec qVec,
+                         Rcpp::S4 theta_y_list,
+                         arma::vec z,
+                         arma::vec q_vec,
                          arma::mat X);
 
-Rcpp::List Calculate_PostLambdaPsy(int m,
+Rcpp::List calculate_post_lambda_psi_native(int m,
                                    int p,
                                    Rcpp::S4 hparam,
-                                   Rcpp::List CxyList,
-                                   Rcpp::S4 thetaYList,
-                                   arma::vec qVec,
+                                   Rcpp::List cxy_list,
+                                   Rcpp::S4 theta_y_list,
+                                   arma::vec q_vec,
                                    arma::vec constraint);
 
-Rcpp::S4 update_Hyperparameter(int m,
+Rcpp::S4 update_hyperparameter_native(int m,
                                int p,
                                int q,
                                Rcpp::S4 hparam,
-                               Rcpp::S4 thetaYList,
-                               arma::vec dVec,
-                               arma::vec sVec);
+                               Rcpp::S4 theta_y_list,
+                               arma::vec d_vec,
+                               arma::vec s_vec);
 
 #endif

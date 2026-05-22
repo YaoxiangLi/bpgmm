@@ -7,6 +7,28 @@ test_that("Rcpp get_z_mat_cpp matches the R implementation", {
   )
 })
 
+test_that("native Rcpp wrappers use snake_case names", {
+  native_names <- ls(getNamespace("bpgmm"), pattern = "_native$")
+
+  expect_true(all(grepl("^[a-z][a-z0-9_]*$", native_names)))
+  expect_false(any(grepl("[A-Z]", native_names)))
+  expect_setequal(
+    native_names,
+    c(
+      "calculate_cxy_native",
+      "calculate_post_lambda_psi_native",
+      "calculate_ratio_native",
+      "evaluate_prior_lambda_native",
+      "evaluate_prior_psi_native",
+      "get_z_matrix_native",
+      "multivariate_normal_density_native",
+      "update_hyperparameter_native",
+      "update_latent_scores_native",
+      "update_post_z_native"
+    )
+  )
+})
+
 test_that("Rcpp get_z_mat_cpp rejects labels outside 1:m", {
   expect_error(
     bpgmm:::get_z_mat_cpp(c(1, 0, 2), m = 2, n = 3),
@@ -18,31 +40,31 @@ test_that("Rcpp get_z_mat_cpp rejects labels outside 1:m", {
   )
 })
 
-test_that("Rcpp dmvnrm_arma matches mvtnorm::dmvnorm", {
+test_that("Rcpp multivariate_normal_density_native matches mvtnorm::dmvnorm", {
   x <- rbind(c(0, 0), c(1, -1))
   mean <- c(0.25, -0.5)
   sigma <- matrix(c(2, 0.4, 0.4, 1.5), nrow = 2)
 
   expect_equal(
-    as.numeric(bpgmm:::dmvnrm_arma(x, mean, sigma, TRUE)),
+    as.numeric(bpgmm:::multivariate_normal_density_native(x, mean, sigma, TRUE)),
     as.numeric(mvtnorm::dmvnorm(x, mean = mean, sigma = sigma, log = TRUE)),
     tolerance = 1e-10
   )
 })
 
-test_that("Rcpp dmvnrm_arma validates dimensions and covariance", {
+test_that("Rcpp multivariate_normal_density_native validates dimensions and covariance", {
   x <- matrix(c(1, 2), nrow = 1)
 
   expect_error(
-    bpgmm:::dmvnrm_arma(x, mean = 0, sigma = diag(2), logd = TRUE),
+    bpgmm:::multivariate_normal_density_native(x, mean = 0, sigma = diag(2), logd = TRUE),
     "mean length"
   )
   expect_error(
-    bpgmm:::dmvnrm_arma(x, mean = c(0, 0), sigma = diag(3), logd = TRUE),
+    bpgmm:::multivariate_normal_density_native(x, mean = c(0, 0), sigma = diag(3), logd = TRUE),
     "sigma"
   )
   expect_error(
-    bpgmm:::dmvnrm_arma(
+    bpgmm:::multivariate_normal_density_native(
       x,
       mean = c(0, 0),
       sigma = matrix(c(1, 2, 2, 1), nrow = 2),
@@ -63,7 +85,7 @@ test_that("Rcpp calculate_ratio_cpp is stable for large log probabilities", {
 test_that("Rcpp calculate_ratio_cpp validates finite log inputs", {
   expect_error(
     bpgmm:::calculate_ratio_cpp(0, numeric()),
-    "logNume"
+    "log_numerator"
   )
   expect_error(
     bpgmm:::calculate_ratio_cpp(Inf, c(0, 1)),

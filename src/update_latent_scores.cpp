@@ -46,33 +46,33 @@ arma::vec rmvnorm_chol(const arma::vec &mean, const arma::mat &sigma) {
 } // namespace
 
 // [[Rcpp::export]]
-Rcpp::List Update_LatentScores(arma::mat X,
-                               Rcpp::S4 thetaYList,
-                               arma::vec ZOneDim,
-                               arma::vec clusInd,
-                               arma::vec qVec) {
+Rcpp::List update_latent_scores_native(arma::mat X,
+                               Rcpp::S4 theta_y_list,
+                               arma::vec z,
+                               arma::vec clus_ind,
+                               arma::vec q_vec) {
   validate_finite_matrix(X, "X");
 
   const int n = static_cast<int>(X.n_cols);
   const int p = static_cast<int>(X.n_rows);
-  const int m = static_cast<int>(qVec.n_elem);
+  const int m = static_cast<int>(q_vec.n_elem);
 
   validate_positive_int(n, "n");
   validate_positive_int(p, "p");
   validate_positive_int(m, "m");
-  validate_q_vec(qVec, m);
+  validate_q_vec(q_vec, m);
 
-  if (ZOneDim.n_elem != static_cast<arma::uword>(n)) {
-    Rcpp::stop("length of ZOneDim must equal the number of observations");
+  if (z.n_elem != static_cast<arma::uword>(n)) {
+    Rcpp::stop("length of z must equal the number of observations");
   }
-  if (clusInd.n_elem < static_cast<arma::uword>(m)) {
+  if (clus_ind.n_elem < static_cast<arma::uword>(m)) {
     Rcpp::stop("clus_ind length must be at least the number of q_vec entries");
   }
 
-  Rcpp::List lambda_list = thetaYList.slot("lambda");
-  Rcpp::List psy_list = thetaYList.slot("psy");
-  Rcpp::List mean_list = thetaYList.slot("M");
-  Rcpp::List old_scores = thetaYList.slot("Y");
+  Rcpp::List lambda_list = theta_y_list.slot("lambda");
+  Rcpp::List psy_list = theta_y_list.slot("psy");
+  Rcpp::List mean_list = theta_y_list.slot("M");
+  Rcpp::List old_scores = theta_y_list.slot("Y");
 
   if (lambda_list.size() < m || psy_list.size() < m ||
       mean_list.size() < m || old_scores.size() < m) {
@@ -82,7 +82,7 @@ Rcpp::List Update_LatentScores(arma::mat X,
   Rcpp::List scores = Rcpp::clone(old_scores);
 
   for (int k = 0; k < m; ++k) {
-    double active = clusInd(k);
+    double active = clus_ind(k);
     if (!std::isfinite(active) || (active != 0.0 && active != 1.0)) {
       Rcpp::stop("clus_ind entries must be 0/1");
     }
@@ -90,7 +90,7 @@ Rcpp::List Update_LatentScores(arma::mat X,
       continue;
     }
 
-    const int q = static_cast<int>(qVec(k));
+    const int q = static_cast<int>(q_vec(k));
     arma::mat lambda = as_finite_matrix(lambda_list, k, p, q, "lambda");
     arma::mat psy = as_finite_matrix(psy_list, k, p, p, "psy");
     arma::vec mean = as_finite_vector(mean_list, k, p, "M");
@@ -106,7 +106,7 @@ Rcpp::List Update_LatentScores(arma::mat X,
 
     arma::mat component_scores(q, n);
     for (int i = 0; i < n; ++i) {
-      double label = ZOneDim(i);
+      double label = z(i);
       if (!std::isfinite(label) || label < 1 || label > m || label != std::floor(label)) {
         Rcpp::stop("cluster labels must be integers in 1:m");
       }

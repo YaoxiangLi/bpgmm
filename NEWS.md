@@ -1,3 +1,9 @@
+# bpgmm 1.3.0
+
+* Standardized the native Rcpp interface to snake_case function names.
+* Renamed C++ source files to snake_case and removed stale compiled artifacts from `src/`.
+* Cleaned internal native wrapper documentation while preserving sampler behavior.
+
 # bpgmm 1.2.9
 
 * Added data-preparation and posterior-diagnostics vignettes.

@@ -7,15 +7,15 @@
 
 
 // [[Rcpp::export]]
-Rcpp::IntegerVector update_PostZ(arma::mat X,
+Rcpp::IntegerVector update_post_z_native(arma::mat X,
                                  int m,
                                  int n,
-                                 Rcpp::S4 thetaYList) {
+                                 Rcpp::S4 theta_y_list) {
 
-  Rcpp::List lambda = thetaYList.slot("lambda");
-  Rcpp::List M = thetaYList.slot("M");
-  Rcpp::List psy = thetaYList.slot("psy");
-  arma::vec tao = thetaYList.slot("tao");
+  Rcpp::List lambda = theta_y_list.slot("lambda");
+  Rcpp::List M = theta_y_list.slot("M");
+  Rcpp::List psy = theta_y_list.slot("psy");
+  arma::vec tao = theta_y_list.slot("tao");
   arma::uword p = X.n_rows;
 
   validate_positive_int(m, "m");
@@ -31,7 +31,7 @@ Rcpp::IntegerVector update_PostZ(arma::mat X,
     Rcpp::stop("tao must contain at least m mixture weights");
   }
   if (lambda.size() < m || M.size() < m || psy.size() < m) {
-    Rcpp::stop("thetaYList parameter lists must contain at least m components");
+    Rcpp::stop("theta_y_list parameter lists must contain at least m components");
   }
 
   std::vector<arma::vec> means(m);

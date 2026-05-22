@@ -5,12 +5,12 @@
 
 
 // [[Rcpp::export]]
-Rcpp::List Calculate_Cxy(int m,
+Rcpp::List calculate_cxy_native(int m,
                          int n,
                          Rcpp::S4 hparam,
-                         Rcpp::S4 thetaYList,
-                         arma::vec ZOneDim,
-                         arma::vec qVec,
+                         Rcpp::S4 theta_y_list,
+                         arma::vec z,
+                         arma::vec q_vec,
                          arma::mat X){
 
   validate_positive_int(m, "m");
@@ -22,15 +22,15 @@ Rcpp::List Calculate_Cxy(int m,
     Rcpp::stop("n must equal the number of columns in X");
   }
   validate_finite_matrix(X, "X");
-  validate_q_vec(qVec, m);
+  validate_q_vec(q_vec, m);
 
   double alpha1 = get_positive_finite_slot(hparam, "alpha1");
   double alpha2 = get_positive_finite_slot(hparam, "alpha2");
 
-  Rcpp::List Y = thetaYList.slot("Y");
-  Rcpp::List lambda = thetaYList.slot("lambda");
-  Rcpp::List M = thetaYList.slot("M");
-  Rcpp::List psy = thetaYList.slot("psy");
+  Rcpp::List Y = theta_y_list.slot("Y");
+  Rcpp::List lambda = theta_y_list.slot("lambda");
+  Rcpp::List M = theta_y_list.slot("M");
+  Rcpp::List psy = theta_y_list.slot("psy");
 
   if (Y.size() < m || lambda.size() < m || M.size() < m || psy.size() < m) {
     Rcpp::stop("theta_y_list slots must each have length at least m");
@@ -38,7 +38,7 @@ Rcpp::List Calculate_Cxy(int m,
 
   arma::uword p = X.n_rows;
   for (int k = 0; k < m; ++k) {
-    arma::uword q_k = static_cast<arma::uword>(qVec(k));
+    arma::uword q_k = static_cast<arma::uword>(q_vec(k));
     arma::mat y_k = Y(k);
     arma::mat lambda_k = lambda(k);
     arma::vec m_k = M(k);
@@ -68,20 +68,20 @@ Rcpp::List Calculate_Cxy(int m,
   arma::vec nVec(m);
 
   for(int k=0; k<m; ++k) {
-    arma::uword q_k = static_cast<arma::uword>(qVec(k));
+    arma::uword q_k = static_cast<arma::uword>(q_vec(k));
     arma::vec prior_diag(q_k + 1);
     prior_diag(0) = alpha1;
     prior_diag.subvec(1, q_k).fill(alpha2);
     A(k) = diagmat(prior_diag);
   };
 
-  if (ZOneDim.n_elem != static_cast<arma::uword>(n)) {
-    Rcpp::stop("length of ZOneDim must equal n");
+  if (z.n_elem != static_cast<arma::uword>(n)) {
+    Rcpp::stop("length of z must equal n");
   }
   nVec.zeros();
   arma::uvec labels(n);
   for (int i = 0; i < n; ++i) {
-    double label = ZOneDim(static_cast<arma::uword>(i));
+    double label = z(static_cast<arma::uword>(i));
     if (!std::isfinite(label) || label < 1 || label > m || label != std::floor(label)) {
       Rcpp::stop("cluster labels must be integers in 1:m");
     }
@@ -99,7 +99,7 @@ Rcpp::List Calculate_Cxy(int m,
   arma::mat sumCyyk;
 
   for (int k=0; k<m; ++k) {
-    arma::uword q_k = static_cast<arma::uword>(qVec(k));
+    arma::uword q_k = static_cast<arma::uword>(q_vec(k));
     arma::mat Cxxkk(p, p, arma::fill::zeros);
     arma::mat Cxykk(p, q_k, arma::fill::zeros);
     arma::mat Cyykk(q_k, q_k, arma::fill::zeros);
