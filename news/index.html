@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.6</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.7</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -39,6 +39,12 @@
       <small>Source: <a href="https://github.com/YaoxiangLi/bpgmm/blob/master/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
+    <div class="section level2">
+<h2 class="pkg-version" data-toc-text="1.2.7" id="bpgmm-127">bpgmm 1.2.7<a class="anchor" aria-label="anchor" href="#bpgmm-127"></a></h2>
+<ul><li>Moved latent-factor score updates from R loops to native C++.</li>
+<li>Moved prior density evaluation for <code>lambda</code> and <code>psi</code> to native C++ while preserving the existing internal R API.</li>
+<li>Added strict native tests for latent-score sampling, input validation, and closed-form prior density checks.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="pkg-version" data-toc-text="1.2.6" id="bpgmm-126">bpgmm 1.2.6<a class="anchor" aria-label="anchor" href="#bpgmm-126"></a></h2>
 <ul><li>Added <code><a href="../reference/pgmm_rjmcmc_chains.html">pgmm_rjmcmc_chains()</a></code> for CRAN-safe multi-core execution of independent RJMCMC chains.</li>

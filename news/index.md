@@ -1,5 +1,13 @@
 # Changelog
 
+## bpgmm 1.2.7
+
+- Moved latent-factor score updates from R loops to native C++.
+- Moved prior density evaluation for `lambda` and `psi` to native C++
+  while preserving the existing internal R API.
+- Added strict native tests for latent-score sampling, input validation,
+  and closed-form prior density checks.
+
 ## bpgmm 1.2.6
 
 - Added
