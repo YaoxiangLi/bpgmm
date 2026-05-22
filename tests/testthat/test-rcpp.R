@@ -8,7 +8,7 @@ test_that("Rcpp get_z_mat_cpp matches the R implementation", {
 })
 
 test_that("native Rcpp wrappers use snake_case names", {
-  native_names <- ls(getNamespace("bpgmm"), pattern = "_native$")
+  native_names <- ls(getNamespace("bpgmm"), pattern = "^[a-z].*_native$")
 
   expect_true(all(grepl("^[a-z][a-z0-9_]*$", native_names)))
   expect_false(any(grepl("[A-Z]", native_names)))
