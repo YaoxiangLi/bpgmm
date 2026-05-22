@@ -75,6 +75,34 @@ test_that("Rcpp calculate_ratio_cpp validates finite log inputs", {
   )
 })
 
+test_that("Rcpp prior evaluators match closed-form reference values", {
+  p <- 2
+  m <- 2
+  alpha2 <- 3
+  delta <- 4
+  bbeta <- 2
+  q_vec <- c(1, 1)
+  clus_ind <- c(1, 1)
+  psy <- list(diag(c(1.2, 1.4)), diag(c(1.1, 1.3)))
+  lambda <- list(matrix(c(0.2, -0.1), nrow = 2), matrix(c(-0.15, 0.25), nrow = 2))
+
+  psi_expected <- sum(dgamma(1 / diag(psy[[1]]), delta, rate = bbeta, log = TRUE)) +
+    sum(dgamma(1 / diag(psy[[2]]), delta, rate = bbeta, log = TRUE))
+  lambda_expected <- mvtnorm::dmvnorm(lambda[[1]][, 1], rep(0, p), 1 / alpha2 * psy[[1]], log = TRUE) +
+    mvtnorm::dmvnorm(lambda[[2]][, 1], rep(0, p), 1 / alpha2 * psy[[2]], log = TRUE)
+
+  expect_equal(
+    bpgmm:::evaluate_prior_psi_cpp(psy, p, m, delta, bbeta, c(0, 0, 0), clus_ind),
+    psi_expected,
+    tolerance = 1e-10
+  )
+  expect_equal(
+    bpgmm:::evaluate_prior_lambda_cpp(p, m, alpha2, q_vec, psy, lambda, c(0, 0, 0), clus_ind),
+    lambda_expected,
+    tolerance = 1e-10
+  )
+})
+
 test_that("Rcpp update_post_z_cpp uses log mixture weights", {
   n <- 2000
   theta <- new(
@@ -109,6 +137,53 @@ test_that("Rcpp update_post_z_cpp validates dimensions and mixture weights", {
   expect_error(
     bpgmm:::update_post_z_cpp(matrix(0, nrow = 1, ncol = 2), m = 2, n = 1, theta),
     "n"
+  )
+})
+
+test_that("Rcpp update_latent_scores_cpp samples latent score matrices", {
+  x <- matrix(c(-1, 0, 1, 2, 3, 4), nrow = 2)
+  theta <- new(
+    "ThetaYList",
+    tao = c(0.5, 0.5),
+    psy = list(diag(2), diag(c(1.2, 1.4))),
+    M = list(c(0, 0), c(1, 1)),
+    lambda = list(matrix(c(0.2, -0.1), nrow = 2), matrix(c(0.1, 0.3), nrow = 2)),
+    Y = list(matrix(0, nrow = 1, ncol = 3), matrix(0, nrow = 1, ncol = 3))
+  )
+
+  set.seed(2026)
+  scores <- bpgmm:::update_latent_scores_cpp(
+    x = x,
+    theta_y_list = theta,
+    z = c(1, 2, 1),
+    clus_ind = c(1, 1),
+    q_vec = c(1, 1)
+  )
+
+  expect_type(scores, "list")
+  expect_length(scores, 2)
+  expect_true(all(vapply(scores, function(y) identical(dim(y), c(1L, 3L)), logical(1))))
+  expect_true(all(is.finite(unlist(scores))))
+})
+
+test_that("Rcpp update_latent_scores_cpp validates native inputs", {
+  theta <- new(
+    "ThetaYList",
+    tao = c(1),
+    psy = list(diag(2)),
+    M = list(c(0, 0)),
+    lambda = list(matrix(c(0.1, 0.2), nrow = 2)),
+    Y = list(matrix(0, nrow = 1, ncol = 2))
+  )
+  x <- matrix(c(1, 2, 3, 4), nrow = 2)
+
+  expect_error(
+    bpgmm:::update_latent_scores_cpp(x, theta, z = c(1, 2), clus_ind = c(1), q_vec = c(1)),
+    "cluster labels"
+  )
+  expect_error(
+    bpgmm:::update_latent_scores_cpp(x, theta, z = c(1, 1), clus_ind = c(1), q_vec = c(0)),
+    "q_vec"
   )
 })
 

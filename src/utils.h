@@ -31,6 +31,29 @@ Rcpp::IntegerVector update_PostZ(arma::mat X,
                                  int n,
                                  Rcpp::S4 thetaYList);
 
+Rcpp::List Update_LatentScores(arma::mat X,
+                               Rcpp::S4 thetaYList,
+                               arma::vec ZOneDim,
+                               arma::vec clusInd,
+                               arma::vec qVec);
+
+double Evaluate_PriorPsi(Rcpp::List psy,
+                         int p,
+                         int m,
+                         double delta,
+                         double bbeta,
+                         arma::vec constraint,
+                         arma::vec clusInd);
+
+double Evaluate_PriorLambda(int p,
+                            int m,
+                            double alpha2,
+                            arma::vec qVec,
+                            Rcpp::List psy,
+                            Rcpp::List lambda,
+                            arma::vec constraint,
+                            arma::vec clusInd);
+
 Rcpp::List Calculate_Cxy(int m,
                          int n,
                          Rcpp::S4 hparam,

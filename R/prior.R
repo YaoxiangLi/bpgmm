@@ -198,34 +198,7 @@ evaluate_prior_psi <- function(psy,
                              bbeta,
                              constraint,
                              clusInd) {
-  loopm <- which(clusInd == 1)
-  psyeval <- 0
-  if (constraint[2] == T & constraint[3] == T) {
-    for (i in loopm) {
-      if (i == 1) {
-        psyValue <- 1 / psy[[i]][1, 1]
-        psyeval <- psyeval + dgamma(psyValue, shape = delta, rate = bbeta, log = T)
-      }
-    }
-  } else if (constraint[2] == T & constraint[3] == F) {
-    for (i in loopm) {
-      if (i == 1) {
-        psyValue <- 1 / diag(psy[[i]])
-        psyeval <- psyeval + sum(dgamma(psyValue, shape = delta, rate = bbeta, log = T))
-      }
-    }
-  } else if (constraint[2] == F & constraint[3] == T) {
-    for (i in loopm) {
-      psyValue <- 1 / psy[[i]][1, 1]
-      psyeval <- psyeval + dgamma(psyValue, shape = delta, rate = bbeta, log = T)
-    }
-  } else {
-    for (i in loopm) {
-      psyValue <- 1 / diag(psy[[i]])
-      psyeval <- psyeval + sum(dgamma(psyValue, shape = delta, rate = bbeta, log = T))
-    }
-  }
-  return(psyeval)
+  evaluate_prior_psi_cpp(psy, p, m, delta, bbeta, constraint, clusInd)
 }
 
 
@@ -301,46 +274,5 @@ evaluate_prior_lambda <- function(p,
                                 lambda,
                                 constraint,
                                 clusInd) {
-  loopm <- which(clusInd == 1)
-  evallambda <- 0
-  if (constraint[1] == T & constraint[2] == T) {
-    for (k in loopm) {
-      if (k == 1) {
-        # qk = qVec[k]
-        qk <- ncol(lambda[[k]])
-        for (j in 1:qk) {
-          evallambda <- evallambda + mvtnorm::dmvnorm(lambda[[k]][, j], rep(0, p), 1 / alpha2 * psy[[k]], log = T)
-        }
-      }
-    }
-  } else if (constraint[1] == T & constraint[2] == F) {
-    psyAve <- matrix(0, nrow = p, ncol = p)
-    for (k in loopm) {
-      psyAve <- psyAve + solve(psy[[k]])
-    }
-    psyAve <- solve(1 / m * psyAve)
-
-    for (k in loopm) {
-      if (k == 1) {
-        # qk = qVec[k]
-        qk <- ncol(lambda[[k]])
-        for (j in 1:qk) {
-          evallambda <- evallambda + mvtnorm::dmvnorm(lambda[[k]][, j], rep(0, p), 1 / alpha2 * psyAve, log = T)
-        }
-      }
-    }
-  } else {
-    for (k in loopm) {
-      # qk = qVec[k]
-      qk <- ncol(lambda[[k]])
-      for (j in 1:qk) {
-        # print(k)
-        # print("=====")
-        # print(lambda[[k]][, j])
-        # print(psy[[k]])
-        evallambda <- evallambda + mvtnorm::dmvnorm(lambda[[k]][, j], rep(0, p), 1 / alpha2 * psy[[k]], log = T)
-      }
-    }
-  }
-  return(evallambda)
+  evaluate_prior_lambda_cpp(p, m, alpha2, qVec, psy, lambda, constraint, clusInd)
 }

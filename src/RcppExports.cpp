@@ -45,6 +45,56 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Evaluate_PriorPsi
+double Evaluate_PriorPsi(Rcpp::List psy, int p, int m, double delta, double bbeta, arma::vec constraint, arma::vec clusInd);
+RcppExport SEXP _bpgmm_Evaluate_PriorPsi(SEXP psySEXP, SEXP pSEXP, SEXP mSEXP, SEXP deltaSEXP, SEXP bbetaSEXP, SEXP constraintSEXP, SEXP clusIndSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type psy(psySEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< double >::type delta(deltaSEXP);
+    Rcpp::traits::input_parameter< double >::type bbeta(bbetaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type constraint(constraintSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type clusInd(clusIndSEXP);
+    rcpp_result_gen = Rcpp::wrap(Evaluate_PriorPsi(psy, p, m, delta, bbeta, constraint, clusInd));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Evaluate_PriorLambda
+double Evaluate_PriorLambda(int p, int m, double alpha2, arma::vec qVec, Rcpp::List psy, Rcpp::List lambda, arma::vec constraint, arma::vec clusInd);
+RcppExport SEXP _bpgmm_Evaluate_PriorLambda(SEXP pSEXP, SEXP mSEXP, SEXP alpha2SEXP, SEXP qVecSEXP, SEXP psySEXP, SEXP lambdaSEXP, SEXP constraintSEXP, SEXP clusIndSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< double >::type alpha2(alpha2SEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type psy(psySEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type lambda(lambdaSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type constraint(constraintSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type clusInd(clusIndSEXP);
+    rcpp_result_gen = Rcpp::wrap(Evaluate_PriorLambda(p, m, alpha2, qVec, psy, lambda, constraint, clusInd));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Update_LatentScores
+Rcpp::List Update_LatentScores(arma::mat X, Rcpp::S4 thetaYList, arma::vec ZOneDim, arma::vec clusInd, arma::vec qVec);
+RcppExport SEXP _bpgmm_Update_LatentScores(SEXP XSEXP, SEXP thetaYListSEXP, SEXP ZOneDimSEXP, SEXP clusIndSEXP, SEXP qVecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< arma::mat >::type X(XSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type thetaYList(thetaYListSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type ZOneDim(ZOneDimSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type clusInd(clusIndSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type qVec(qVecSEXP);
+    rcpp_result_gen = Rcpp::wrap(Update_LatentScores(X, thetaYList, ZOneDim, clusInd, qVec));
+    return rcpp_result_gen;
+END_RCPP
+}
 // update_PostZ
 Rcpp::IntegerVector update_PostZ(arma::mat X, int m, int n, Rcpp::S4 thetaYList);
 RcppExport SEXP _bpgmm_update_PostZ(SEXP XSEXP, SEXP mSEXP, SEXP nSEXP, SEXP thetaYListSEXP) {
@@ -119,6 +169,9 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_bpgmm_Calculate_Cxy", (DL_FUNC) &_bpgmm_Calculate_Cxy, 7},
     {"_bpgmm_Calculate_PostLambdaPsy", (DL_FUNC) &_bpgmm_Calculate_PostLambdaPsy, 7},
+    {"_bpgmm_Evaluate_PriorPsi", (DL_FUNC) &_bpgmm_Evaluate_PriorPsi, 7},
+    {"_bpgmm_Evaluate_PriorLambda", (DL_FUNC) &_bpgmm_Evaluate_PriorLambda, 8},
+    {"_bpgmm_Update_LatentScores", (DL_FUNC) &_bpgmm_Update_LatentScores, 5},
     {"_bpgmm_update_PostZ", (DL_FUNC) &_bpgmm_update_PostZ, 4},
     {"_bpgmm_update_Hyperparameter", (DL_FUNC) &_bpgmm_update_Hyperparameter, 7},
     {"_bpgmm_get_Z_mat", (DL_FUNC) &_bpgmm_get_Z_mat, 3},

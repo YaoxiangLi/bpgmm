@@ -9,6 +9,18 @@ Calculate_PostLambdaPsy <- function(m, p, hparam, CxyList, thetaYList, qVec, con
     .Call(`_bpgmm_Calculate_PostLambdaPsy`, m, p, hparam, CxyList, thetaYList, qVec, constraint)
 }
 
+Evaluate_PriorPsi <- function(psy, p, m, delta, bbeta, constraint, clusInd) {
+    .Call(`_bpgmm_Evaluate_PriorPsi`, psy, p, m, delta, bbeta, constraint, clusInd)
+}
+
+Evaluate_PriorLambda <- function(p, m, alpha2, qVec, psy, lambda, constraint, clusInd) {
+    .Call(`_bpgmm_Evaluate_PriorLambda`, p, m, alpha2, qVec, psy, lambda, constraint, clusInd)
+}
+
+Update_LatentScores <- function(X, thetaYList, ZOneDim, clusInd, qVec) {
+    .Call(`_bpgmm_Update_LatentScores`, X, thetaYList, ZOneDim, clusInd, qVec)
+}
+
 update_PostZ <- function(X, m, n, thetaYList) {
     .Call(`_bpgmm_update_PostZ`, X, m, n, thetaYList)
 }

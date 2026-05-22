@@ -43,28 +43,8 @@ update_post_theta_y <- function(m, n, p, hparam, thetaYList, ZOneDim, qVec, cons
   psy <- lambdaPsy$psy
 
   ## post Y
-  D <- list()
-  for (i in 1:m) {
-    D[[i]] <- t(lambda[[i]]) %*% solve(psy[[i]] + lambda[[i]] %*% t(lambda[[i]]), tol = 1e-100)
-  }
-
-  Sigma <- list()
-  for (i in 1:m) {
-    Sigma[[i]] <- diag(qVec[i]) - D[[i]] %*% lambda[[i]]
-  }
-
-  Y <- list()
-  YDvalList <- c()
-  for (k in 1:m) {
-    Y[[k]] <- matrix(NA, qVec[k], n)
-    for (i in 1:n) {
-      if (Zmat[k, i] == 0) {
-        Y[[k]][, i] <- rmvnorm(1, mean = rep(0, qVec[k]), sigma = diag(qVec[k]))
-      } else if (Zmat[k, i] == 1) {
-        Y[[k]][, i] <- rmvnorm(1, mean = D[[k]] %*% t(X[, i] - M[[k]]), sigma = Sigma[[k]])
-      }
-    }
-  }
+  theta_for_y <- new("ThetaYList", tao = tao, psy = psy, M = M, lambda = lambda, Y = Y)
+  Y <- update_latent_scores_cpp(X, theta_for_y, ZOneDim, rep(1, m), qVec)
 
   new("ThetaYList", tao = tao, psy = psy, M = M, lambda = lambda, Y = Y)
 }
