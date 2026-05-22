@@ -187,4 +187,5 @@ BibTeX for the paper:
 
 The package website is available at https://yaoxiangli.github.io/bpgmm/. It
 includes a reference index, release notes, and worked examples that run the
-actual package functions.
+actual package functions, including larger model-selection and exploratory
+variable-prioritization examples.

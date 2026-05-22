@@ -1,3 +1,8 @@
+# bpgmm 1.2.8
+
+* Added larger model-selection and exploratory variable-prioritization vignettes with runnable examples and plots.
+* Documented how to use posterior allocations and loading matrices for exploratory variable prioritization without presenting it as formal Bayesian variable selection.
+
 # bpgmm 1.2.7
 
 * Moved latent-factor score updates from R loops to native C++.

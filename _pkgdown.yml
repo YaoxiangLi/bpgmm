@@ -39,3 +39,5 @@ articles:
       - getting-started
       - model-and-sampler
       - examples
+      - model-selection
+      - variable-prioritization
