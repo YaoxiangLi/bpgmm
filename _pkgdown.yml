@@ -17,7 +17,21 @@ home:
   title: "bpgmm: Bayesian inference for parsimonious Gaussian mixture models"
   description: Bayesian inference for parsimonious Gaussian mixture models.
   sidebar:
-    structure: [links, license, citation, authors, dev]
+    structure: [links, license, citation, authors_ordered, dev]
+    components:
+      authors_ordered:
+        title: Authors
+        text: |
+          - Xiang Lu
+          - Yaoxiang Li
+          - Tanzy Love
+
+footer:
+  structure:
+    left: developed_by
+    right: built_with
+  components:
+    developed_by: "Developed by Xiang Lu, Yaoxiang Li, and Tanzy Love."
 
 reference:
   - title: Model fitting
