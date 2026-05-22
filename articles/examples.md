@@ -13,7 +13,7 @@ columns. The code below creates two compact clusters in two dimensions.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.8 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.9 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -229,3 +229,18 @@ fit <- pgmm_rjmcmc(
 
 summarize_pgmm_rjmcmc(fit, true_cluster = known_labels)
 ```
+
+## What to report
+
+For a concise analysis report, include:
+
+- the data orientation and preprocessing choices;
+- `m_range`, `q_new`, starting covariance model, and whether `m_step`,
+  `v_step`, and `split_combine` were enabled;
+- the number of burn-in and posterior iterations;
+- posterior counts for cluster number and covariance model;
+- the posterior modal allocation or a co-clustering matrix;
+- ARI only when a reference partition is scientifically meaningful.
+
+The diagnostics vignette gives examples of trace plots and co-clustering
+summaries for multiple chains.

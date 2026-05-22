@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.8</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.2.9</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -37,10 +37,12 @@
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/getting-started.html">Getting started with bpgmm</a></li>
+    <li><a class="dropdown-item" href="../articles/data-preparation.html">Preparing data and choosing sampler settings</a></li>
     <li><a class="dropdown-item" href="../articles/model-and-sampler.html">Model and sampler details</a></li>
     <li><a class="dropdown-item" href="../articles/examples.html">Worked examples</a></li>
     <li><a class="dropdown-item" href="../articles/model-selection.html">Model selection on a larger simulated MFA data set</a></li>
     <li><a class="dropdown-item" href="../articles/variable-prioritization.html">Exploratory variable prioritization after bpgmm clustering</a></li>
+    <li><a class="dropdown-item" href="../articles/posterior-diagnostics.html">Posterior diagnostics and multiple chains</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -78,7 +80,9 @@ described by Lu, Li, and Love (2021): the partition of observations, the
 number of clusters, and the cluster covariance structure.</p>
 <p>For the model equations, prior distributions, PGMM covariance labels,
 and RJMCMC move types, see
-<code><a href="../articles/model-and-sampler.html">vignette("model-and-sampler", package = "bpgmm")</a></code>.</p>
+<code><a href="../articles/model-and-sampler.html">vignette("model-and-sampler", package = "bpgmm")</a></code>. For data
+orientation, scaling, and sampler setting choices, see
+<code><a href="../articles/data-preparation.html">vignette("data-preparation", package = "bpgmm")</a></code>.</p>
 <div class="section level2">
 <h2 id="fit-a-model">Fit a model<a class="anchor" aria-label="anchor" href="#fit-a-model"></a>
 </h2>
@@ -89,7 +93,7 @@ quickly; use larger <code>burn</code> and <code>niter</code> values for
 real analysis.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.2.8 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.2.9 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span></span>
@@ -170,6 +174,22 @@ covariance-constraint models.</li>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
+<h2 id="pick-the-right-article">Pick the right article<a class="anchor" aria-label="anchor" href="#pick-the-right-article"></a>
+</h2>
+<p>The package website contains several articles that avoid repeating
+the same task:</p>
+<ul>
+<li>start here for the shortest complete workflow;</li>
+<li>use the data-preparation article before fitting a real data
+set;</li>
+<li>use the model-selection article to see <code>m_step = 1</code> and
+<code>v_step = 1</code>;</li>
+<li>use the diagnostics article to inspect independent chains;</li>
+<li>use the variable-prioritization article after fitting, when you want
+to understand which variables separate the fitted clusters.</li>
+</ul>
+</div>
+<div class="section level2">
 <h2 id="summarize-posterior-samples">Summarize posterior samples<a class="anchor" aria-label="anchor" href="#summarize-posterior-samples"></a>
 </h2>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -225,6 +245,26 @@ constraint vectors.</p>
 <span><span class="co">#&gt; [1] 0 0 0</span></span>
 <span><span class="fu"><a href="../reference/constraint_to_model.html">constraint_to_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] "CUU"</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="common-early-mistakes">Common early mistakes<a class="anchor" aria-label="anchor" href="#common-early-mistakes"></a>
+</h2>
+<p>The most common problems are easy to check:</p>
+<ul>
+<li>
+<code>X</code> is accidentally supplied as observations by variables
+instead of variables by observations;</li>
+<li>variables with very different measurement scales are not
+standardized;</li>
+<li>
+<code>m_init</code> is outside <code>m_range</code>;</li>
+<li>
+<code>q_new</code> is too large for a small number of
+variables;</li>
+<li>
+<code>m_step</code> and <code>v_step</code> are left at zero when
+model selection is desired.</li>
+</ul>
 </div>
 <div class="section level2">
 <h2 id="naming-convention">Naming convention<a class="anchor" aria-label="anchor" href="#naming-convention"></a>

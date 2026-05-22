@@ -8,6 +8,8 @@ number of clusters, and the cluster covariance structure.
 For the model equations, prior distributions, PGMM covariance labels,
 and RJMCMC move types, see
 [`vignette("model-and-sampler", package = "bpgmm")`](https://yaoxiangli.github.io/bpgmm/articles/model-and-sampler.md).
+For data orientation, scaling, and sampler setting choices, see
+[`vignette("data-preparation", package = "bpgmm")`](https://yaoxiangli.github.io/bpgmm/articles/data-preparation.md).
 
 ## Fit a model
 
@@ -19,7 +21,7 @@ quickly; use larger `burn` and `niter` values for real analysis.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.8 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.9 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -104,6 +106,18 @@ fit <- pgmm_rjmcmc(
 )
 ```
 
+## Pick the right article
+
+The package website contains several articles that avoid repeating the
+same task:
+
+- start here for the shortest complete workflow;
+- use the data-preparation article before fitting a real data set;
+- use the model-selection article to see `m_step = 1` and `v_step = 1`;
+- use the diagnostics article to inspect independent chains;
+- use the variable-prioritization article after fitting, when you want
+  to understand which variables separate the fitted clusters.
+
 ## Summarize posterior samples
 
 ``` r
@@ -168,6 +182,18 @@ model_to_constraint("UUU")
 constraint_to_model(c(1, 0, 0))
 #> [1] "CUU"
 ```
+
+## Common early mistakes
+
+The most common problems are easy to check:
+
+- `X` is accidentally supplied as observations by variables instead of
+  variables by observations;
+- variables with very different measurement scales are not standardized;
+- `m_init` is outside `m_range`;
+- `q_new` is too large for a small number of variables;
+- `m_step` and `v_step` are left at zero when model selection is
+  desired.
 
 ## Naming convention
 

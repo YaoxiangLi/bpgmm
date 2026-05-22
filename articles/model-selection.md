@@ -17,7 +17,7 @@ informative.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.8 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.9 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 simulate_mfa_data <- function(n_per_cluster = 20, p = 6, q = 2) {
   means <- rbind(
@@ -236,3 +236,23 @@ fits <- pgmm_rjmcmc_chains(
   verbose = FALSE
 )
 ```
+
+## Interpreting short versus long runs
+
+The short chain in this vignette demonstrates the mechanics of model
+selection. It should not be interpreted as a final posterior analysis.
+In applied work:
+
+- increase `burn` and `niter` until summaries are stable;
+- compare independent chains with
+  [`pgmm_rjmcmc_chains()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc_chains.md);
+- check whether sampled cluster counts are stuck at either edge of
+  `m_range`;
+- rerun sensitivity checks for plausible values of `q_new`;
+- inspect whether covariance-model posterior counts change when
+  `v_step = 1`.
+
+If the posterior mass stays at the upper end of `m_range`, expand the
+range or revisit preprocessing. If it stays at the lower end, the data
+may support fewer clusters than expected, or the covariance model may be
+too flexible for the sample size.

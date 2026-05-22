@@ -25,7 +25,7 @@ Variables four through six are noisier and less cluster-specific.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.8 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.9 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 simulate_screening_data <- function(n_per_cluster = 20, p = 6, q = 2) {
   means <- rbind(
@@ -241,3 +241,18 @@ inclusion prior and posterior inclusion summaries. The current package
 is best described as supporting model-based clustering, cluster-number
 selection, and PGMM covariance-structure selection, with exploratory
 variable prioritization available from posterior outputs.
+
+## Suggested reporting language
+
+When using these summaries in a manuscript or analysis report, use
+wording such as:
+
+> We ranked variables by their separation across posterior modal
+> clusters and by posterior loading magnitudes. These rankings are
+> exploratory diagnostics derived from the fitted clustering model, not
+> posterior inclusion probabilities.
+
+Avoid wording such as “selected variables” unless a formal
+variable-selection model has been fitted. A careful distinction makes
+the package easier to use correctly and avoids overstating the
+statistical target.

@@ -206,7 +206,8 @@ The package website is available at
 <https://yaoxiangli.github.io/bpgmm/>. It includes a reference index,
 release notes, and worked examples that run the actual package
 functions, including larger model-selection and exploratory
-variable-prioritization examples.
+variable-prioritization examples, data-preparation guidance, and
+posterior diagnostics for multiple chains.
 
 # Package index
 
@@ -236,6 +237,8 @@ variable-prioritization examples.
 
 - [Getting started with
   bpgmm](https://yaoxiangli.github.io/bpgmm/articles/getting-started.md):
+- [Preparing data and choosing sampler
+  settings](https://yaoxiangli.github.io/bpgmm/articles/data-preparation.md):
 - [Model and sampler
   details](https://yaoxiangli.github.io/bpgmm/articles/model-and-sampler.md):
 - [Worked
@@ -244,3 +247,5 @@ variable-prioritization examples.
   set](https://yaoxiangli.github.io/bpgmm/articles/model-selection.md):
 - [Exploratory variable prioritization after bpgmm
   clustering](https://yaoxiangli.github.io/bpgmm/articles/variable-prioritization.md):
+- [Posterior diagnostics and multiple
+  chains](https://yaoxiangli.github.io/bpgmm/articles/posterior-diagnostics.md):
