@@ -222,3 +222,17 @@ inclusion prior and posterior inclusion summaries. The current package is best
 described as supporting model-based clustering, cluster-number selection, and
 PGMM covariance-structure selection, with exploratory variable prioritization
 available from posterior outputs.
+
+## Suggested reporting language
+
+When using these summaries in a manuscript or analysis report, use wording such
+as:
+
+> We ranked variables by their separation across posterior modal clusters and
+> by posterior loading magnitudes. These rankings are exploratory diagnostics
+> derived from the fitted clustering model, not posterior inclusion
+> probabilities.
+
+Avoid wording such as "selected variables" unless a formal variable-selection
+model has been fitted. A careful distinction makes the package easier to use
+correctly and avoids overstating the statistical target.

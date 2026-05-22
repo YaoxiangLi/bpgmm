@@ -1,3 +1,8 @@
+# bpgmm 1.2.9
+
+* Added data-preparation and posterior-diagnostics vignettes.
+* Expanded the vignette collection so each article covers a distinct workflow: input preparation, sampler details, small worked examples, larger model selection, exploratory variable prioritization, and multi-chain diagnostics.
+
 # bpgmm 1.2.8
 
 * Added larger model-selection and exploratory variable-prioritization vignettes with runnable examples and plots.

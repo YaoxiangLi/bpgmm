@@ -37,7 +37,9 @@ articles:
     navbar: ~
     contents:
       - getting-started
+      - data-preparation
       - model-and-sampler
       - examples
       - model-selection
       - variable-prioritization
+      - posterior-diagnostics
