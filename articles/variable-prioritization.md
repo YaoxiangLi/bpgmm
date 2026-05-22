@@ -25,7 +25,7 @@ Variables four through six are noisier and less cluster-specific.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.9 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 simulate_screening_data <- function(n_per_cluster = 20, p = 6, q = 2) {
   means <- rbind(

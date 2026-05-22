@@ -119,7 +119,7 @@ The eight PGMM models are:
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.9 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 models <- c("CCC", "CCU", "CUC", "CUU", "UCC", "UCU", "UUC", "UUU")
 data.frame(

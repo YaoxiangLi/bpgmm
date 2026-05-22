@@ -15,7 +15,7 @@ after selecting numeric variables.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.9 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 iris_numeric <- as.matrix(iris[, 1:4])
 iris_labels <- as.integer(iris$Species)
