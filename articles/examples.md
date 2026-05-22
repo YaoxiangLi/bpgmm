@@ -13,7 +13,7 @@ columns. The code below creates two compact clusters in two dimensions.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.7 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.8 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 

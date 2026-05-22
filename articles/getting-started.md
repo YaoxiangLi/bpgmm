@@ -19,7 +19,7 @@ quickly; use larger `burn` and `niter` values for real analysis.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.2.7 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.2.8 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
