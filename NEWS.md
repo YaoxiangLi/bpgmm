@@ -1,3 +1,9 @@
+# bpgmm 1.3.1
+
+* Revised the vignette set to reduce repeated examples across articles.
+* Made the model-and-sampler, data-preparation, model-selection, variable-prioritization, and diagnostics articles more formula-focused and closer to the notation in Lu, Li, and Love (2021).
+* Changed the variable-prioritization simulation so it no longer duplicates the larger MFA model-selection example.
+
 # bpgmm 1.3.0
 
 * Standardized the native Rcpp interface to snake_case function names.

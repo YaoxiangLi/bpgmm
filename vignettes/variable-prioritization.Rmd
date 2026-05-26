@@ -31,30 +31,33 @@ prioritization, not as formal posterior variable inclusion probabilities.
 
 ## Simulate data with informative and weak variables
 
-The first three variables carry most of the cluster separation. Variables four
-through six are noisier and less cluster-specific.
+This vignette uses a different simulation from the model-selection article.
+Here the point is not to recover \(m\); it is to show how posterior output can
+be post-processed to rank variables. The first three variables have different
+cluster means, variables four and five have mostly covariance differences, and
+variable six is weak noise.
 
 ```{r}
 library(bpgmm)
 
-simulate_screening_data <- function(n_per_cluster = 20, p = 6, q = 2) {
+simulate_screening_data <- function(n_per_cluster = 18, p = 6) {
   means <- rbind(
-    c(-3.0, -2.0,  0.0, 0, 0, 0),
-    c( 2.5, -1.0,  2.0, 0, 0, 0),
-    c( 0.0,  2.5, -2.0, 0, 0, 0)
+    c(-2.5, -1.5,  0.0, 0, 0, 0),
+    c( 2.0, -0.5,  1.8, 0, 0, 0),
+    c( 0.0,  2.2, -1.8, 0, 0, 0)
   )
-  lambdas <- list(
-    matrix(c(1.2,  0.5, 0.2, 0, 0, 0,
-             0.0,  0.2, 0.8, 0.3, 0, 0), nrow = p),
-    matrix(c(0.2,  1.1, 0.6, 0, 0, 0,
-             0.8,  0.1, 0.2, 0.6, 0, 0), nrow = p),
-    matrix(c(0.7, -0.4, 1.0, 0, 0, 0,
-            -0.2,  0.8, 0.4, 0.3, 0, 0), nrow = p)
-  )
-  psi <- list(
-    diag(c(0.25, 0.35, 0.30, 0.80, 0.90, 1.00)),
-    diag(c(0.30, 0.25, 0.40, 0.80, 0.90, 1.00)),
-    diag(c(0.35, 0.30, 0.25, 0.80, 0.90, 1.00))
+
+  covariances <- list(
+    diag(c(0.35, 0.35, 0.35, 1.40, 0.35, 1.20)),
+    diag(c(0.35, 0.35, 0.35, 0.35, 1.40, 1.20)),
+    matrix(c(
+      0.35, 0,    0,    0,    0,    0,
+      0,    0.35, 0,    0,    0,    0,
+      0,    0,    0.35, 0,    0,    0,
+      0,    0,    0,    1.00, 0.45, 0,
+      0,    0,    0,    0.45, 1.00, 0,
+      0,    0,    0,    0,    0,    1.20
+    ), nrow = p)
   )
 
   n <- n_per_cluster * 3
@@ -64,9 +67,7 @@ simulate_screening_data <- function(n_per_cluster = 20, p = 6, q = 2) {
   column <- 1
   for (k in seq_len(3)) {
     for (i in seq_len(n_per_cluster)) {
-      latent_score <- rnorm(q)
-      noise <- MASS::mvrnorm(1, mu = rep(0, p), Sigma = psi[[k]])
-      X[, column] <- means[k, ] + lambdas[[k]] %*% latent_score + noise
+      X[, column] <- MASS::mvrnorm(1, mu = means[k, ], Sigma = covariances[[k]])
       column <- column + 1
     }
   }
@@ -81,7 +82,17 @@ X <- sim$X
 true_cluster <- sim$true_cluster
 ```
 
-## Fit a short model-selection chain
+The fitted PGMM still uses
+
+\[
+\Sigma_k = \Lambda_k\Lambda_k^\top + \Psi_k,
+\]
+
+but this simulation deliberately separates mean-driven variables from
+covariance-driven variables so the two rankings below answer different
+questions.
+
+## Fit a short clustering chain
 
 ```{r}
 fit_log <- capture.output({
@@ -157,6 +168,20 @@ barplot(
 The loading matrices describe how observed variables relate to latent factors
 inside each component. A simple posterior diagnostic is the average absolute
 loading magnitude across saved samples and active components.
+
+\[
+L_j =
+\frac{1}{|\mathcal{S}|}
+\sum_{s \in \mathcal{S}}
+\frac{1}{|A_s|}
+\sum_{k \in A_s}
+\frac{1}{q_k}\sum_{\ell = 1}^{q_k}
+|\lambda_{jk\ell}^{(s)}|,
+\]
+
+where \(A_s\) is the set of active clusters in posterior sample \(s\). Large
+\(L_j\) means variable \(j\) contributes strongly to the latent-factor
+covariance structure; it is not a posterior inclusion probability.
 
 ```{r}
 loading_importance <- function(fit) {

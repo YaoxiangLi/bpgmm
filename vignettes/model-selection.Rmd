@@ -26,6 +26,16 @@ The simulator below creates three clusters, six observed variables, and two
 latent factors. The first three variables carry most of the cluster separation,
 while the last three variables are intentionally less informative.
 
+The generating model matches the paper's mixture-of-factor-analyzers form:
+
+\[
+x_i = \mu_{z_i} + \Lambda_{z_i}y_i + \epsilon_i,
+\qquad
+y_i \sim N_2(0, I_2),
+\qquad
+\epsilon_i \sim N_6(0, \Psi_{z_i}).
+\]
+
 ```{r}
 library(bpgmm)
 
@@ -107,6 +117,26 @@ Here `m_step = 1` allows the sampler to move across different numbers of
 clusters, and `v_step = 1` allows moves across the PGMM covariance structures.
 The example uses only a few iterations so that the vignette is fast.
 
+The two discrete targets are
+
+\[
+p(m \mid X)
+\quad \text{and} \quad
+p(v \mid X),
+\]
+
+where \(v\) is one of the eight covariance labels
+\(\{\mathrm{CCC}, \ldots, \mathrm{UUU}\}\). The saved samples estimate these
+posterior probabilities by empirical frequencies:
+
+\[
+\widehat{p}(m = r \mid X)
+  = \frac{1}{S}\sum_{s=1}^S I(m^{(s)} = r),
+\qquad
+\widehat{p}(v = a \mid X)
+  = \frac{1}{S}\sum_{s=1}^S I(v^{(s)} = a).
+\]
+
 ```{r}
 fit_log <- capture.output({
   fit <- pgmm_rjmcmc(
@@ -184,30 +214,6 @@ plot(
   asp = 1
 )
 par(old_par)
-```
-
-## Use multiple chains for applied work
-
-For real analyses, independent chains are the safest way to use multiple CPU
-cores and to assess stability across runs.
-
-```{r, eval = FALSE}
-fits <- pgmm_rjmcmc_chains(
-  X = X,
-  m_init = 3,
-  m_range = c(1, 8),
-  q_new = 2,
-  burn = 1000,
-  niter = 5000,
-  constraint = "UUU",
-  m_step = 1,
-  v_step = 1,
-  split_combine = 1,
-  chains = 4,
-  cores = 4,
-  seed = 2027,
-  verbose = FALSE
-)
 ```
 
 ## Interpreting short versus long runs
