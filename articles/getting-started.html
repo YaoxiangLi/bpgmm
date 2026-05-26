@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -78,11 +78,49 @@
 for model-based clustering. It targets three posterior inference goals
 described by Lu, Li, and Love (2021): the partition of observations, the
 number of clusters, and the cluster covariance structure.</p>
-<p>For the model equations, prior distributions, PGMM covariance labels,
-and RJMCMC move types, see
-<code><a href="../articles/model-and-sampler.html">vignette("model-and-sampler", package = "bpgmm")</a></code>. For data
-orientation, scaling, and sampler setting choices, see
-<code><a href="../articles/data-preparation.html">vignette("data-preparation", package = "bpgmm")</a></code>.</p>
+<p>The other articles are intentionally non-overlapping:</p>
+<table class="table">
+<colgroup>
+<col width="50%">
+<col width="50%">
+</colgroup>
+<thead><tr class="header">
+<th>Article</th>
+<th>Use it for</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><code>data-preparation</code></td>
+<td>matrix orientation, scaling, and choosing <code>m_range</code> and
+<code>q_new</code>
+</td>
+</tr>
+<tr class="even">
+<td><code>model-and-sampler</code></td>
+<td>formulas from the paper and their package arguments</td>
+</tr>
+<tr class="odd">
+<td><code>examples</code></td>
+<td>inspecting one fitted object</td>
+</tr>
+<tr class="even">
+<td><code>model-selection</code></td>
+<td>RJMCMC summaries for
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+and covariance model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+</td>
+</tr>
+<tr class="odd">
+<td><code>variable-prioritization</code></td>
+<td>exploratory variable rankings from posterior output</td>
+</tr>
+<tr class="even">
+<td><code>posterior-diagnostics</code></td>
+<td>independent chains, traces, and co-clustering</td>
+</tr>
+</tbody>
+</table>
 <div class="section level2">
 <h2 id="fit-a-model">Fit a model<a class="anchor" aria-label="anchor" href="#fit-a-model"></a>
 </h2>
@@ -93,7 +131,7 @@ quickly; use larger <code>burn</code> and <code>niter</code> values for
 real analysis.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span></span>
@@ -140,7 +178,10 @@ ARI calculation.</p>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">tail</a></span><span class="op">(</span><span class="va">fit_log</span>, <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="co">#&gt; character(0)</span></span></code></pre></div>
-<p>The arguments control the sampler:</p>
+<p>The call fixes
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>=</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">m = 2</annotation></semantics></math>
+and the covariance model so the example is fast. The important arguments
+are:</p>
 <ul>
 <li>
 <code>m_init</code> is the initial number of clusters.</li>
@@ -159,40 +200,11 @@ clusters.</li>
 <code>v_step = 1</code> allows RJMCMC updates across
 covariance-constraint models.</li>
 </ul>
-<p>A longer run for applied work might look like this:</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
-<span>  X <span class="op">=</span> <span class="va">methylation_matrix</span>,</span>
-<span>  m_init <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  m_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">6</span><span class="op">)</span>,</span>
-<span>  q_new <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  burn <span class="op">=</span> <span class="fl">100</span>,</span>
-<span>  niter <span class="op">=</span> <span class="fl">1000</span>,</span>
-<span>  m_step <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  v_step <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="pick-the-right-article">Pick the right article<a class="anchor" aria-label="anchor" href="#pick-the-right-article"></a>
-</h2>
-<p>The package website contains several articles that avoid repeating
-the same task:</p>
-<ul>
-<li>start here for the shortest complete workflow;</li>
-<li>use the data-preparation article before fitting a real data
-set;</li>
-<li>use the model-selection article to see <code>m_step = 1</code> and
-<code>v_step = 1</code>;</li>
-<li>use the diagnostics article to inspect independent chains;</li>
-<li>use the variable-prioritization article after fitting, when you want
-to understand which variables separate the fitted clusters.</li>
-</ul>
 </div>
 <div class="section level2">
 <h2 id="summarize-posterior-samples">Summarize posterior samples<a class="anchor" aria-label="anchor" href="#summarize-posterior-samples"></a>
 </h2>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, true_cluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">summary</span><span class="op">$</span><span class="va">allocation</span></span>
@@ -212,7 +224,7 @@ to understand which variables separate the fitted clusters.</li>
 <p>The summary allocation can be plotted back on the original
 coordinates. This is a useful first diagnostic before moving on to
 longer chains and convergence checks.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">X</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, <span class="va">X</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span>,</span>
 <span>  col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#009E73"</span>, <span class="st">"#CC79A7"</span>, <span class="st">"#E69F00"</span><span class="op">)</span><span class="op">[</span><span class="va">summary</span><span class="op">$</span><span class="va">allocation</span><span class="op">]</span>,</span>
@@ -230,21 +242,7 @@ longer chains and convergence checks.</p>
 <span>  pch <span class="op">=</span> <span class="fl">19</span>,</span>
 <span>  bty <span class="op">=</span> <span class="st">"n"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="getting-started_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="Scatter plot colored by posterior modal allocation." width="528"></p>
-</div>
-<div class="section level2">
-<h2 id="work-with-covariance-constraints">Work with covariance constraints<a class="anchor" aria-label="anchor" href="#work-with-covariance-constraints"></a>
-</h2>
-<p>The paper uses the eight PGMM covariance model labels
-<code>CCC</code>, <code>CCU</code>, <code>CUC</code>, <code>CUU</code>,
-<code>UCC</code>, <code>UCU</code>, <code>UUC</code>, and
-<code>UUU</code>. The package stores these internally as three-number
-constraint vectors.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 0 0 0</span></span>
-<span><span class="fu"><a href="../reference/constraint_to_model.html">constraint_to_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "CUU"</span></span></code></pre></div>
+<p><img src="getting-started_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="Scatter plot colored by posterior modal allocation." width="528"></p>
 </div>
 <div class="section level2">
 <h2 id="common-early-mistakes">Common early mistakes<a class="anchor" aria-label="anchor" href="#common-early-mistakes"></a>
@@ -280,7 +278,7 @@ as <code>m_init</code>, <code>m_range</code>, and
 </h2>
 <p>If you use <code>bpgmm</code> in published work, please cite the
 package and the methodology paper:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"bpgmm"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'bpgmm' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>

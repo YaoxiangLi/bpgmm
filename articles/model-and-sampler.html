@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -77,7 +77,8 @@
 <p>This article connects the notation in Lu, Li, and Love (2021) to the
 <code>bpgmm</code> interface. The goal is to make clear what the package
 is fitting, what the covariance labels mean, and how the RJMCMC switches
-change the sampler.</p>
+change the sampler. It does not repeat a full worked fit; use the
+getting-started and examples articles for runnable workflows.</p>
 <div class="section level2">
 <h2 id="observation-model">Observation model<a class="anchor" aria-label="anchor" href="#observation-model"></a>
 </h2>
@@ -165,7 +166,14 @@ f(x_i) = \sum_{k = 1}^m \tau_k
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\tau_k</annotation></semantics></math>
 is the mixture weight and
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
-is the number of clusters.</p>
+is the number of clusters. Equivalently, with allocation indicator
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>z</mi><mi>i</mi></msub><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>m</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">z_i \in \{1,\ldots,m\}</annotation></semantics></math>,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo>,</mo><mi mathvariant="normal">Θ</mi><mo>∼</mo><msub><mi>N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Σ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><mrow><mi mathvariant="normal">Pr</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo>∣</mo><mi>τ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>τ</mi><mi>k</mi></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x_i \mid z_i = k, \Theta
+  \sim N_p(\mu_k, \Sigma_k),
+\qquad
+\Pr(z_i = k \mid \tau) = \tau_k .
+</annotation></semantics></math></p>
 <p>In <code><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code>:</p>
 <ul>
 <li>
@@ -235,7 +243,7 @@ for unconstrained.</p>
 <p>The eight PGMM models are:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CCC"</span>, <span class="st">"CCU"</span>, <span class="st">"CUC"</span>, <span class="st">"CUU"</span>, <span class="st">"UCC"</span>, <span class="st">"UCU"</span>, <span class="st">"UUC"</span>, <span class="st">"UUU"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -283,6 +291,16 @@ y_{ki} \sim N(0, I_{q_k}),
 <p>and</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>ψ</mi><mrow><mi>k</mi><mi>j</mi></mrow></msub><mo>∼</mo><mrow><mi mathvariant="normal">I</mi><mi mathvariant="normal">G</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>δ</mi><mo>,</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
 \psi_{kj} \sim \mathrm{IG}(\delta, \beta).
+</annotation></semantics></math></p>
+<p>The complete parameter state can be read as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Θ</mi><mo>=</mo><mo stretchy="false" form="prefix">{</mo><msub><mi>τ</mi><mi>k</mi></msub><mo>,</mo><msub><mi>μ</mi><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo>,</mo><msub><mi>y</mi><mrow><mi>k</mi><mi>i</mi></mrow></msub><mo>,</mo><msub><mi>z</mi><mi>i</mi></msub><mo>:</mo><mi>k</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>m</mi><mo>;</mo><mspace width="0.222em"></mspace><mi>i</mi><mo>=</mo><mn>1</mn><mo>,</mo><mi>…</mi><mo>,</mo><mi>n</mi><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\Theta =
+\{\tau_k, \mu_k, \Lambda_k, \Psi_k, y_{ki}, z_i:
+  k = 1,\ldots,m;\ i = 1,\ldots,n\},
+</annotation></semantics></math></p>
+<p>with hyperparameters</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>H</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>α</mi><mn>1</mn></msub><mo>,</mo><msub><mi>α</mi><mn>2</mn></msub><mo>,</mo><mi>β</mi><mo>,</mo><mi>δ</mi><mo>,</mo><mi>γ</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+H = (\alpha_1, \alpha_2, \beta, \delta, \gamma).
 </annotation></semantics></math></p>
 <p>The package samples the hyperparameters
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>α</mi><mn>1</mn></msub><annotation encoding="application/x-tex">\alpha_1</annotation></semantics></math>,
@@ -383,50 +401,98 @@ is isotropic or diagonal.</li>
 <li>
 <code>v_step = 1</code> enables covariance-constraint moves.</li>
 </ul>
+<p>For a proposed move from model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>M</mi><annotation encoding="application/x-tex">M</annotation></semantics></math>
+to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mi>M</mi><mo>′</mo></msup><annotation encoding="application/x-tex">M'</annotation></semantics></math>,
+the RJMCMC acceptance probability has the standard form</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>a</mi><mo>=</mo><mrow><mi mathvariant="normal">min</mi><mo>⁡</mo></mrow><mrow><mo stretchy="true" form="prefix">{</mo><mn>1</mn><mo>,</mo><mfrac><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Z</mi><mo>,</mo><msup><mi mathvariant="normal">Θ</mi><mo>′</mo></msup><mo>,</mo><msup><mi>H</mi><mo>′</mo></msup><mo>∣</mo><msup><mi>M</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>M</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>q</mi><mo stretchy="false" form="prefix">(</mo><mi>M</mi><mo>∣</mo><msup><mi>M</mi><mo>′</mo></msup><mo stretchy="false" form="postfix">)</mo></mrow><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>X</mi><mo>,</mo><mi>Z</mi><mo>,</mo><mi mathvariant="normal">Θ</mi><mo>,</mo><mi>H</mi><mo>∣</mo><mi>M</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>M</mi><mo stretchy="false" form="postfix">)</mo><mspace width="0.167em"></mspace><mi>q</mi><mo stretchy="false" form="prefix">(</mo><msup><mi>M</mi><mo>′</mo></msup><mo>∣</mo><mi>M</mi><mo stretchy="false" form="postfix">)</mo></mrow></mfrac><mrow><mo stretchy="true" form="prefix">|</mo><mi>J</mi><mo stretchy="true" form="postfix">|</mo></mrow><mo stretchy="true" form="postfix">}</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+a =
+\min\left\{
+1,
+\frac{
+  p(X, Z, \Theta', H' \mid M')\,p(M')\,q(M \mid M')
+}{
+  p(X, Z, \Theta, H \mid M)\,p(M)\,q(M' \mid M)
+}
+\left|J\right|
+\right\},
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo stretchy="false" form="prefix">(</mo><mi>⋅</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">q(\cdot)</annotation></semantics></math>
+is the proposal density and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">|</mo><mi>J</mi><mo stretchy="false" form="prefix">|</mo></mrow><annotation encoding="application/x-tex">|J|</annotation></semantics></math>
+is the Jacobian term for dimension-changing moves such as split/combine.
+Birth/death and split/combine change
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>;
+covariance moves change the constraint label
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">C</mi></mrow><mo>,</mo><mi>…</mi><mo>,</mo><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">U</mi></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">v \in \{\mathrm{CCC}, \ldots, \mathrm{UUU}\}</annotation></semantics></math>.</p>
 </div>
 <div class="section level2">
-<h2 id="minimal-runnable-example">Minimal runnable example<a class="anchor" aria-label="anchor" href="#minimal-runnable-example"></a>
+<h2 id="interface-mapping">Interface mapping<a class="anchor" aria-label="anchor" href="#interface-mapping"></a>
 </h2>
-<p>The following example is deliberately small so the vignette can run
-quickly. For real analyses, increase <code>burn</code> and
-<code>niter</code>.</p>
+<p>The formula terms map to package output fields as follows:</p>
+<table class="table">
+<thead><tr class="header">
+<th>Paper notation</th>
+<th>Package argument or output</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>X</mi><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mn>1</mn></msub><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>x</mi><mi>n</mi></msub><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">X = (x_1,\ldots,x_n)</annotation></semantics></math></td>
+<td>
+<code>X</code>, a
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo>×</mo><mi>n</mi></mrow><annotation encoding="application/x-tex">p \times n</annotation></semantics></math>
+numeric matrix</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math></td>
+<td>
+<code>m_init</code>, <code>m_range</code>,
+<code>active_cluster_samples</code>
+</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>q</mi><mi>k</mi></msub><annotation encoding="application/x-tex">q_k</annotation></semantics></math></td>
+<td>
+<code>q_new</code> for newly proposed clusters</td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>z</mi><mi>i</mi></msub><annotation encoding="application/x-tex">z_i</annotation></semantics></math></td>
+<td>
+<code>allocation_samples</code>,
+<code>summary$allocation</code>
+</td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\tau_k</annotation></semantics></math></td>
+<td><code>tau_samples</code></td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\mu_k</annotation></semantics></math></td>
+<td><code>mean_samples</code></td>
+</tr>
+<tr class="odd">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Lambda_k</annotation></semantics></math></td>
+<td><code>lambda_samples</code></td>
+</tr>
+<tr class="even">
+<td><math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Psi_k</annotation></semantics></math></td>
+<td><code>psi_samples</code></td>
+</tr>
+<tr class="odd">
+<td>covariance model
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>v</mi><annotation encoding="application/x-tex">v</annotation></semantics></math>
+</td>
+<td>
+<code>constraint</code>, <code>constraint_samples</code>
+</td>
+</tr>
+</tbody>
+</table>
+<p>An applied model-selection call usually has the following
+structure:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">8</span>, mean <span class="op">=</span> <span class="op">-</span><span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span>,</span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="fl">8</span>, mean <span class="op">=</span> <span class="fl">2</span>, sd <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span><span class="va">known_labels</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">2</span>, each <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
-<span>  X <span class="op">=</span> <span class="va">X</span>,</span>
-<span>  m_init <span class="op">=</span> <span class="fl">2</span>,</span>
-<span>  m_range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span>,</span>
-<span>  q_new <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  burn <span class="op">=</span> <span class="fl">1</span>,</span>
-<span>  niter <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>  constraint <span class="op">=</span> <span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span>,</span>
-<span>  m_step <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  v_step <span class="op">=</span> <span class="fl">0</span>,</span>
-<span>  verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">fit_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, true_cluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
-<span><span class="va">fit_summary</span><span class="op">$</span><span class="va">n_clusters</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; 2 </span></span>
-<span><span class="co">#&gt; 3</span></span>
-<span><span class="va">fit_summary</span><span class="op">$</span><span class="va">n_constraints</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; UUU </span></span>
-<span><span class="co">#&gt;   3</span></span>
-<span><span class="va">fit_summary</span><span class="op">$</span><span class="va">ari</span></span>
-<span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>The examples above keep <code>m_step = 0</code> and
-<code>v_step = 0</code> to make the vignette fast. A full
-model-selection run uses the same interface:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">your_data_matrix</span>,</span>
 <span>  m_init <span class="op">=</span> <span class="fl">5</span>,</span>
@@ -442,65 +508,6 @@ model-selection run uses the same interface:</p>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="reading-posterior-output">Reading posterior output<a class="anchor" aria-label="anchor" href="#reading-posterior-output"></a>
-</h2>
-<p>The sampler returns posterior samples as lists. The most commonly
-used fields are:</p>
-<table class="table">
-<thead><tr class="header">
-<th>Field</th>
-<th>Meaning</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td><code>allocation_samples</code></td>
-<td>sampled cluster allocations
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>Z</mi><annotation encoding="application/x-tex">Z</annotation></semantics></math>
-</td>
-</tr>
-<tr class="even">
-<td><code>constraint_samples</code></td>
-<td>sampled PGMM covariance constraints</td>
-</tr>
-<tr class="odd">
-<td><code>tau_samples</code></td>
-<td>sampled mixture weights
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>τ</mi><annotation encoding="application/x-tex">\tau</annotation></semantics></math>
-</td>
-</tr>
-<tr class="even">
-<td><code>mean_samples</code></td>
-<td>sampled cluster means
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\mu_k</annotation></semantics></math>
-</td>
-</tr>
-<tr class="odd">
-<td><code>lambda_samples</code></td>
-<td>sampled loading matrices
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Lambda_k</annotation></semantics></math>
-</td>
-</tr>
-<tr class="even">
-<td><code>psi_samples</code></td>
-<td>sampled noise covariances
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Psi_k</annotation></semantics></math>
-</td>
-</tr>
-</tbody>
-</table>
-<p>Use <code><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc()</a></code> for posterior summaries:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
-<span><span class="co">#&gt;  [1] "tau_samples"            "psi_samples"           </span></span>
-<span><span class="co">#&gt;  [3] "mean_samples"           "lambda_samples"        </span></span>
-<span><span class="co">#&gt;  [5] "factor_score_samples"   "allocation_samples"    </span></span>
-<span><span class="co">#&gt;  [7] "constraint_samples"     "alpha1_samples"        </span></span>
-<span><span class="co">#&gt;  [9] "alpha2_samples"         "beta_samples"          </span></span>
-<span><span class="co">#&gt; [11] "active_cluster_samples"</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fit_summary</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "allocation"    "n_clusters"    "n_constraints" "ari"</span></span></code></pre></div>
-</div>
-<div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use these methods, cite:</p>
@@ -508,7 +515,7 @@ used fields are:</p>
 Parsimonious Gaussian Mixture Models. <em>Journal of
 Classification</em>, 38, 576-593. <a href="https://doi.org/10.1007/s00357-021-09391-8" class="external-link uri">https://doi.org/10.1007/s00357-021-09391-8</a></p>
 <p>In R:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"bpgmm"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; To cite package 'bpgmm' in publications use:</span></span>
 <span><span class="co">#&gt; </span></span>

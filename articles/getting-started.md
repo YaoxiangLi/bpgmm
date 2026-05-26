@@ -5,11 +5,16 @@ model-based clustering. It targets three posterior inference goals
 described by Lu, Li, and Love (2021): the partition of observations, the
 number of clusters, and the cluster covariance structure.
 
-For the model equations, prior distributions, PGMM covariance labels,
-and RJMCMC move types, see
-[`vignette("model-and-sampler", package = "bpgmm")`](https://yaoxiangli.github.io/bpgmm/articles/model-and-sampler.md).
-For data orientation, scaling, and sampler setting choices, see
-[`vignette("data-preparation", package = "bpgmm")`](https://yaoxiangli.github.io/bpgmm/articles/data-preparation.md).
+The other articles are intentionally non-overlapping:
+
+| Article | Use it for |
+|----|----|
+| `data-preparation` | matrix orientation, scaling, and choosing `m_range` and `q_new` |
+| `model-and-sampler` | formulas from the paper and their package arguments |
+| `examples` | inspecting one fitted object |
+| `model-selection` | RJMCMC summaries for $`m`$ and covariance model $`v`$ |
+| `variable-prioritization` | exploratory variable rankings from posterior output |
+| `posterior-diagnostics` | independent chains, traces, and co-clustering |
 
 ## Fit a model
 
@@ -21,7 +26,7 @@ quickly; use larger `burn` and `niter` values for real analysis.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -79,7 +84,8 @@ tail(fit_log, 1)
 #> character(0)
 ```
 
-The arguments control the sampler:
+The call fixes $`m = 2`$ and the covariance model so the example is
+fast. The important arguments are:
 
 - `m_init` is the initial number of clusters.
 - `m_range` is the allowed range for the number of clusters.
@@ -88,35 +94,6 @@ The arguments control the sampler:
 - `m_step = 1` allows RJMCMC updates for the number of clusters.
 - `v_step = 1` allows RJMCMC updates across covariance-constraint
   models.
-
-A longer run for applied work might look like this:
-
-``` r
-
-fit <- pgmm_rjmcmc(
-  X = methylation_matrix,
-  m_init = 2,
-  m_range = c(1, 6),
-  q_new = 2,
-  burn = 100,
-  niter = 1000,
-  m_step = 1,
-  v_step = 1,
-  verbose = FALSE
-)
-```
-
-## Pick the right article
-
-The package website contains several articles that avoid repeating the
-same task:
-
-- start here for the shortest complete workflow;
-- use the data-preparation article before fitting a real data set;
-- use the model-selection article to see `m_step = 1` and `v_step = 1`;
-- use the diagnostics article to inspect independent chains;
-- use the variable-prioritization article after fitting, when you want
-  to understand which variables separate the fitted clusters.
 
 ## Summarize posterior samples
 
@@ -167,21 +144,7 @@ legend(
 ```
 
 ![Scatter plot colored by posterior modal
-allocation.](getting-started_files/figure-html/unnamed-chunk-7-1.png)
-
-## Work with covariance constraints
-
-The paper uses the eight PGMM covariance model labels `CCC`, `CCU`,
-`CUC`, `CUU`, `UCC`, `UCU`, `UUC`, and `UUU`. The package stores these
-internally as three-number constraint vectors.
-
-``` r
-
-model_to_constraint("UUU")
-#> [1] 0 0 0
-constraint_to_model(c(1, 0, 0))
-#> [1] "CUU"
-```
+allocation.](getting-started_files/figure-html/unnamed-chunk-6-1.png)
 
 ## Common early mistakes
 

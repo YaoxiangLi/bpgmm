@@ -14,7 +14,7 @@ carefully.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2029)
 X <- cbind(
@@ -73,6 +73,19 @@ attr(fits, "chain_seeds")
 ```
 
 ## Summarize each chain
+
+For chain $`c`$, simple empirical summaries are
+
+``` math
+\widehat{p}_c(m = r \mid X)
+  = \frac{1}{S_c}\sum_{s=1}^{S_c} I(m_c^{(s)} = r),
+\qquad
+\widehat{p}_c(v = a \mid X)
+  = \frac{1}{S_c}\sum_{s=1}^{S_c} I(v_c^{(s)} = a).
+```
+
+Large disagreements across chains are a warning sign, especially when
+the chains use different random seeds.
 
 ``` r
 
@@ -152,6 +165,14 @@ par(old_par)
 A co-clustering matrix estimates how often two observations are assigned
 to the same cluster across posterior samples. This is often more
 informative than a single modal allocation.
+
+``` math
+C_{ij} =
+\Pr(z_i = z_j \mid X)
+\approx
+\frac{1}{S}\sum_{s=1}^{S}
+I\{z_i^{(s)} = z_j^{(s)}\}.
+```
 
 ``` r
 

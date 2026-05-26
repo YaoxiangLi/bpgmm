@@ -2,7 +2,9 @@
 
 This article shows a complete, runnable `bpgmm` workflow. The example is
 small enough to build quickly on CRAN and pkgdown, but it uses the same
-functions as a larger analysis.
+functions as a larger analysis. It focuses on inspecting one fitted
+object; model-selection interpretation is handled in the model-selection
+article.
 
 ## Simulate a small clustering problem
 
@@ -13,7 +15,7 @@ columns. The code below creates two compact clusters in two dimensions.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -53,31 +55,18 @@ legend(
 ![Scatter plot of simulated observations colored by known
 cluster.](examples_files/figure-html/unnamed-chunk-3-1.png)
 
-## Choose a covariance model
+## Fit a fixed-model chain
 
-The paper describes eight covariance structures using three-letter PGMM
-labels: `CCC`, `CCU`, `CUC`, `CUU`, `UCC`, `UCU`, `UUC`, and `UUU`. Use
-[`model_to_constraint()`](https://yaoxiangli.github.io/bpgmm/reference/model_to_constraint.md)
-when calling the sampler, and
-[`constraint_to_model()`](https://yaoxiangli.github.io/bpgmm/reference/constraint_to_model.md)
-when reading stored results.
+This fit keeps $`m`$ and the covariance model fixed so the output
+structure is easy to inspect. The fitted likelihood contribution is
 
-``` r
-
-constraint <- model_to_constraint("UUU")
-constraint
-#> [1] 0 0 0
-
-constraint_to_model(constraint)
-#> [1] "UUU"
+``` math
+p(x_i \mid z_i = k, \Theta) =
+N_p(x_i \mid \mu_k, \Lambda_k\Lambda_k^\top + \Psi_k).
 ```
 
-## Fit a short RJMCMC chain
-
-This vignette uses only three posterior iterations so it runs quickly.
-For research use, increase `burn` and `niter`, and set `m_step = 1` and
-`v_step = 1` when you want RJMCMC model selection for the number of
-clusters and covariance structure.
+For model selection across $`m`$ and covariance labels, use the separate
+model-selection vignette.
 
 ``` r
 
@@ -89,7 +78,7 @@ fit_log <- capture.output({
     q_new = 1,
     burn = 1,
     niter = 3,
-    constraint = constraint,
+    constraint = "UUU",
     m_step = 0,
     v_step = 0,
     verbose = FALSE
@@ -140,6 +129,15 @@ fit_summary$ari
 #> [1] 1
 ```
 
+The modal allocation is computed coordinate-wise from the saved
+posterior allocations:
+
+``` math
+\hat{z}_i = \operatorname{mode}\{z_i^{(1)},\ldots,z_i^{(S)}\},
+```
+
+where $`S`$ is the number of saved posterior samples.
+
 ``` r
 
 old_par <- par(mfrow = c(1, 2), mar = c(4, 4, 3, 1))
@@ -164,45 +162,54 @@ plot(
 ```
 
 ![Two-panel plot comparing known labels and posterior
-allocation.](examples_files/figure-html/unnamed-chunk-8-1.png)
+allocation.](examples_files/figure-html/unnamed-chunk-7-1.png)
 
 ``` r
 
 par(old_par)
 ```
 
-The posterior samples also give simple model-selection summaries. In
-this tiny chain the settings fix the number of clusters and covariance
-model, but the same code becomes more informative when `m_step = 1` and
-`v_step = 1`.
+## Inspect component parameters
+
+The sampler stores draws of $`\tau_k`$, $`\mu_k`$, $`\Lambda_k`$, and
+$`\Psi_k`$. For this fixed-model example, the final saved draw is enough
+to show the object shape.
 
 ``` r
 
-old_par <- par(mfrow = c(1, 2), mar = c(5, 4, 3, 1))
-barplot(
-  fit_summary$n_clusters,
-  col = "#56B4E9",
-  border = NA,
-  xlab = "Number of clusters",
-  ylab = "Posterior sample count",
-  main = "Cluster count"
-)
-barplot(
-  fit_summary$n_constraints,
-  col = "#E69F00",
-  border = NA,
-  xlab = "PGMM model",
-  ylab = "Posterior sample count",
-  main = "Covariance model"
-)
-```
+last <- length(fit$tau_samples)
 
-![Posterior bar plots for cluster count and covariance
-model.](examples_files/figure-html/unnamed-chunk-9-1.png)
-
-``` r
-
-par(old_par)
+fit$tau_samples[[last]]
+#> [1] 0.1844265 0.8155735 0.0000000
+fit$mean_samples[[last]]
+#> [[1]]
+#>          [,1]     [,2]
+#> [1,] 1.285546 1.767347
+#> 
+#> [[2]]
+#>           [,1]      [,2]
+#> [1,] -2.023394 -2.231323
+#> 
+#> [[3]]
+#> [1] NA
+lapply(fit$lambda_samples[[last]], dim)
+#> [[1]]
+#> [1] 2 1
+#> 
+#> [[2]]
+#> [1] 2 1
+#> 
+#> [[3]]
+#> NULL
+lapply(fit$psi_samples[[last]], dim)
+#> [[1]]
+#> [1] 2 2
+#> 
+#> [[2]]
+#> [1] 2 2
+#> 
+#> [[3]]
+#> NULL
 ```
 
 ## Scale the example to real data
@@ -238,7 +245,6 @@ For a concise analysis report, include:
 - `m_range`, `q_new`, starting covariance model, and whether `m_step`,
   `v_step`, and `split_combine` were enabled;
 - the number of burn-in and posterior iterations;
-- posterior counts for cluster number and covariance model;
 - the posterior modal allocation or a co-clustering matrix;
 - ARI only when a reference partition is scientifically meaningful.
 

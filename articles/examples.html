@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,7 +76,9 @@
     
 <p>This article shows a complete, runnable <code>bpgmm</code> workflow.
 The example is small enough to build quickly on CRAN and pkgdown, but it
-uses the same functions as a larger analysis.</p>
+uses the same functions as a larger analysis. It focuses on inspecting
+one fitted object; model-selection interpretation is handled in the
+model-selection article.</p>
 <div class="section level2">
 <h2 id="simulate-a-small-clustering-problem">Simulate a small clustering problem<a class="anchor" aria-label="anchor" href="#simulate-a-small-clustering-problem"></a>
 </h2>
@@ -85,7 +87,7 @@ rows and observations in columns. The code below creates two compact
 clusters in two dimensions.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span></span>
@@ -120,31 +122,20 @@ clusters in two dimensions.</p>
 <p><img src="examples_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="Scatter plot of simulated observations colored by known cluster." width="528"></p>
 </div>
 <div class="section level2">
-<h2 id="choose-a-covariance-model">Choose a covariance model<a class="anchor" aria-label="anchor" href="#choose-a-covariance-model"></a>
+<h2 id="fit-a-fixed-model-chain">Fit a fixed-model chain<a class="anchor" aria-label="anchor" href="#fit-a-fixed-model-chain"></a>
 </h2>
-<p>The paper describes eight covariance structures using three-letter
-PGMM labels: <code>CCC</code>, <code>CCU</code>, <code>CUC</code>,
-<code>CUU</code>, <code>UCC</code>, <code>UCU</code>, <code>UUC</code>,
-and <code>UUU</code>. Use <code><a href="../reference/model_to_constraint.html">model_to_constraint()</a></code> when
-calling the sampler, and <code><a href="../reference/constraint_to_model.html">constraint_to_model()</a></code> when reading
-stored results.</p>
+<p>This fit keeps
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+and the covariance model fixed so the output structure is easy to
+inspect. The fitted likelihood contribution is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo>,</mo><mi mathvariant="normal">Θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>μ</mi><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mi>⊤</mi></msubsup><mo>+</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+p(x_i \mid z_i = k, \Theta) =
+N_p(x_i \mid \mu_k, \Lambda_k\Lambda_k^\top + \Psi_k).
+</annotation></semantics></math></p>
+<p>For model selection across
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+and covariance labels, use the separate model-selection vignette.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">constraint</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span></span>
-<span><span class="va">constraint</span></span>
-<span><span class="co">#&gt; [1] 0 0 0</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/constraint_to_model.html">constraint_to_model</a></span><span class="op">(</span><span class="va">constraint</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "UUU"</span></span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="fit-a-short-rjmcmc-chain">Fit a short RJMCMC chain<a class="anchor" aria-label="anchor" href="#fit-a-short-rjmcmc-chain"></a>
-</h2>
-<p>This vignette uses only three posterior iterations so it runs
-quickly. For research use, increase <code>burn</code> and
-<code>niter</code>, and set <code>m_step = 1</code> and
-<code>v_step = 1</code> when you want RJMCMC model selection for the
-number of clusters and covariance structure.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>    X <span class="op">=</span> <span class="va">X</span>,</span>
@@ -153,7 +144,7 @@ number of clusters and covariance structure.</p>
 <span>    q_new <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    burn <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>    niter <span class="op">=</span> <span class="fl">3</span>,</span>
-<span>    constraint <span class="op">=</span> <span class="va">constraint</span>,</span>
+<span>    constraint <span class="op">=</span> <span class="st">"UUU"</span>,</span>
 <span>    m_step <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    v_step <span class="op">=</span> <span class="fl">0</span>,</span>
 <span>    verbose <span class="op">=</span> <span class="cn">FALSE</span></span>
@@ -163,7 +154,7 @@ number of clusters and covariance structure.</p>
 <span><span class="co">#&gt; character(0)</span></span></code></pre></div>
 <p>The returned object stores posterior samples for allocations,
 covariance constraints, component parameters, and hyperparameters.</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span>
 <span><span class="co">#&gt;  [1] "tau_samples"            "psi_samples"           </span></span>
 <span><span class="co">#&gt;  [3] "mean_samples"           "lambda_samples"        </span></span>
@@ -180,7 +171,7 @@ covariance constraints, component parameters, and hyperparameters.</p>
 <p><code><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc()</a></code> returns the modal allocation,
 posterior counts for the number of clusters, posterior counts for
 covariance models, and optionally an adjusted Rand index.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, true_cluster <span class="op">=</span> <span class="va">known_labels</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">fit_summary</span><span class="op">$</span><span class="va">allocation</span></span>
@@ -195,7 +186,15 @@ covariance models, and optionally an adjusted Rand index.</p>
 <span><span class="co">#&gt;   3</span></span>
 <span><span class="va">fit_summary</span><span class="op">$</span><span class="va">ari</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>The modal allocation is computed coordinate-wise from the saved
+posterior allocations:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>z</mi><mo accent="true">̂</mo></mover><mi>i</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">mode</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">{</mo><msubsup><mi>z</mi><mi>i</mi><mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>,</mo><mi>…</mi><mo>,</mo><msubsup><mi>z</mi><mi>i</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>S</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">}</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\hat{z}_i = \operatorname{mode}\{z_i^{(1)},\ldots,z_i^{(S)}\},
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>S</mi><annotation encoding="application/x-tex">S</annotation></semantics></math>
+is the number of saved posterior samples.</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">old_par</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">4</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
 <span>  <span class="va">X</span><span class="op">[</span><span class="fl">1</span>, <span class="op">]</span>, <span class="va">X</span><span class="op">[</span><span class="fl">2</span>, <span class="op">]</span>,</span>
@@ -215,34 +214,55 @@ covariance models, and optionally an adjusted Rand index.</p>
 <span>  main <span class="op">=</span> <span class="st">"Posterior allocation"</span>,</span>
 <span>  asp <span class="op">=</span> <span class="fl">1</span></span>
 <span><span class="op">)</span></span></code></pre></div>
-<p><img src="examples_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="Two-panel plot comparing known labels and posterior allocation." width="672"></p>
+<p><img src="examples_files/figure-html/unnamed-chunk-7-1.png" class="r-plt" alt="Two-panel plot comparing known labels and posterior allocation." width="672"></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">old_par</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="inspect-component-parameters">Inspect component parameters<a class="anchor" aria-label="anchor" href="#inspect-component-parameters"></a>
+</h2>
+<p>The sampler stores draws of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\tau_k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\mu_k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Lambda_k</annotation></semantics></math>,
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Psi_k</annotation></semantics></math>.
+For this fixed-model example, the final saved draw is enough to show the
+object shape.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">old_par</span><span class="op">)</span></span></code></pre></div>
-<p>The posterior samples also give simple model-selection summaries. In
-this tiny chain the settings fix the number of clusters and covariance
-model, but the same code becomes more informative when
-<code>m_step = 1</code> and <code>v_step = 1</code>.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">old_par</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span></span>
-<span>  <span class="va">fit_summary</span><span class="op">$</span><span class="va">n_clusters</span>,</span>
-<span>  col <span class="op">=</span> <span class="st">"#56B4E9"</span>,</span>
-<span>  border <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  xlab <span class="op">=</span> <span class="st">"Number of clusters"</span>,</span>
-<span>  ylab <span class="op">=</span> <span class="st">"Posterior sample count"</span>,</span>
-<span>  main <span class="op">=</span> <span class="st">"Cluster count"</span></span>
-<span><span class="op">)</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span></span>
-<span>  <span class="va">fit_summary</span><span class="op">$</span><span class="va">n_constraints</span>,</span>
-<span>  col <span class="op">=</span> <span class="st">"#E69F00"</span>,</span>
-<span>  border <span class="op">=</span> <span class="cn">NA</span>,</span>
-<span>  xlab <span class="op">=</span> <span class="st">"PGMM model"</span>,</span>
-<span>  ylab <span class="op">=</span> <span class="st">"Posterior sample count"</span>,</span>
-<span>  main <span class="op">=</span> <span class="st">"Covariance model"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
-<p><img src="examples_files/figure-html/unnamed-chunk-9-1.png" class="r-plt" alt="Posterior bar plots for cluster count and covariance model." width="672"></p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span><span class="va">old_par</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">last</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">tau_samples</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">fit</span><span class="op">$</span><span class="va">tau_samples</span><span class="op">[[</span><span class="va">last</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 0.1844265 0.8155735 0.0000000</span></span>
+<span><span class="va">fit</span><span class="op">$</span><span class="va">mean_samples</span><span class="op">[[</span><span class="va">last</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt;          [,1]     [,2]</span></span>
+<span><span class="co">#&gt; [1,] 1.285546 1.767347</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt;           [,1]      [,2]</span></span>
+<span><span class="co">#&gt; [1,] -2.023394 -2.231323</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[3]]</span></span>
+<span><span class="co">#&gt; [1] NA</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">lambda_samples</span><span class="op">[[</span><span class="va">last</span><span class="op">]</span><span class="op">]</span>, <span class="va">dim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; [1] 2 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt; [1] 2 1</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[3]]</span></span>
+<span><span class="co">#&gt; NULL</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">fit</span><span class="op">$</span><span class="va">psi_samples</span><span class="op">[[</span><span class="va">last</span><span class="op">]</span><span class="op">]</span>, <span class="va">dim</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [[1]]</span></span>
+<span><span class="co">#&gt; [1] 2 2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[2]]</span></span>
+<span><span class="co">#&gt; [1] 2 2</span></span>
+<span><span class="co">#&gt; </span></span>
+<span><span class="co">#&gt; [[3]]</span></span>
+<span><span class="co">#&gt; NULL</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="scale-the-example-to-real-data">Scale the example to real data<a class="anchor" aria-label="anchor" href="#scale-the-example-to-real-data"></a>
@@ -250,7 +270,7 @@ model, but the same code becomes more informative when
 <p>For a real analysis, keep the same workflow but use larger sampler
 settings. The exact values depend on data size and convergence
 diagnostics.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">your_data_matrix</span>,</span>
 <span>  m_init <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -278,7 +298,6 @@ diagnostics.</p>
 and whether <code>m_step</code>, <code>v_step</code>, and
 <code>split_combine</code> were enabled;</li>
 <li>the number of burn-in and posterior iterations;</li>
-<li>posterior counts for cluster number and covariance model;</li>
 <li>the posterior modal allocation or a co-clustering matrix;</li>
 <li>ARI only when a reference partition is scientifically
 meaningful.</li>

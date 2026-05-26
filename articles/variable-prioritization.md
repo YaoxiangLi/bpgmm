@@ -19,32 +19,35 @@ probabilities.
 
 ## Simulate data with informative and weak variables
 
-The first three variables carry most of the cluster separation.
-Variables four through six are noisier and less cluster-specific.
+This vignette uses a different simulation from the model-selection
+article. Here the point is not to recover $`m`$; it is to show how
+posterior output can be post-processed to rank variables. The first
+three variables have different cluster means, variables four and five
+have mostly covariance differences, and variable six is weak noise.
 
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
-simulate_screening_data <- function(n_per_cluster = 20, p = 6, q = 2) {
+simulate_screening_data <- function(n_per_cluster = 18, p = 6) {
   means <- rbind(
-    c(-3.0, -2.0,  0.0, 0, 0, 0),
-    c( 2.5, -1.0,  2.0, 0, 0, 0),
-    c( 0.0,  2.5, -2.0, 0, 0, 0)
+    c(-2.5, -1.5,  0.0, 0, 0, 0),
+    c( 2.0, -0.5,  1.8, 0, 0, 0),
+    c( 0.0,  2.2, -1.8, 0, 0, 0)
   )
-  lambdas <- list(
-    matrix(c(1.2,  0.5, 0.2, 0, 0, 0,
-             0.0,  0.2, 0.8, 0.3, 0, 0), nrow = p),
-    matrix(c(0.2,  1.1, 0.6, 0, 0, 0,
-             0.8,  0.1, 0.2, 0.6, 0, 0), nrow = p),
-    matrix(c(0.7, -0.4, 1.0, 0, 0, 0,
-            -0.2,  0.8, 0.4, 0.3, 0, 0), nrow = p)
-  )
-  psi <- list(
-    diag(c(0.25, 0.35, 0.30, 0.80, 0.90, 1.00)),
-    diag(c(0.30, 0.25, 0.40, 0.80, 0.90, 1.00)),
-    diag(c(0.35, 0.30, 0.25, 0.80, 0.90, 1.00))
+
+  covariances <- list(
+    diag(c(0.35, 0.35, 0.35, 1.40, 0.35, 1.20)),
+    diag(c(0.35, 0.35, 0.35, 0.35, 1.40, 1.20)),
+    matrix(c(
+      0.35, 0,    0,    0,    0,    0,
+      0,    0.35, 0,    0,    0,    0,
+      0,    0,    0.35, 0,    0,    0,
+      0,    0,    0,    1.00, 0.45, 0,
+      0,    0,    0,    0.45, 1.00, 0,
+      0,    0,    0,    0,    0,    1.20
+    ), nrow = p)
   )
 
   n <- n_per_cluster * 3
@@ -54,9 +57,7 @@ simulate_screening_data <- function(n_per_cluster = 20, p = 6, q = 2) {
   column <- 1
   for (k in seq_len(3)) {
     for (i in seq_len(n_per_cluster)) {
-      latent_score <- rnorm(q)
-      noise <- MASS::mvrnorm(1, mu = rep(0, p), Sigma = psi[[k]])
-      X[, column] <- means[k, ] + lambdas[[k]] %*% latent_score + noise
+      X[, column] <- MASS::mvrnorm(1, mu = means[k, ], Sigma = covariances[[k]])
       column <- column + 1
     }
   }
@@ -71,7 +72,17 @@ X <- sim$X
 true_cluster <- sim$true_cluster
 ```
 
-## Fit a short model-selection chain
+The fitted PGMM still uses
+
+``` math
+\Sigma_k = \Lambda_k\Lambda_k^\top + \Psi_k,
+```
+
+but this simulation deliberately separates mean-driven variables from
+covariance-driven variables so the two rankings below answer different
+questions.
+
+## Fit a short clustering chain
 
 ``` r
 
@@ -94,7 +105,7 @@ tail(fit_log, 1)
 
 fit_summary <- summarize_pgmm_rjmcmc(fit, true_cluster = true_cluster)
 fit_summary$ari
-#> [1] 0.5510244
+#> [1] 0.5278689
 ```
 
 ## Rank variables by posterior allocation separation
@@ -132,12 +143,12 @@ separation_table <- data.frame(
 )
 separation_table[order(separation_table$separation, decreasing = TRUE), ]
 #>     variable separation
-#> 2 variable_2      0.796
-#> 3 variable_3      0.786
-#> 1 variable_1      0.174
-#> 4 variable_4      0.068
-#> 6 variable_6      0.046
-#> 5 variable_5      0.031
+#> 2 variable_2      0.810
+#> 3 variable_3      0.704
+#> 6 variable_6      0.182
+#> 4 variable_4      0.114
+#> 5 variable_5      0.036
+#> 1 variable_1      0.002
 ```
 
 ``` r
@@ -163,6 +174,21 @@ The loading matrices describe how observed variables relate to latent
 factors inside each component. A simple posterior diagnostic is the
 average absolute loading magnitude across saved samples and active
 components.
+
+``` math
+L_j =
+\frac{1}{|\mathcal{S}|}
+\sum_{s \in \mathcal{S}}
+\frac{1}{|A_s|}
+\sum_{k \in A_s}
+\frac{1}{q_k}\sum_{\ell = 1}^{q_k}
+|\lambda_{jk\ell}^{(s)}|,
+```
+
+where $`A_s`$ is the set of active clusters in posterior sample $`s`$.
+Large $`L_j`$ means variable $`j`$ contributes strongly to the
+latent-factor covariance structure; it is not a posterior inclusion
+probability.
 
 ``` r
 
@@ -201,12 +227,12 @@ loading_table <- data.frame(
 )
 loading_table[order(loading_table$mean_abs_loading, decreasing = TRUE), ]
 #>     variable mean_abs_loading
-#> 1 variable_1            0.644
-#> 2 variable_2            0.478
-#> 3 variable_3            0.392
-#> 4 variable_4            0.321
-#> 6 variable_6            0.235
-#> 5 variable_5            0.128
+#> 1 variable_1            1.143
+#> 5 variable_5            0.425
+#> 3 variable_3            0.415
+#> 2 variable_2            0.287
+#> 4 variable_4            0.267
+#> 6 variable_6            0.247
 ```
 
 ``` r

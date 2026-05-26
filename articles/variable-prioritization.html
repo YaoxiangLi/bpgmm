@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -92,30 +92,35 @@ probabilities.</p>
 <div class="section level2">
 <h2 id="simulate-data-with-informative-and-weak-variables">Simulate data with informative and weak variables<a class="anchor" aria-label="anchor" href="#simulate-data-with-informative-and-weak-variables"></a>
 </h2>
-<p>The first three variables carry most of the cluster separation.
-Variables four through six are noisier and less cluster-specific.</p>
+<p>This vignette uses a different simulation from the model-selection
+article. Here the point is not to recover
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>;
+it is to show how posterior output can be post-processed to rank
+variables. The first three variables have different cluster means,
+variables four and five have mostly covariance differences, and variable
+six is weak noise.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
-<span><span class="va">simulate_screening_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n_per_cluster</span> <span class="op">=</span> <span class="fl">20</span>, <span class="va">p</span> <span class="op">=</span> <span class="fl">6</span>, <span class="va">q</span> <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">simulate_screening_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n_per_cluster</span> <span class="op">=</span> <span class="fl">18</span>, <span class="va">p</span> <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">means</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3.0</span>, <span class="op">-</span><span class="fl">2.0</span>,  <span class="fl">0.0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="fl">2.5</span>, <span class="op">-</span><span class="fl">1.0</span>,  <span class="fl">2.0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="fl">0.0</span>,  <span class="fl">2.5</span>, <span class="op">-</span><span class="fl">2.0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">2.5</span>, <span class="op">-</span><span class="fl">1.5</span>,  <span class="fl">0.0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="fl">2.0</span>, <span class="op">-</span><span class="fl">0.5</span>,  <span class="fl">1.8</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span> <span class="fl">0.0</span>,  <span class="fl">2.2</span>, <span class="op">-</span><span class="fl">1.8</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
-<span>  <span class="va">lambdas</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1.2</span>,  <span class="fl">0.5</span>, <span class="fl">0.2</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>,</span>
-<span>             <span class="fl">0.0</span>,  <span class="fl">0.2</span>, <span class="fl">0.8</span>, <span class="fl">0.3</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>,  <span class="fl">1.1</span>, <span class="fl">0.6</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>,</span>
-<span>             <span class="fl">0.8</span>,  <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.6</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.7</span>, <span class="op">-</span><span class="fl">0.4</span>, <span class="fl">1.0</span>, <span class="fl">0</span>, <span class="fl">0</span>, <span class="fl">0</span>,</span>
-<span>            <span class="op">-</span><span class="fl">0.2</span>,  <span class="fl">0.8</span>, <span class="fl">0.4</span>, <span class="fl">0.3</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span>  <span class="va">psi</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.25</span>, <span class="fl">0.35</span>, <span class="fl">0.30</span>, <span class="fl">0.80</span>, <span class="fl">0.90</span>, <span class="fl">1.00</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.30</span>, <span class="fl">0.25</span>, <span class="fl">0.40</span>, <span class="fl">0.80</span>, <span class="fl">0.90</span>, <span class="fl">1.00</span><span class="op">)</span><span class="op">)</span>,</span>
-<span>    <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.35</span>, <span class="fl">0.30</span>, <span class="fl">0.25</span>, <span class="fl">0.80</span>, <span class="fl">0.90</span>, <span class="fl">1.00</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span>  <span class="va">covariances</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.35</span>, <span class="fl">0.35</span>, <span class="fl">0.35</span>, <span class="fl">1.40</span>, <span class="fl">0.35</span>, <span class="fl">1.20</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/diag.html" class="external-link">diag</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.35</span>, <span class="fl">0.35</span>, <span class="fl">0.35</span>, <span class="fl">0.35</span>, <span class="fl">1.40</span>, <span class="fl">1.20</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>      <span class="fl">0.35</span>, <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,</span>
+<span>      <span class="fl">0</span>,    <span class="fl">0.35</span>, <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,</span>
+<span>      <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0.35</span>, <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,</span>
+<span>      <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">1.00</span>, <span class="fl">0.45</span>, <span class="fl">0</span>,</span>
+<span>      <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0.45</span>, <span class="fl">1.00</span>, <span class="fl">0</span>,</span>
+<span>      <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">0</span>,    <span class="fl">1.20</span></span>
+<span>    <span class="op">)</span>, nrow <span class="op">=</span> <span class="va">p</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
 <span></span>
 <span>  <span class="va">n</span> <span class="op">&lt;-</span> <span class="va">n_per_cluster</span> <span class="op">*</span> <span class="fl">3</span></span>
@@ -125,9 +130,7 @@ Variables four through six are noisier and less cluster-specific.</p>
 <span>  <span class="va">column</span> <span class="op">&lt;-</span> <span class="fl">1</span></span>
 <span>  <span class="kw">for</span> <span class="op">(</span><span class="va">k</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fl">3</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
 <span>    <span class="kw">for</span> <span class="op">(</span><span class="va">i</span> <span class="kw">in</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="va">n_per_cluster</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
-<span>      <span class="va">latent_score</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">q</span><span class="op">)</span></span>
-<span>      <span class="va">noise</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="fl">1</span>, mu <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0</span>, <span class="va">p</span><span class="op">)</span>, Sigma <span class="op">=</span> <span class="va">psi</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
-<span>      <span class="va">X</span><span class="op">[</span>, <span class="va">column</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="va">means</span><span class="op">[</span><span class="va">k</span>, <span class="op">]</span> <span class="op">+</span> <span class="va">lambdas</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span> <span class="op"><a href="https://rdrr.io/r/base/matmult.html" class="external-link">%*%</a></span> <span class="va">latent_score</span> <span class="op">+</span> <span class="va">noise</span></span>
+<span>      <span class="va">X</span><span class="op">[</span>, <span class="va">column</span><span class="op">]</span> <span class="op">&lt;-</span> <span class="fu">MASS</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/MASS/man/mvrnorm.html" class="external-link">mvrnorm</a></span><span class="op">(</span><span class="fl">1</span>, mu <span class="op">=</span> <span class="va">means</span><span class="op">[</span><span class="va">k</span>, <span class="op">]</span>, Sigma <span class="op">=</span> <span class="va">covariances</span><span class="op">[[</span><span class="va">k</span><span class="op">]</span><span class="op">]</span><span class="op">)</span></span>
 <span>      <span class="va">column</span> <span class="op">&lt;-</span> <span class="va">column</span> <span class="op">+</span> <span class="fl">1</span></span>
 <span>    <span class="op">}</span></span>
 <span>  <span class="op">}</span></span>
@@ -140,9 +143,16 @@ Variables four through six are noisier and less cluster-specific.</p>
 <span><span class="va">sim</span> <span class="op">&lt;-</span> <span class="fu">simulate_screening_data</span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="va">X</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="va">X</span></span>
 <span><span class="va">true_cluster</span> <span class="op">&lt;-</span> <span class="va">sim</span><span class="op">$</span><span class="va">true_cluster</span></span></code></pre></div>
+<p>The fitted PGMM still uses</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Σ</mi><mi>k</mi></msub><mo>=</mo><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mi>⊤</mi></msubsup><mo>+</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\Sigma_k = \Lambda_k\Lambda_k^\top + \Psi_k,
+</annotation></semantics></math></p>
+<p>but this simulation deliberately separates mean-driven variables from
+covariance-driven variables so the two rankings below answer different
+questions.</p>
 </div>
 <div class="section level2">
-<h2 id="fit-a-short-model-selection-chain">Fit a short model-selection chain<a class="anchor" aria-label="anchor" href="#fit-a-short-model-selection-chain"></a>
+<h2 id="fit-a-short-clustering-chain">Fit a short clustering chain<a class="anchor" aria-label="anchor" href="#fit-a-short-clustering-chain"></a>
 </h2>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit_log</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/utils/capture.output.html" class="external-link">capture.output</a></span><span class="op">(</span><span class="op">{</span></span>
@@ -164,7 +174,7 @@ Variables four through six are noisier and less cluster-specific.</p>
 <span></span>
 <span><span class="va">fit_summary</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/summarize_pgmm_rjmcmc.html">summarize_pgmm_rjmcmc</a></span><span class="op">(</span><span class="va">fit</span>, true_cluster <span class="op">=</span> <span class="va">true_cluster</span><span class="op">)</span></span>
 <span><span class="va">fit_summary</span><span class="op">$</span><span class="va">ari</span></span>
-<span><span class="co">#&gt; [1] 0.5510244</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 0.5278689</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="rank-variables-by-posterior-allocation-separation">Rank variables by posterior allocation separation<a class="anchor" aria-label="anchor" href="#rank-variables-by-posterior-allocation-separation"></a>
@@ -198,12 +208,12 @@ way to ask which observed variables separate the fitted clusters.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">separation_table</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">separation_table</span><span class="op">$</span><span class="va">separation</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt;     variable separation</span></span>
-<span><span class="co">#&gt; 2 variable_2      0.796</span></span>
-<span><span class="co">#&gt; 3 variable_3      0.786</span></span>
-<span><span class="co">#&gt; 1 variable_1      0.174</span></span>
-<span><span class="co">#&gt; 4 variable_4      0.068</span></span>
-<span><span class="co">#&gt; 6 variable_6      0.046</span></span>
-<span><span class="co">#&gt; 5 variable_5      0.031</span></span></code></pre></div>
+<span><span class="co">#&gt; 2 variable_2      0.810</span></span>
+<span><span class="co">#&gt; 3 variable_3      0.704</span></span>
+<span><span class="co">#&gt; 6 variable_6      0.182</span></span>
+<span><span class="co">#&gt; 4 variable_4      0.114</span></span>
+<span><span class="co">#&gt; 5 variable_5      0.036</span></span>
+<span><span class="co">#&gt; 1 variable_1      0.002</span></span></code></pre></div>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ordered</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">separation</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span></span>
@@ -224,6 +234,25 @@ way to ask which observed variables separate the fitted clusters.</p>
 factors inside each component. A simple posterior diagnostic is the
 average absolute loading magnitude across saved samples and active
 components.</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mi>j</mi></msub><mo>=</mo><mfrac><mn>1</mn><mrow><mo stretchy="false" form="prefix">|</mo><mi>𝒮</mi><mo stretchy="false" form="prefix">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>s</mi><mo>∈</mo><mi>𝒮</mi></mrow></munder><mfrac><mn>1</mn><mrow><mo stretchy="false" form="prefix">|</mo><msub><mi>A</mi><mi>s</mi></msub><mo stretchy="false" form="prefix">|</mo></mrow></mfrac><munder><mo>∑</mo><mrow><mi>k</mi><mo>∈</mo><msub><mi>A</mi><mi>s</mi></msub></mrow></munder><mfrac><mn>1</mn><msub><mi>q</mi><mi>k</mi></msub></mfrac><munderover><mo>∑</mo><mrow><mi>ℓ</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>q</mi><mi>k</mi></msub></munderover><mo stretchy="false" form="prefix">|</mo><msubsup><mi>λ</mi><mrow><mi>j</mi><mi>k</mi><mi>ℓ</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="prefix">|</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+L_j =
+\frac{1}{|\mathcal{S}|}
+\sum_{s \in \mathcal{S}}
+\frac{1}{|A_s|}
+\sum_{k \in A_s}
+\frac{1}{q_k}\sum_{\ell = 1}^{q_k}
+|\lambda_{jk\ell}^{(s)}|,
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>A</mi><mi>s</mi></msub><annotation encoding="application/x-tex">A_s</annotation></semantics></math>
+is the set of active clusters in posterior sample
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>s</mi><annotation encoding="application/x-tex">s</annotation></semantics></math>.
+Large
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>L</mi><mi>j</mi></msub><annotation encoding="application/x-tex">L_j</annotation></semantics></math>
+means variable
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>j</mi><annotation encoding="application/x-tex">j</annotation></semantics></math>
+contributes strongly to the latent-factor covariance structure; it is
+not a posterior inclusion probability.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">loading_importance</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">totals</span> <span class="op">&lt;-</span> <span class="cn">NULL</span></span>
@@ -260,12 +289,12 @@ components.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">loading_table</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">loading_table</span><span class="op">$</span><span class="va">mean_abs_loading</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt;     variable mean_abs_loading</span></span>
-<span><span class="co">#&gt; 1 variable_1            0.644</span></span>
-<span><span class="co">#&gt; 2 variable_2            0.478</span></span>
-<span><span class="co">#&gt; 3 variable_3            0.392</span></span>
-<span><span class="co">#&gt; 4 variable_4            0.321</span></span>
-<span><span class="co">#&gt; 6 variable_6            0.235</span></span>
-<span><span class="co">#&gt; 5 variable_5            0.128</span></span></code></pre></div>
+<span><span class="co">#&gt; 1 variable_1            1.143</span></span>
+<span><span class="co">#&gt; 5 variable_5            0.425</span></span>
+<span><span class="co">#&gt; 3 variable_3            0.415</span></span>
+<span><span class="co">#&gt; 2 variable_2            0.287</span></span>
+<span><span class="co">#&gt; 4 variable_4            0.267</span></span>
+<span><span class="co">#&gt; 6 variable_6            0.247</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ordered_loading</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">loading_score</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span></span>

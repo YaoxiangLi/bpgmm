@@ -12,10 +12,24 @@ applied use less ambiguous.
 in columns. Many R data sets use the opposite convention, so transpose
 after selecting numeric variables.
 
+The package convention is
+
+``` math
+X =
+\begin{bmatrix}
+x_{11} & \cdots & x_{1n} \\
+\vdots &        & \vdots \\
+x_{p1} & \cdots & x_{pn}
+\end{bmatrix},
+```
+
+where row $`j`$ is variable $`j`$ and column $`i`$ is observation
+$`x_i`$.
+
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 iris_numeric <- as.matrix(iris[, 1:4])
 iris_labels <- as.integer(iris$Species)
@@ -61,7 +75,15 @@ storage.mode(X)
 
 Mixture models are sensitive to measurement scale. If variables are
 measured in different units, standardizing each variable is usually a
-sensible default.
+sensible default. For each variable $`j`$, the usual transformation is
+
+``` math
+x_{ji}^{\mathrm{scaled}} =
+\frac{x_{ji} - \bar{x}_{j\cdot}}{s_j},
+\qquad
+s_j^2 = \frac{1}{n - 1}\sum_{i=1}^n
+(x_{ji} - \bar{x}_{j\cdot})^2 .
+```
 
 ``` r
 
@@ -83,7 +105,15 @@ explicit analysis choice.
 
 `q_new` is the latent-factor dimension assigned to newly proposed
 clusters. It controls the dimension of the factor-analyzer part of the
-covariance model.
+covariance model. In the paper’s notation,
+
+``` math
+\Lambda_k \in \mathbb{R}^{p \times q_k}, \qquad
+y_{ki} \in \mathbb{R}^{q_k}.
+```
+
+The package uses `q_new` as the $`q_k`$ value for a newly created
+component.
 
 Useful starting points:
 
@@ -150,6 +180,15 @@ noise covariances are shared across clusters. `UUU` is flexible; `CCC`
 is more constrained. A flexible starting model is often reasonable when
 using `v_step = 1`, because the sampler can move across covariance
 structures.
+
+The fitted covariance is always
+
+``` math
+\Sigma_k = \Lambda_k\Lambda_k^\top + \Psi_k,
+```
+
+but the label controls whether $`\Lambda_k`$ and $`\Psi_k`$ are shared
+and whether $`\Psi_k`$ is isotropic or diagonal.
 
 ``` r
 

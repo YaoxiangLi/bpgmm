@@ -3,7 +3,8 @@
 This article connects the notation in Lu, Li, and Love (2021) to the
 `bpgmm` interface. The goal is to make clear what the package is
 fitting, what the covariance labels mean, and how the RJMCMC switches
-change the sampler.
+change the sampler. It does not repeat a full worked fit; use the
+getting-started and examples articles for runnable workflows.
 
 ## Observation model
 
@@ -92,7 +93,15 @@ f(x_i) = \sum_{k = 1}^m \tau_k
 ```
 
 where $`\tau_k`$ is the mixture weight and $`m`$ is the number of
-clusters.
+clusters. Equivalently, with allocation indicator
+$`z_i \in \{1,\ldots,m\}`$,
+
+``` math
+x_i \mid z_i = k, \Theta
+  \sim N_p(\mu_k, \Sigma_k),
+\qquad
+\Pr(z_i = k \mid \tau) = \tau_k .
+```
 
 In
 [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md):
@@ -119,7 +128,7 @@ The eight PGMM models are:
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.0 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 models <- c("CCC", "CCU", "CUC", "CUU", "UCC", "UCU", "UUC", "UUU")
 data.frame(
@@ -177,6 +186,20 @@ and
 
 ``` math
 \psi_{kj} \sim \mathrm{IG}(\delta, \beta).
+```
+
+The complete parameter state can be read as
+
+``` math
+\Theta =
+\{\tau_k, \mu_k, \Lambda_k, \Psi_k, y_{ki}, z_i:
+  k = 1,\ldots,m;\ i = 1,\ldots,n\},
+```
+
+with hyperparameters
+
+``` math
+H = (\alpha_1, \alpha_2, \beta, \delta, \gamma).
 ```
 
 The package samples the hyperparameters $`\alpha_1`$, $`\alpha_2`$, and
@@ -241,49 +264,44 @@ In
 - `split_combine = 1` adds split/combine moves when `m_step = 1`.
 - `v_step = 1` enables covariance-constraint moves.
 
-## Minimal runnable example
+For a proposed move from model $`M`$ to $`M'`$, the RJMCMC acceptance
+probability has the standard form
 
-The following example is deliberately small so the vignette can run
-quickly. For real analyses, increase `burn` and `niter`.
-
-``` r
-
-set.seed(2026)
-
-X <- cbind(
-  matrix(rnorm(8, mean = -2, sd = 0.2), nrow = 2),
-  matrix(rnorm(8, mean = 2, sd = 0.2), nrow = 2)
-)
-known_labels <- rep(1:2, each = 4)
-
-fit <- pgmm_rjmcmc(
-  X = X,
-  m_init = 2,
-  m_range = c(1, 3),
-  q_new = 1,
-  burn = 1,
-  niter = 3,
-  constraint = model_to_constraint("UUU"),
-  m_step = 0,
-  v_step = 0,
-  verbose = FALSE
-)
-
-fit_summary <- summarize_pgmm_rjmcmc(fit, true_cluster = known_labels)
-fit_summary$n_clusters
-#> 
-#> 2 
-#> 3
-fit_summary$n_constraints
-#> 
-#> UUU 
-#>   3
-fit_summary$ari
-#> [1] 1
+``` math
+a =
+\min\left\{
+1,
+\frac{
+  p(X, Z, \Theta', H' \mid M')\,p(M')\,q(M \mid M')
+}{
+  p(X, Z, \Theta, H \mid M)\,p(M)\,q(M' \mid M)
+}
+\left|J\right|
+\right\},
 ```
 
-The examples above keep `m_step = 0` and `v_step = 0` to make the
-vignette fast. A full model-selection run uses the same interface:
+where $`q(\cdot)`$ is the proposal density and $`|J|`$ is the Jacobian
+term for dimension-changing moves such as split/combine. Birth/death and
+split/combine change $`m`$; covariance moves change the constraint label
+$`v \in \{\mathrm{CCC}, \ldots, \mathrm{UUU}\}`$.
+
+## Interface mapping
+
+The formula terms map to package output fields as follows:
+
+| Paper notation           | Package argument or output                    |
+|--------------------------|-----------------------------------------------|
+| $`X = (x_1,\ldots,x_n)`$ | `X`, a $`p \times n`$ numeric matrix          |
+| $`m`$                    | `m_init`, `m_range`, `active_cluster_samples` |
+| $`q_k`$                  | `q_new` for newly proposed clusters           |
+| $`z_i`$                  | `allocation_samples`, `summary$allocation`    |
+| $`\tau_k`$               | `tau_samples`                                 |
+| $`\mu_k`$                | `mean_samples`                                |
+| $`\Lambda_k`$            | `lambda_samples`                              |
+| $`\Psi_k`$               | `psi_samples`                                 |
+| covariance model $`v`$   | `constraint`, `constraint_samples`            |
+
+An applied model-selection call usually has the following structure:
 
 ``` r
 
@@ -300,37 +318,6 @@ fit <- pgmm_rjmcmc(
   split_combine = 1,
   verbose = FALSE
 )
-```
-
-## Reading posterior output
-
-The sampler returns posterior samples as lists. The most commonly used
-fields are:
-
-| Field                | Meaning                                |
-|----------------------|----------------------------------------|
-| `allocation_samples` | sampled cluster allocations $`Z`$      |
-| `constraint_samples` | sampled PGMM covariance constraints    |
-| `tau_samples`        | sampled mixture weights $`\tau`$       |
-| `mean_samples`       | sampled cluster means $`\mu_k`$        |
-| `lambda_samples`     | sampled loading matrices $`\Lambda_k`$ |
-| `psi_samples`        | sampled noise covariances $`\Psi_k`$   |
-
-Use
-[`summarize_pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/summarize_pgmm_rjmcmc.md)
-for posterior summaries:
-
-``` r
-
-names(fit)
-#>  [1] "tau_samples"            "psi_samples"           
-#>  [3] "mean_samples"           "lambda_samples"        
-#>  [5] "factor_score_samples"   "allocation_samples"    
-#>  [7] "constraint_samples"     "alpha1_samples"        
-#>  [9] "alpha2_samples"         "beta_samples"          
-#> [11] "active_cluster_samples"
-names(fit_summary)
-#> [1] "allocation"    "n_clusters"    "n_constraints" "ari"
 ```
 
 ## Citation
