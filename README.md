@@ -10,8 +10,8 @@
 [![Lifecycle: stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 
 `bpgmm` implements Bayesian inference for parsimonious Gaussian mixture
-models. It is designed for model-based clustering when the number of clusters,
-the object partition, and the cluster covariance structure are all inferential
+models. It is used for model-based clustering when the number of clusters, the
+object partition, and the cluster covariance structure are all inferential
 targets.
 
 The package uses Markov chain Monte Carlo for posterior estimation and
@@ -26,22 +26,15 @@ Install the released version from CRAN:
 install.packages("bpgmm")
 ```
 
-Install the development version from GitHub:
-
-```r
-install.packages("remotes")
-remotes::install_github("YaoxiangLi/bpgmm")
-```
-
 Load the package:
 
 ```r
 library(bpgmm)
 ```
 
-## What bpgmm Does
+## Inferential Targets
 
-`bpgmm` is useful when you want to:
+The package supports analyses in which the inferential targets include:
 
 - estimate the number of clusters from the data;
 - infer posterior cluster membership probabilities;
@@ -51,9 +44,9 @@ library(bpgmm)
 
 ## Minimal Runnable Example
 
-This example creates two small clusters, fits a short RJMCMC chain, and
-summarizes the posterior samples. Real analyses should use a longer burn-in and
-more posterior samples.
+The example below creates two small clusters, fits a short RJMCMC chain, and
+summarizes the posterior samples. Applied analyses should use a longer burn-in
+and more posterior samples.
 
 ```r
 set.seed(2026)
@@ -88,9 +81,9 @@ fit_summary$ari
 #> [1] 1
 ```
 
-Here `X` is a numeric matrix with variables in rows and observations in columns.
-Set `m_step = 1` to allow RJMCMC updates for the number of clusters and
-`v_step = 1` to allow updates for the variance structure.
+In this call, `X` is a numeric matrix with variables in rows and observations
+in columns. Set `m_step = 1` to allow RJMCMC updates for the number of clusters
+and `v_step = 1` to allow updates for the variance structure.
 
 The main user-facing function is `pgmm_rjmcmc()`. Important settings include:
 
@@ -182,11 +175,3 @@ BibTeX for the paper:
 ## License
 
 `bpgmm` is released under the GPL-3 license.
-
-## Website
-
-The package website is available at https://yaoxiangli.github.io/bpgmm/. It
-includes a reference index, release notes, and worked examples that run the
-actual package functions, including larger model-selection and exploratory
-variable-prioritization examples, data-preparation guidance, and posterior
-diagnostics for multiple chains.

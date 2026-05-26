@@ -14,11 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-This vignette uses a moderately larger simulated mixture-of-factor-analyzers
-data set to show the model-selection workflow in `bpgmm`. The chain is still
-short so that the vignette builds quickly on CRAN and pkgdown. For applied
-analysis, use longer burn-in, more posterior samples, multiple chains, and
-convergence diagnostics.
+The following simulation uses a moderately larger mixture-of-factor-analyzers
+data set to illustrate model selection in `bpgmm`. The chain is short so that
+the vignette builds quickly on CRAN and pkgdown. Applied analyses should use
+longer burn-in, more posterior samples, multiple chains, and convergence
+diagnostics.
 
 ## Simulate clustered factor-analytic data
 
@@ -164,8 +164,8 @@ fit_summary$n_constraints
 fit_summary$ari
 ```
 
-The model-selection summaries are posterior sample counts. In a real analysis,
-these bars should be based on a much longer chain.
+The model-selection summaries are posterior sample counts. In an applied
+analysis, these bars should be based on a much longer chain.
 
 ```{r, fig.width = 7, fig.height = 4, fig.alt = "Bar plots of posterior counts for cluster number and covariance model."}
 old_par <- par(mfrow = c(1, 2), mar = c(5, 4, 3, 1))

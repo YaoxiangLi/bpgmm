@@ -19,7 +19,7 @@ covariance structure. It does not currently implement a formal spike-and-slab
 or inclusion-indicator variable-selection prior. Still, users often want to
 understand which observed variables help explain the fitted clustering.
 
-This vignette shows a practical exploratory workflow:
+The calculations below:
 
 - fit `bpgmm`;
 - summarize the posterior modal allocation;
@@ -31,11 +31,11 @@ prioritization, not as formal posterior variable inclusion probabilities.
 
 ## Simulate data with informative and weak variables
 
-This vignette uses a different simulation from the model-selection article.
-Here the point is not to recover \(m\); it is to show how posterior output can
-be post-processed to rank variables. The first three variables have different
-cluster means, variables four and five have mostly covariance differences, and
-variable six is weak noise.
+The simulation differs from the model-selection example. The aim is not to
+recover \(m\), but to examine how posterior output can be post-processed to
+rank variables. The first three variables have different cluster means,
+variables four and five have mostly covariance differences, and variable six is
+weak noise.
 
 ```{r}
 library(bpgmm)
@@ -126,8 +126,8 @@ R_j^2 =
      {\sum_i (x_{ji} - \bar{x}_{j\cdot})^2}.
 \]
 
-This is not a Bayesian variable-selection posterior. It is a compact way to
-ask which observed variables separate the fitted clusters.
+This quantity is not a posterior inclusion probability; it summarizes
+separation under the fitted partition.
 
 ```{r}
 cluster_separation <- function(X, allocation) {
@@ -240,7 +240,8 @@ Use both summaries together:
 - high separation means a variable distinguishes the posterior clusters;
 - high loading magnitude means a variable contributes to latent-factor
   covariance structure inside components;
-- disagreement between the two summaries is useful and should be inspected.
+- disagreement between the two summaries indicates that the mean structure and
+  covariance structure carry different information.
 
 For formal variable selection, the model would need an explicit variable
 inclusion prior and posterior inclusion summaries. The current package is best
@@ -259,5 +260,5 @@ as:
 > probabilities.
 
 Avoid wording such as "selected variables" unless a formal variable-selection
-model has been fitted. A careful distinction makes the package easier to use
-correctly and avoids overstating the statistical target.
+model has been fitted. This distinction keeps the statistical target clear and
+avoids overstating the model.
