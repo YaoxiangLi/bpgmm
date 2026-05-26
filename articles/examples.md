@@ -1,16 +1,16 @@
 # Worked examples
 
-This article shows a complete, runnable `bpgmm` workflow. The example is
-small enough to build quickly on CRAN and pkgdown, but it uses the same
-functions as a larger analysis. It focuses on inspecting one fitted
-object; model-selection interpretation is handled in the model-selection
-article.
+This example gives a complete, runnable `bpgmm` analysis. It is small
+enough to build quickly on CRAN and pkgdown, but it uses the same
+functions as a larger analysis. The focus is the structure of one fitted
+object; model-selection interpretation is handled separately.
 
 ## Simulate a small clustering problem
 
 [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md)
 expects a numeric matrix with variables in rows and observations in
-columns. The code below creates two compact clusters in two dimensions.
+columns. The code below creates two well-separated clusters in two
+dimensions.
 
 ``` r
 
@@ -57,8 +57,8 @@ cluster.](examples_files/figure-html/unnamed-chunk-3-1.png)
 
 ## Fit a fixed-model chain
 
-This fit keeps $`m`$ and the covariance model fixed so the output
-structure is easy to inspect. The fitted likelihood contribution is
+This fit keeps $`m`$ and the covariance model fixed, so the output
+structure is explicit. The fitted likelihood contribution is
 
 ``` math
 p(x_i \mid z_i = k, \Theta) =
@@ -214,8 +214,8 @@ lapply(fit$psi_samples[[last]], dim)
 
 ## Scale the example to real data
 
-For a real analysis, keep the same workflow but use larger sampler
-settings. The exact values depend on data size and convergence
+For an applied analysis, keep the same sequence of steps but use larger
+sampler settings. The exact values depend on data size and convergence
 diagnostics.
 
 ``` r

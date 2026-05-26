@@ -74,17 +74,16 @@
 
     
     
-<p>This article shows a complete, runnable <code>bpgmm</code> workflow.
-The example is small enough to build quickly on CRAN and pkgdown, but it
-uses the same functions as a larger analysis. It focuses on inspecting
-one fitted object; model-selection interpretation is handled in the
-model-selection article.</p>
+<p>This example gives a complete, runnable <code>bpgmm</code> analysis.
+It is small enough to build quickly on CRAN and pkgdown, but it uses the
+same functions as a larger analysis. The focus is the structure of one
+fitted object; model-selection interpretation is handled separately.</p>
 <div class="section level2">
 <h2 id="simulate-a-small-clustering-problem">Simulate a small clustering problem<a class="anchor" aria-label="anchor" href="#simulate-a-small-clustering-problem"></a>
 </h2>
 <p><code><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code> expects a numeric matrix with variables in
-rows and observations in columns. The code below creates two compact
-clusters in two dimensions.</p>
+rows and observations in columns. The code below creates two
+well-separated clusters in two dimensions.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
@@ -126,8 +125,8 @@ clusters in two dimensions.</p>
 </h2>
 <p>This fit keeps
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
-and the covariance model fixed so the output structure is easy to
-inspect. The fitted likelihood contribution is</p>
+and the covariance model fixed, so the output structure is explicit. The
+fitted likelihood contribution is</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo>,</mo><mi mathvariant="normal">Θ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><msub><mi>N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>μ</mi><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mi>⊤</mi></msubsup><mo>+</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
 p(x_i \mid z_i = k, \Theta) =
 N_p(x_i \mid \mu_k, \Lambda_k\Lambda_k^\top + \Psi_k).
@@ -267,9 +266,9 @@ object shape.</p>
 <div class="section level2">
 <h2 id="scale-the-example-to-real-data">Scale the example to real data<a class="anchor" aria-label="anchor" href="#scale-the-example-to-real-data"></a>
 </h2>
-<p>For a real analysis, keep the same workflow but use larger sampler
-settings. The exact values depend on data size and convergence
-diagnostics.</p>
+<p>For an applied analysis, keep the same sequence of steps but use
+larger sampler settings. The exact values depend on data size and
+convergence diagnostics.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">your_data_matrix</span>,</span>

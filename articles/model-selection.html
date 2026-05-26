@@ -74,11 +74,11 @@
 
     
     
-<p>This vignette uses a moderately larger simulated
-mixture-of-factor-analyzers data set to show the model-selection
-workflow in <code>bpgmm</code>. The chain is still short so that the
-vignette builds quickly on CRAN and pkgdown. For applied analysis, use
-longer burn-in, more posterior samples, multiple chains, and convergence
+<p>The following simulation uses a moderately larger
+mixture-of-factor-analyzers data set to illustrate model selection in
+<code>bpgmm</code>. The chain is short so that the vignette builds
+quickly on CRAN and pkgdown. Applied analyses should use longer burn-in,
+more posterior samples, multiple chains, and convergence
 diagnostics.</p>
 <div class="section level2">
 <h2 id="simulate-clustered-factor-analytic-data">Simulate clustered factor-analytic data<a class="anchor" aria-label="anchor" href="#simulate-clustered-factor-analytic-data"></a>
@@ -230,8 +230,8 @@ frequencies:</p>
 <span><span class="co">#&gt;   1   1   4</span></span>
 <span><span class="va">fit_summary</span><span class="op">$</span><span class="va">ari</span></span>
 <span><span class="co">#&gt; [1] 0.9495627</span></span></code></pre></div>
-<p>The model-selection summaries are posterior sample counts. In a real
-analysis, these bars should be based on a much longer chain.</p>
+<p>The model-selection summaries are posterior sample counts. In an
+applied analysis, these bars should be based on a much longer chain.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">old_par</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/graphics/par.html" class="external-link">par</a></span><span class="op">(</span>mfrow <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span><span class="op">)</span>, mar <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">4</span>, <span class="fl">3</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span></span>

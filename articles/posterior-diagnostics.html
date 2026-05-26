@@ -74,15 +74,15 @@
 
     
     
-<p>This article shows how to inspect posterior samples after fitting
-<code>bpgmm</code>. It complements the model-selection vignette: instead
-of introducing a larger data set, it focuses on diagnostics that can be
-reused in applied analyses.</p>
-<p>The chains in this vignette are deliberately short so that the
-article builds quickly. In real work, use longer chains and inspect
-stability carefully.</p>
+<p>After fitting <code>bpgmm</code>, posterior samples can be inspected
+through chain-level summaries, trace plots, and co-clustering
+probabilities. These diagnostics complement the model-selection
+example.</p>
+<p>The chains below are deliberately short so that the vignette builds
+quickly. Applied analyses should use longer chains and examine stability
+across independent runs.</p>
 <div class="section level2">
-<h2 id="simulate-a-compact-diagnostic-example">Simulate a compact diagnostic example<a class="anchor" aria-label="anchor" href="#simulate-a-compact-diagnostic-example"></a>
+<h2 id="simulate-a-diagnostic-example">Simulate a diagnostic example<a class="anchor" aria-label="anchor" href="#simulate-a-diagnostic-example"></a>
 </h2>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
@@ -169,7 +169,7 @@ the chains use different random seeds.</p>
 <h2 id="trace-cluster-counts-and-covariance-models">Trace cluster counts and covariance models<a class="anchor" aria-label="anchor" href="#trace-cluster-counts-and-covariance-models"></a>
 </h2>
 <p>The posterior samples store the active cluster indicators and
-covariance constraint at each saved iteration. These are useful first
+covariance constraint at each saved iteration. These traces are first
 diagnostics.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_count_trace</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">fit</span><span class="op">)</span> <span class="op">{</span></span>
@@ -217,8 +217,8 @@ diagnostics.</p>
 <h2 id="posterior-co-clustering-matrix">Posterior co-clustering matrix<a class="anchor" aria-label="anchor" href="#posterior-co-clustering-matrix"></a>
 </h2>
 <p>A co-clustering matrix estimates how often two observations are
-assigned to the same cluster across posterior samples. This is often
-more informative than a single modal allocation.</p>
+assigned to the same cluster across posterior samples. It reports
+pairwise uncertainty rather than only a single modal allocation.</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi>i</mi><mi>j</mi></mrow></msub><mo>=</mo><mrow><mi mathvariant="normal">Pr</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><msub><mi>z</mi><mi>j</mi></msub><mo>∣</mo><mi>X</mi><mo stretchy="false" form="postfix">)</mo><mo>≈</mo><mfrac><mn>1</mn><mi>S</mi></mfrac><munderover><mo>∑</mo><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mi>S</mi></munderover><mi>I</mi><mo stretchy="false" form="prefix">{</mo><msubsup><mi>z</mi><mi>i</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo>=</mo><msubsup><mi>z</mi><mi>j</mi><mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo stretchy="false" form="postfix">}</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
 C_{ij} =
 \Pr(z_i = z_j \mid X)
@@ -262,7 +262,7 @@ I\{z_i^{(s)} = z_j^{(s)}\}.
 <div class="section level2">
 <h2 id="what-to-look-for">What to look for<a class="anchor" aria-label="anchor" href="#what-to-look-for"></a>
 </h2>
-<p>Useful warning signs include:</p>
+<p>Warning signs include:</p>
 <ul>
 <li>cluster-count traces that stay at the boundary of
 <code>m_range</code>;</li>
@@ -273,8 +273,8 @@ I\{z_i^{(s)} = z_j^{(s)}\}.
 <li>sensitivity to scaling, <code>q_new</code>, or
 <code>m_range</code>.</li>
 </ul>
-<p>These diagnostics do not replace a long MCMC analysis, but they make
-the posterior output easier to inspect and report.</p>
+<p>These diagnostics do not replace a long MCMC analysis, but they give
+a concise description of the posterior output.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

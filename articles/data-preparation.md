@@ -1,10 +1,10 @@
 # Preparing data and choosing sampler settings
 
-This article focuses on the decisions that happen before calling
-[`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md):
-matrix orientation, scaling, missing values, latent-factor dimension,
-cluster range, and starting covariance model. The goal is to make
-applied use less ambiguous.
+Before calling
+[`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md),
+the analyst must specify the data orientation, scaling, missing-value
+handling, latent-factor dimension, cluster range, and starting
+covariance model.
 
 ## Matrix orientation
 
@@ -145,9 +145,9 @@ m_init <- 3
 m_range <- c(1, 5)
 ```
 
-For data with a known reference label, such as `iris`, this range is
-easy to check. In real clustering problems, use domain knowledge and
-exploratory plots.
+For data with a known reference label, such as `iris`, the reference
+partition gives a simple check on the range. In unsupervised
+applications, use domain knowledge and exploratory plots.
 
 ``` r
 
@@ -200,9 +200,9 @@ constraint_to_model(c(1, 1, 1))
 
 ## A prepared call
 
-The call below is intentionally not evaluated in the vignette because a
-real analysis should use longer chains and repeated runs. It shows how
-the prepared objects fit into the package interface.
+The call below is not evaluated in the vignette because applied analyses
+should use longer chains and repeated runs. It records how the prepared
+objects enter the package interface.
 
 ``` r
 

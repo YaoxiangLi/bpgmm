@@ -1,11 +1,10 @@
 # Model selection on a larger simulated MFA data set
 
-This vignette uses a moderately larger simulated
-mixture-of-factor-analyzers data set to show the model-selection
-workflow in `bpgmm`. The chain is still short so that the vignette
-builds quickly on CRAN and pkgdown. For applied analysis, use longer
-burn-in, more posterior samples, multiple chains, and convergence
-diagnostics.
+The following simulation uses a moderately larger
+mixture-of-factor-analyzers data set to illustrate model selection in
+`bpgmm`. The chain is short so that the vignette builds quickly on CRAN
+and pkgdown. Applied analyses should use longer burn-in, more posterior
+samples, multiple chains, and convergence diagnostics.
 
 ## Simulate clustered factor-analytic data
 
@@ -174,7 +173,7 @@ fit_summary$ari
 #> [1] 0.9495627
 ```
 
-The model-selection summaries are posterior sample counts. In a real
+The model-selection summaries are posterior sample counts. In an applied
 analysis, these bars should be based on a much longer chain.
 
 ``` r

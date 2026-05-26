@@ -65,7 +65,7 @@
 <div class="page-header"><h1 id="bpgmm-bayesian-inference-for-parsimonious-gaussian-mixture-models">bpgmm: Bayesian inference for parsimonious Gaussian mixture models<a class="anchor" aria-label="anchor" href="#bpgmm-bayesian-inference-for-parsimonious-gaussian-mixture-models"></a>
 </h1></div>
 <p><a href="https://cran.r-project.org/package=bpgmm" class="external-link"><img src="https://www.r-pkg.org/badges/version/bpgmm" alt="CRAN status"></a> <a href="https://cran.r-project.org/package=bpgmm" class="external-link"><img src="https://cranlogs.r-pkg.org/badges/grand-total/bpgmm" alt="CRAN downloads"></a> <a href="https://github.com/YaoxiangLi/bpgmm/actions/workflows/R-CMD-check.yaml" class="external-link"><img src="https://github.com/YaoxiangLi/bpgmm/actions/workflows/R-CMD-check.yaml/badge.svg" alt="R-CMD-check"></a> <a href="https://github.com/YaoxiangLi/bpgmm/releases" class="external-link"><img src="https://img.shields.io/github/v/release/YaoxiangLi/bpgmm?display_name=tag&amp;sort=semver" alt="GitHub release"></a> <a href="https://github.com/YaoxiangLi/bpgmm/actions/workflows/pkgdown.yaml" class="external-link"><img src="https://github.com/YaoxiangLi/bpgmm/actions/workflows/pkgdown.yaml/badge.svg" alt="pkgdown"></a> <a href="https://cran.r-project.org/web/licenses/GPL-3" class="external-link"><img src="https://img.shields.io/badge/license-GPL--3-blue.svg" alt="License: GPL-3"></a> <a href="https://doi.org/10.1007/s00357-021-09391-8" class="external-link"><img src="https://img.shields.io/badge/DOI-10.1007%2Fs00357--021--09391--8-blue" alt="DOI"></a> <a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="https://img.shields.io/badge/lifecycle-stable-brightgreen.svg" alt="Lifecycle: stable"></a></p>
-<p><code>bpgmm</code> implements Bayesian inference for parsimonious Gaussian mixture models. It is designed for model-based clustering when the number of clusters, the object partition, and the cluster covariance structure are all inferential targets.</p>
+<p><code>bpgmm</code> implements Bayesian inference for parsimonious Gaussian mixture models. It is used for model-based clustering when the number of clusters, the object partition, and the cluster covariance structure are all inferential targets.</p>
 <p>The package uses Markov chain Monte Carlo for posterior estimation and reversible-jump MCMC (RJMCMC) for model selection across constrained mixtures of factor analyzers.</p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -73,18 +73,14 @@
 <p>Install the released version from CRAN:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"bpgmm"</span><span class="op">)</span></span></code></pre></div>
-<p>Install the development version from GitHub:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"YaoxiangLi/bpgmm"</span><span class="op">)</span></span></code></pre></div>
 <p>Load the package:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="what-bpgmm-does">What bpgmm Does<a class="anchor" aria-label="anchor" href="#what-bpgmm-does"></a>
+<h2 id="inferential-targets">Inferential Targets<a class="anchor" aria-label="anchor" href="#inferential-targets"></a>
 </h2>
-<p><code>bpgmm</code> is useful when you want to:</p>
+<p>The package supports analyses in which the inferential targets include:</p>
 <ul>
 <li>estimate the number of clusters from the data;</li>
 <li>infer posterior cluster membership probabilities;</li>
@@ -96,8 +92,8 @@
 <div class="section level2">
 <h2 id="minimal-runnable-example">Minimal Runnable Example<a class="anchor" aria-label="anchor" href="#minimal-runnable-example"></a>
 </h2>
-<p>This example creates two small clusters, fits a short RJMCMC chain, and summarizes the posterior samples. Real analyses should use a longer burn-in and more posterior samples.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<p>The example below creates two small clusters, fits a short RJMCMC chain, and summarizes the posterior samples. Applied analyses should use a longer burn-in and more posterior samples.</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">X</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span></span>
@@ -128,7 +124,7 @@
 <span></span>
 <span><span class="va">fit_summary</span><span class="op">$</span><span class="va">ari</span></span>
 <span><span class="co">#&gt; [1] 1</span></span></code></pre></div>
-<p>Here <code>X</code> is a numeric matrix with variables in rows and observations in columns. Set <code>m_step = 1</code> to allow RJMCMC updates for the number of clusters and <code>v_step = 1</code> to allow updates for the variance structure.</p>
+<p>In this call, <code>X</code> is a numeric matrix with variables in rows and observations in columns. Set <code>m_step = 1</code> to allow RJMCMC updates for the number of clusters and <code>v_step = 1</code> to allow updates for the variance structure.</p>
 <p>The main user-facing function is <code><a href="reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code>. Important settings include:</p>
 <ul>
 <li>
@@ -151,7 +147,7 @@
 <h2 id="multi-core-runs">Multi-Core Runs<a class="anchor" aria-label="anchor" href="#multi-core-runs"></a>
 </h2>
 <p>Individual RJMCMC iterations are sequential because each state depends on the previous state. To use multiple cores safely, run independent chains in parallel:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fits</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/pgmm_rjmcmc_chains.html">pgmm_rjmcmc_chains</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">X</span>,</span>
 <span>  m_init <span class="op">=</span> <span class="fl">2</span>,</span>
@@ -170,7 +166,7 @@
 <p>This uses separate worker processes where available and stores deterministic per-chain seeds in <code>attr(fits, "chain_seeds")</code>.</p>
 <p>Starting with version 1.2.0, the public API uses snake_case names throughout. Older camelCase function names and argument names are no longer exported.</p>
 <p>The eight covariance structures in the paper are represented by model labels such as <code>"CCC"</code>, <code>"CUU"</code>, and <code>"UUU"</code>. The package also accepts the legacy three-number constraint encoding:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/model_to_constraint.html">model_to_constraint</a></span><span class="op">(</span><span class="st">"UUU"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/constraint_to_model.html">constraint_to_model</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -187,28 +183,23 @@
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use <code>bpgmm</code> in published work, please cite both the package and the methodology paper. In R, run:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"bpgmm"</span><span class="op">)</span></span></code></pre></div>
 <p>BibTeX for the paper:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="va">@article</span>{<span class="ot">lu2021bayesian</span>,</span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>  <span class="dt">author</span> = {Lu, Xiang and Li, Yaoxiang and Love, Tanzy},</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  <span class="dt">title</span> = {On Bayesian Analysis of Parsimonious Gaussian Mixture Models},</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="dt">journal</span> = {Journal of Classification},</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>  <span class="dt">year</span> = {2021},</span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a>  <span class="dt">volume</span> = {38},</span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>  <span class="dt">pages</span> = {576--593},</span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1007/s00357-021-09391-8}</span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>}</span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bibtex"><code class="sourceCode bibtex"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="va">@article</span>{<span class="ot">lu2021bayesian</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>  <span class="dt">author</span> = {Lu, Xiang and Li, Yaoxiang and Love, Tanzy},</span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="dt">title</span> = {On Bayesian Analysis of Parsimonious Gaussian Mixture Models},</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>  <span class="dt">journal</span> = {Journal of Classification},</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>  <span class="dt">year</span> = {2021},</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>  <span class="dt">volume</span> = {38},</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>  <span class="dt">pages</span> = {576--593},</span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  <span class="dt">doi</span> = {10.1007/s00357-021-09391-8}</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
 </h2>
 <p><code>bpgmm</code> is released under the GPL-3 license.</p>
-</div>
-<div class="section level2">
-<h2 id="website">Website<a class="anchor" aria-label="anchor" href="#website"></a>
-</h2>
-<p>The package website is available at <a href="https://yaoxiangli.github.io/bpgmm/" class="uri">https://yaoxiangli.github.io/bpgmm/</a>. It includes a reference index, release notes, and worked examples that run the actual package functions, including larger model-selection and exploratory variable-prioritization examples, data-preparation guidance, and posterior diagnostics for multiple chains.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="links">

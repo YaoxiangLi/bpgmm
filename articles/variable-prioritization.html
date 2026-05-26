@@ -79,7 +79,7 @@ of clusters and PGMM covariance structure. It does not currently
 implement a formal spike-and-slab or inclusion-indicator
 variable-selection prior. Still, users often want to understand which
 observed variables help explain the fitted clustering.</p>
-<p>This vignette shows a practical exploratory workflow:</p>
+<p>The calculations below:</p>
 <ul>
 <li>fit <code>bpgmm</code>;</li>
 <li>summarize the posterior modal allocation;</li>
@@ -92,10 +92,10 @@ probabilities.</p>
 <div class="section level2">
 <h2 id="simulate-data-with-informative-and-weak-variables">Simulate data with informative and weak variables<a class="anchor" aria-label="anchor" href="#simulate-data-with-informative-and-weak-variables"></a>
 </h2>
-<p>This vignette uses a different simulation from the model-selection
-article. Here the point is not to recover
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>;
-it is to show how posterior output can be post-processed to rank
+<p>The simulation differs from the model-selection example. The aim is
+not to recover
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>,
+but to examine how posterior output can be post-processed to rank
 variables. The first three variables have different cluster means,
 variables four and five have mostly covariance differences, and variable
 six is weak noise.</p>
@@ -186,8 +186,8 @@ R_j^2 =
 \frac{\sum_k n_k(\bar{x}_{jk} - \bar{x}_{j\cdot})^2}
      {\sum_i (x_{ji} - \bar{x}_{j\cdot})^2}.
 </annotation></semantics></math></p>
-<p>This is not a Bayesian variable-selection posterior. It is a compact
-way to ask which observed variables separate the fitted clusters.</p>
+<p>This quantity is not a posterior inclusion probability; it summarizes
+separation under the fitted partition.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">cluster_separation</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">X</span>, <span class="va">allocation</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">vapply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_len</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">X</span><span class="op">)</span><span class="op">)</span>, <span class="kw">function</span><span class="op">(</span><span class="va">j</span><span class="op">)</span> <span class="op">{</span></span>
@@ -317,8 +317,8 @@ not a posterior inclusion probability.</p>
 clusters;</li>
 <li>high loading magnitude means a variable contributes to latent-factor
 covariance structure inside components;</li>
-<li>disagreement between the two summaries is useful and should be
-inspected.</li>
+<li>disagreement between the two summaries indicates that the mean
+structure and covariance structure carry different information.</li>
 </ul>
 <p>For formal variable selection, the model would need an explicit
 variable inclusion prior and posterior inclusion summaries. The current
@@ -339,9 +339,8 @@ exploratory diagnostics derived from the fitted clustering model, not
 posterior inclusion probabilities.</p>
 </blockquote>
 <p>Avoid wording such as “selected variables” unless a formal
-variable-selection model has been fitted. A careful distinction makes
-the package easier to use correctly and avoids overstating the
-statistical target.</p>
+variable-selection model has been fitted. This distinction keeps the
+statistical target clear and avoids overstating the model.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

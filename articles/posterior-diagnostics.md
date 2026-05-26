@@ -1,15 +1,14 @@
 # Posterior diagnostics and multiple chains
 
-This article shows how to inspect posterior samples after fitting
-`bpgmm`. It complements the model-selection vignette: instead of
-introducing a larger data set, it focuses on diagnostics that can be
-reused in applied analyses.
+After fitting `bpgmm`, posterior samples can be inspected through
+chain-level summaries, trace plots, and co-clustering probabilities.
+These diagnostics complement the model-selection example.
 
-The chains in this vignette are deliberately short so that the article
-builds quickly. In real work, use longer chains and inspect stability
-carefully.
+The chains below are deliberately short so that the vignette builds
+quickly. Applied analyses should use longer chains and examine stability
+across independent runs.
 
-## Simulate a compact diagnostic example
+## Simulate a diagnostic example
 
 ``` r
 
@@ -106,7 +105,7 @@ data.frame(
 ## Trace cluster counts and covariance models
 
 The posterior samples store the active cluster indicators and covariance
-constraint at each saved iteration. These are useful first diagnostics.
+constraint at each saved iteration. These traces are first diagnostics.
 
 ``` r
 
@@ -163,8 +162,8 @@ par(old_par)
 ## Posterior co-clustering matrix
 
 A co-clustering matrix estimates how often two observations are assigned
-to the same cluster across posterior samples. This is often more
-informative than a single modal allocation.
+to the same cluster across posterior samples. It reports pairwise
+uncertainty rather than only a single modal allocation.
 
 ``` math
 C_{ij} =
@@ -216,7 +215,7 @@ probabilities.](posterior-diagnostics_files/figure-html/unnamed-chunk-9-1.png)
 
 ## What to look for
 
-Useful warning signs include:
+Warning signs include:
 
 - cluster-count traces that stay at the boundary of `m_range`;
 - very different posterior summaries across independent chains;
@@ -224,5 +223,5 @@ Useful warning signs include:
 - co-clustering matrices with no clear block structure;
 - sensitivity to scaling, `q_new`, or `m_range`.
 
-These diagnostics do not replace a long MCMC analysis, but they make the
-posterior output easier to inspect and report.
+These diagnostics do not replace a long MCMC analysis, but they give a
+concise description of the posterior output.

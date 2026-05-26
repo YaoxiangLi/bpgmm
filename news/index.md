@@ -2,10 +2,10 @@
 
 ## bpgmm 1.3.1
 
-- Revised the vignette set to reduce repeated examples across articles.
+- Revised the vignette set to reduce repeated examples across vignettes.
 - Made the model-and-sampler, data-preparation, model-selection,
-  variable-prioritization, and diagnostics articles more formula-focused
-  and closer to the notation in Lu, Li, and Love (2021).
+  variable-prioritization, and diagnostics vignettes more
+  formula-focused and closer to the notation in Lu, Li, and Love (2021).
 - Changed the variable-prioritization simulation so it no longer
   duplicates the larger MFA model-selection example.
 
@@ -20,10 +20,10 @@
 ## bpgmm 1.2.9
 
 - Added data-preparation and posterior-diagnostics vignettes.
-- Expanded the vignette collection so each article covers a distinct
-  workflow: input preparation, sampler details, small worked examples,
-  larger model selection, exploratory variable prioritization, and
-  multi-chain diagnostics.
+- Expanded the vignette collection so each vignette covers a distinct
+  analysis task: input preparation, sampler details, small worked
+  examples, larger model selection, exploratory variable prioritization,
+  and multi-chain diagnostics.
 
 ## bpgmm 1.2.8
 
@@ -108,8 +108,8 @@
 - Renamed summary arguments and result fields to snake_case, including
   `true_cluster`, `allocation`, `n_clusters`, `n_constraints`,
   `allocation_samples`, and `constraint_samples`.
-- Updated README, pkgdown articles, examples, and tests for the breaking
-  1.2.0 API.
+- Updated README, pkgdown vignettes, examples, and tests for the
+  breaking 1.2.0 API.
 
 ## bpgmm 1.1.6
 
@@ -118,7 +118,7 @@
   conjugate priors, allocation update, RJMCMC moves, and package output
   fields with formulas and runnable examples.
 - Linked the new mathematical vignette from the getting-started guide
-  and pkgdown article index.
+  and pkgdown vignette index.
 
 ## bpgmm 1.1.5
 

@@ -74,10 +74,9 @@
 
     
     
-<p>This article focuses on the decisions that happen before calling
-<code><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code>: matrix orientation, scaling, missing values,
-latent-factor dimension, cluster range, and starting covariance model.
-The goal is to make applied use less ambiguous.</p>
+<p>Before calling <code><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code>, the analyst must specify
+the data orientation, scaling, missing-value handling, latent-factor
+dimension, cluster range, and starting covariance model.</p>
 <div class="section level2">
 <h2 id="matrix-orientation">Matrix orientation<a class="anchor" aria-label="anchor" href="#matrix-orientation"></a>
 </h2>
@@ -209,9 +208,9 @@ sensitivity.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">m_init</span> <span class="op">&lt;-</span> <span class="fl">3</span></span>
 <span><span class="va">m_range</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">5</span><span class="op">)</span></span></code></pre></div>
-<p>For data with a known reference label, such as <code>iris</code>,
-this range is easy to check. In real clustering problems, use domain
-knowledge and exploratory plots.</p>
+<p>For data with a known reference label, such as <code>iris</code>, the
+reference partition gives a simple check on the range. In unsupervised
+applications, use domain knowledge and exploratory plots.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">species_cols</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#0072B2"</span>, <span class="st">"#D55E00"</span>, <span class="st">"#009E73"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span></span>
@@ -260,9 +259,9 @@ is isotropic or diagonal.</p>
 <div class="section level2">
 <h2 id="a-prepared-call">A prepared call<a class="anchor" aria-label="anchor" href="#a-prepared-call"></a>
 </h2>
-<p>The call below is intentionally not evaluated in the vignette because
-a real analysis should use longer chains and repeated runs. It shows how
-the prepared objects fit into the package interface.</p>
+<p>The call below is not evaluated in the vignette because applied
+analyses should use longer chains and repeated runs. It records how the
+prepared objects enter the package interface.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc</a></span><span class="op">(</span></span>
 <span>  X <span class="op">=</span> <span class="va">X_scaled</span>,</span>

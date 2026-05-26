@@ -5,7 +5,7 @@ model-based clustering. It targets three posterior inference goals
 described by Lu, Li, and Love (2021): the partition of observations, the
 number of clusters, and the cluster covariance structure.
 
-The other articles are intentionally non-overlapping:
+The vignettes have separate roles:
 
 | Article | Use it for |
 |----|----|
@@ -20,8 +20,8 @@ The other articles are intentionally non-overlapping:
 
 Input data should be a numeric matrix with variables in rows and
 observations in columns. The small example below has two variables and
-eight observations. It is intentionally short so the vignette runs
-quickly; use larger `burn` and `niter` values for real analysis.
+eight observations. The example is short so the vignette runs quickly;
+applied analyses should use larger `burn` and `niter` values.
 
 ``` r
 
@@ -37,9 +37,9 @@ X <- cbind(
 known_labels <- rep(1:2, each = 4)
 ```
 
-The example is easiest to check visually. Each point is one observation,
-and the colors show the reference labels used later for the ARI
-calculation.
+The scatter plot gives a direct check of the simulated partition. Each
+point is one observation, and the colors show the reference labels used
+later for the ARI calculation.
 
 ``` r
 
@@ -119,8 +119,8 @@ If a reference partition is available, pass it as `true_cluster` to
 calculate the adjusted Rand index.
 
 The summary allocation can be plotted back on the original coordinates.
-This is a useful first diagnostic before moving on to longer chains and
-convergence checks.
+This plot is a first check before longer chains and convergence
+diagnostics.
 
 ``` r
 
@@ -148,7 +148,7 @@ allocation.](getting-started_files/figure-html/unnamed-chunk-6-1.png)
 
 ## Common early mistakes
 
-The most common problems are easy to check:
+Common early problems are:
 
 - `X` is accidentally supplied as observations by variables instead of
   variables by observations;

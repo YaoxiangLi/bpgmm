@@ -74,11 +74,11 @@
 
     
     
-<p>This article connects the notation in Lu, Li, and Love (2021) to the
-<code>bpgmm</code> interface. The goal is to make clear what the package
-is fitting, what the covariance labels mean, and how the RJMCMC switches
-change the sampler. It does not repeat a full worked fit; use the
-getting-started and examples articles for runnable workflows.</p>
+<p>This section connects the notation in Lu, Li, and Love (2021) to the
+<code>bpgmm</code> interface. It describes the fitted model, the
+covariance labels, and the RJMCMC switches used by the sampler. Full
+fitted examples are given in the getting-started and worked-example
+vignettes.</p>
 <div class="section level2">
 <h2 id="observation-model">Observation model<a class="anchor" aria-label="anchor" href="#observation-model"></a>
 </h2>
@@ -275,7 +275,7 @@ means constrained and <code>0</code> means unconstrained.</p>
 <h2 id="priors-and-posterior-updates">Priors and posterior updates<a class="anchor" aria-label="anchor" href="#priors-and-posterior-updates"></a>
 </h2>
 <p>The supplement gives the natural conjugate priors used by the MCMC
-updates. In compact form, the main priors are:</p>
+updates. The main priors are:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∼</mo><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mo stretchy="false" form="prefix">(</mo><mi>γ</mi><mo>,</mo><mi>…</mi><mo>,</mo><mi>γ</mi><mo stretchy="false" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
 \tau \sim \mathrm{Dirichlet}(\gamma, \ldots, \gamma),
 </annotation></semantics></math></p>
@@ -335,9 +335,8 @@ p_{ki} =
 (z_{i1}, \ldots, z_{im}) \mid X, \Theta, H
   \sim \mathrm{Multinomial}(1, p_{1i}, \ldots, p_{mi}).
 </annotation></semantics></math></p>
-<p>This is implemented in the package’s allocation update and is also
-why the joint posterior includes the product of allocated mixture
-weights:</p>
+<p>The allocation update uses this probability, and the joint posterior
+includes the product of allocated mixture weights:</p>
 <p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>p</mi><mo stretchy="false" form="prefix">(</mo><mi>Z</mi><mo>∣</mo><mi>τ</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><munderover><mo>∏</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><msub><mi>τ</mi><msub><mi>z</mi><mi>i</mi></msub></msub><mi>.</mi></mrow><annotation encoding="application/x-tex">
 p(Z \mid \tau) = \prod_{i = 1}^{n} \tau_{z_i}.
 </annotation></semantics></math></p>

@@ -1,10 +1,9 @@
 # Model and sampler details
 
-This article connects the notation in Lu, Li, and Love (2021) to the
-`bpgmm` interface. The goal is to make clear what the package is
-fitting, what the covariance labels mean, and how the RJMCMC switches
-change the sampler. It does not repeat a full worked fit; use the
-getting-started and examples articles for runnable workflows.
+This section connects the notation in Lu, Li, and Love (2021) to the
+`bpgmm` interface. It describes the fitted model, the covariance labels,
+and the RJMCMC switches used by the sampler. Full fitted examples are
+given in the getting-started and worked-example vignettes.
 
 ## Observation model
 
@@ -164,7 +163,7 @@ constraint_to_model(c(1, 1, 0))
 ## Priors and posterior updates
 
 The supplement gives the natural conjugate priors used by the MCMC
-updates. In compact form, the main priors are:
+updates. The main priors are:
 
 ``` math
 \tau \sim \mathrm{Dirichlet}(\gamma, \ldots, \gamma),
@@ -229,8 +228,8 @@ Then
   \sim \mathrm{Multinomial}(1, p_{1i}, \ldots, p_{mi}).
 ```
 
-This is implemented in the package’s allocation update and is also why
-the joint posterior includes the product of allocated mixture weights:
+The allocation update uses this probability, and the joint posterior
+includes the product of allocated mixture weights:
 
 ``` math
 p(Z \mid \tau) = \prod_{i = 1}^{n} \tau_{z_i}.
