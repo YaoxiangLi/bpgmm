@@ -15,7 +15,7 @@ dimensions.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -116,7 +116,7 @@ adjusted Rand index.
 fit_summary <- summarize_pgmm_rjmcmc(fit, true_cluster = known_labels)
 
 fit_summary$allocation
-#> [1] 2 2 2 2 1 1 1 1
+#> [1] 1 1 1 1 2 2 2 2
 fit_summary$n_clusters
 #> 
 #> 2 
@@ -183,12 +183,12 @@ fit$tau_samples[[last]]
 #> [1] 0.1844265 0.8155735 0.0000000
 fit$mean_samples[[last]]
 #> [[1]]
-#>          [,1]     [,2]
-#> [1,] 1.285546 1.767347
+#>           [,1]      [,2]
+#> [1,] -2.321318 -1.896106
 #> 
 #> [[2]]
-#>           [,1]      [,2]
-#> [1,] -2.023394 -2.231323
+#>          [,1]     [,2]
+#> [1,] 1.093742 1.289018
 #> 
 #> [[3]]
 #> [1] NA

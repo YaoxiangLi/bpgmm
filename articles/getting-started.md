@@ -26,7 +26,7 @@ applied analyses should use larger `burn` and `niter` values.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -102,7 +102,7 @@ fast. The important arguments are:
 summary <- summarize_pgmm_rjmcmc(fit, true_cluster = known_labels)
 
 summary$allocation
-#> [1] 2 2 2 2 1 1 1 1
+#> [1] 1 1 1 1 2 2 2 2
 summary$n_clusters
 #> 
 #> 2 

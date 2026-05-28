@@ -13,7 +13,7 @@ across independent runs.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2029)
 X <- cbind(
@@ -97,9 +97,9 @@ data.frame(
     as.integer(names(which.max(x$n_clusters)))
   }, integer(1))
 )
-#>           chain ari modal_clusters
-#> chain_1 chain_1   1              3
-#> chain_2 chain_2   1              3
+#>           chain       ari modal_clusters
+#> chain_1 chain_1 0.6410256              3
+#> chain_2 chain_2 1.0000000              3
 ```
 
 ## Trace cluster counts and covariance models
@@ -128,10 +128,10 @@ cluster_traces
 #> [1] 3 3 3 3
 constraint_traces
 #> $chain_1
-#> [1] "UUU" "CUU" "CUC" "CCC"
+#> [1] "UCU" "UUU" "UUC" "UUU"
 #> 
 #> $chain_2
-#> [1] "CUU" "UUU" "UUU" "UCU"
+#> [1] "CUU" "CUU" "CUU" "CUU"
 ```
 
 ``` r

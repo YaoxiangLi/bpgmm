@@ -27,7 +27,7 @@ y_i \sim N_2(0, I_2),
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 simulate_mfa_data <- function(n_per_cluster = 20, p = 6, q = 2) {
   means <- rbind(
@@ -167,10 +167,10 @@ fit_summary$n_clusters
 #> 6
 fit_summary$n_constraints
 #> 
-#> UCU UUU 
-#>   5   1
+#> UCC UCU UUU 
+#>   4   1   1
 fit_summary$ari
-#> [1] 0.9495627
+#> [1] 1
 ```
 
 The model-selection summaries are posterior sample counts. In an applied

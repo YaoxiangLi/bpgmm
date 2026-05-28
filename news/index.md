@@ -1,5 +1,32 @@
 # Changelog
 
+## bpgmm 1.3.3
+
+- Made the cluster-mean prior and its Gibbs update consistent.
+  [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md)
+  now centers the data internally so the cluster-mean prior mean `xbar`
+  is `0` (the value implied by the augmented loading posterior in Lu,
+  Li, and Love (2021, Supplement A.1)), matching the zero-mean
+  conditional already used by the sampler. Previously the prior mean was
+  set to a single random observation while the update used `0`, so the
+  two were inconsistent. Sampled means are returned on the original
+  (uncentered) data scale.
+- Corrected the split/combine acceptance ratio. The split proposes one
+  independent sign per coordinate for the new component means, so its
+  proposal density carries a `2^-p` factor (`p = nrow(X)`) that
+  `evaluate_split_clusters()` had dropped. This factor is required for
+  the split/combine move to be reversible when the two merged components
+  are not uniformly ordered across coordinates. The corresponding
+  deterministic split in the paper omits this sign randomization; see
+  the package errata notes.
+- Fixed an error (`q_vec entries must be positive integers`) that
+  aborted the cluster-number RJMCMC (`m_step = 1`, and especially
+  `split_combine = 1`) whenever the active clusters became
+  non-contiguous, for example after an interior empty cluster was
+  removed. The prior evaluators now compact to the active clusters, the
+  native latent-score update validates only active clusters, and the
+  combine evaluator uses the merged cluster’s own factor count.
+
 ## bpgmm 1.3.2
 
 - Fixed the `beta` hyperparameter Gibbs update so the Gamma rate uses
