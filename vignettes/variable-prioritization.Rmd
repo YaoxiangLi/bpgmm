@@ -29,6 +29,18 @@ The calculations below:
 These summaries are diagnostic and exploratory. Treat them as variable
 prioritization, not as formal posterior variable inclusion probabilities.
 
+For cluster \(k\), the loading matrix \(\Lambda_k \in \mathbb{R}^{p \times q_k}\)
+enters the covariance through \(\Lambda_k \Lambda_k^\top\). A simple exploratory
+summary is the posterior mean absolute loading
+
+\[
+\bar{\lambda}_{j\cdot k} =
+\frac{1}{q_k S}\sum_{s=1}^{S}\sum_{\ell=1}^{q_k}
+\big|\lambda_{j\ell k}^{(s)}\big|,
+\]
+
+which ranks variables by average factor loading magnitude in cluster \(k\).
+
 ## Simulate data with informative and weak variables
 
 The simulation differs from the model-selection example. The aim is not to

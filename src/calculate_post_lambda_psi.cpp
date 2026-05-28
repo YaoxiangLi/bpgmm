@@ -369,7 +369,7 @@ Rcpp::List calculate_post_lambda_psi_native(int m,
 
       bbeta_eye = 2 * (bbeta / p) * bbeta_eye;
 
-      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka) * trans(tildaLambda_ka) + bbeta_eye;
+      arma::mat ratePara_k = Cxxk_ka - 2 * Cxtytk_ka * trans(tildaLambda_ka) + tildaLambda_ka * (Cytytk_ka + A_ka / m) * trans(tildaLambda_ka) + bbeta_eye;
       ratePara_vec = arma::diagvec(ratePara_k) * 0.5;
 
 

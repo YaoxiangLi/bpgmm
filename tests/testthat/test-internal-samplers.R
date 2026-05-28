@@ -129,6 +129,63 @@ test_that("evaluate_prior handles non-contiguous active clusters", {
   }
 })
 
+test_that("alpha2 shape uses total latent dimension q = sum_k q_k", {
+  hparam <- test_hparam()
+  d_vec <- c(1, 1, 1)
+  s_vec <- c(1, 1, 1)
+
+  theta_small <- new(
+    "ThetaYList",
+    tao = c(1),
+    psy = list(diag(c(1.2, 1.4))),
+    M = list(c(-0.5, 0.25)),
+    lambda = list(matrix(c(0.2, -0.1), 2, 1)),
+    Y = list(matrix(rnorm(4), 1, 4))
+  )
+  theta_large <- new(
+    "ThetaYList",
+    tao = c(1),
+    psy = list(diag(c(1.2, 1.4))),
+    M = list(c(-0.5, 0.25)),
+    lambda = list(matrix(c(0.2, -0.1, 0.05, 0.15), 2, 2)),
+    Y = list(matrix(rnorm(4), 2, 4))
+  )
+
+  set.seed(2026)
+  h_small <- bpgmm:::update_hyperparameter(1, 2, 1, hparam, theta_small, d_vec, s_vec)
+  set.seed(2026)
+  h_large <- bpgmm:::update_hyperparameter(1, 2, 2, hparam, theta_large, d_vec, s_vec)
+
+  expect_false(isTRUE(all.equal(h_small@alpha2, h_large@alpha2)))
+})
+
+test_that("proposal lambda uses per-cluster precision for unconstrained loadings", {
+  p <- 2
+  m <- 2
+  n <- 4
+  q_vec <- c(1, 1)
+  x <- matrix(c(-0.7, 0.1, -0.2, 0.4, 0.8, -0.3, 1.1, 0.2), nrow = p)
+  z <- c(1, 1, 2, 2)
+  theta <- test_theta(n)
+  hparam <- test_hparam()
+  cxy <- bpgmm:::calculate_cxy(m, n, hparam, theta, z, q_vec, x)
+  constraint <- c(FALSE, FALSE, FALSE) # UUU
+  lambda <- theta@lambda
+
+  eval <- bpgmm:::evaluate_proposal_lambda(hparam, theta, cxy, constraint, lambda, m, q_vec, p)
+  closed <- 0
+  for (k in seq_len(m)) {
+    lambda_prec <- cxy$Cyyk[[k]] + hparam@alpha2 * diag(q_vec[k])
+    closed <- closed + mvtnorm::dmvnorm(
+      c(lambda[[k]]),
+      mean = c(cxy$Cxmyk[[k]] %*% solve(lambda_prec)),
+      sigma = kronecker(solve(lambda_prec), theta@psy[[k]]),
+      log = TRUE
+    )
+  }
+  expect_equal(eval, closed, tolerance = 1e-8)
+})
+
 test_that("proposal generators and evaluators cover all PGMM covariance constraints", {
   p <- 2
   m <- 2

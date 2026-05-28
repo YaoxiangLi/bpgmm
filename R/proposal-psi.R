@@ -96,7 +96,7 @@ calculate_proposal_psi <- function(hparam, thetaYList, CxyList, constraint, m, p
     for (k in 1:m) {
       shapePara <- p / 2 * (nVec[k] + qVec[k] / m + (2 * delta - 2) / p + 1) + 1
       ratePara <- 1 / 2 * sum(diag(Cxxk[[k]] - 2 * Cxtytk[[k]] %*% t(tildaLambda[[k]])
-        + tildaLambda[[k]] %*% (Cytytk[[k]] + A[[k]]) %*% t(tildaLambda[[k]])
+        + tildaLambda[[k]] %*% (Cytytk[[k]] + A[[k]] / m) %*% t(tildaLambda[[k]])
         + 2 * bbeta / p * diag(rep(1, p))))
 
       invpsy <- rgamma(1, shape = shapePara, rate = ratePara)
@@ -289,7 +289,7 @@ evaluate_proposal_psi <- function(hparam, thetaYList, CxyList, constraint, newps
     for (k in 1:m) {
       shapePara <- p / 2 * (nVec[k] + qVec[k] / m + (2 * delta - 2) / p + 1) + 1
       ratePara <- 1 / 2 * sum(diag(Cxxk[[k]] - 2 * Cxtytk[[k]] %*% t(tildaLambda[[k]])
-        + tildaLambda[[k]] %*% (Cytytk[[k]] + A[[k]]) %*% t(tildaLambda[[k]])
+        + tildaLambda[[k]] %*% (Cytytk[[k]] + A[[k]] / m) %*% t(tildaLambda[[k]])
         + 2 * bbeta / p * diag(rep(1, p))))
 
       psyEval[k] <- dgamma(1 / psy[[k]][1, 1], shape = shapePara, rate = ratePara, log = T)

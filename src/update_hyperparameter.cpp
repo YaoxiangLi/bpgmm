@@ -19,7 +19,7 @@ S4 update_hyperparameter_native(
 
   validate_positive_int(m, "m");
   validate_positive_int(p, "p");
-  validate_positive_int(q, "q");
+  (void) q; // retained for native API compatibility; total q is derived from lambda
   validate_positive_finite_vec(d_vec, 3, "d_vec");
   validate_positive_finite_vec(s_vec, 3, "s_vec");
 
@@ -33,17 +33,18 @@ S4 update_hyperparameter_native(
     Rcpp::stop("theta_y_list slots must each have length at least m");
   }
 
+  int q_total = 0;
   for (int k = 0; k < m; ++k) {
     arma::vec Mk = M(k);
     arma::mat lambdak = lambda(k);
     arma::mat psyk = psy(k);
+    int q_k = static_cast<int>(lambdak.n_cols);
 
     if (Mk.n_elem != static_cast<arma::uword>(p)) {
       Rcpp::stop("M vectors must have length p");
     }
-    if (lambdak.n_rows != static_cast<arma::uword>(p) ||
-        lambdak.n_cols != static_cast<arma::uword>(q)) {
-      Rcpp::stop("lambda matrices must have p rows and q columns");
+    if (lambdak.n_rows != static_cast<arma::uword>(p) || q_k <= 0) {
+      Rcpp::stop("lambda matrices must have p rows and a positive number of columns");
     }
     if (psyk.n_rows != static_cast<arma::uword>(p) ||
         psyk.n_cols != static_cast<arma::uword>(p)) {
@@ -54,6 +55,7 @@ S4 update_hyperparameter_native(
     }
     validate_finite_matrix(lambdak, "lambda");
     validate_finite_matrix(psyk, "psy");
+    q_total += q_k;
   }
 
   // update alpha1
@@ -73,20 +75,15 @@ S4 update_hyperparameter_native(
   // Rcpp::rgamma(n, shape  , scale), scale = 1/rate;
   arma::vec alpha1Vec =  Rcpp::rgamma(1, alpha1Shape, alpha1Scale);
 
-  double alpha2Rate = 0;
-  arma::mat alpha2RateMat = arma::zeros(q,q);
-  arma::mat alpha2RateTemp;
+  double alpha2Rate = s_vec(1);
   for(int k = 0; k < m; k++){
-
     arma::mat lambdak = lambda(k);
     arma::mat psyk = psy(k);
-    alpha2RateTemp = 0.5 * trans(lambdak) * arma::inv(psyk)  * lambdak;
-    alpha2RateMat += alpha2RateTemp;
+    arma::mat alpha2RateTemp = 0.5 * trans(lambdak) * arma::inv(psyk)  * lambdak;
+    alpha2Rate += arma::trace(alpha2RateTemp);
   }
 
-  alpha2Rate += s_vec(1) + sum(alpha2RateMat.diag());
-
-  double alpha2Shape = q*p/2.0 + d_vec(1);
+  double alpha2Shape = q_total * p / 2.0 + d_vec(1);
   double alpha2Scale = 1.0/alpha2Rate;
 
   //Rcpp::rgamma(n, shape  , scale), scale = 1/rate;

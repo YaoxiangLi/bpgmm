@@ -100,6 +100,10 @@ The important arguments are:
 - `m_step = 1` allows RJMCMC updates for the number of clusters.
 - `v_step = 1` allows RJMCMC updates across covariance-constraint models.
 
+The model-and-sampler vignette records the corrected Gibbs and RJMCMC formulas
+from Lu, Li, and Love (2021), including the eight PGMM covariance structures,
+hyperparameter updates, and the split/combine move with per-coordinate signs.
+
 ## Summarize posterior samples
 
 ```{r}

@@ -71,7 +71,15 @@ N_p(x_i \mid \mu_k, \Lambda_k\Lambda_k^\top + \Psi_k).
 \]
 
 For model selection across \(m\) and covariance labels, use the separate
-model-selection vignette.
+model-selection vignette. The augmented likelihood term for an allocated
+observation in cluster \(k\) is
+
+\[
+\log N(x_i \mid \tilde{\Lambda}_k \tilde{y}_{ki}, \Psi_k),
+\]
+
+with \(\tilde{\Lambda}_k = (\mu_k, \Lambda_k)\) and \(\tilde{y}_{ki} = (1, y_{ki}')'\).
+See the model-and-sampler vignette for the full Gibbs and RJMCMC formulas.
 
 ```{r}
 fit_log <- capture.output({

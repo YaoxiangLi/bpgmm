@@ -140,9 +140,10 @@ calculate_proposal_lambda <- function(hparam, thetaYList, CxyList, constraint, m
   } else if (constraint[1] == F & constraint[2] == T & constraint[3] == F) {
     ## model 6
     for (k in 1:m) {
+      lambda_prec <- Cyyk[[k]] + alpha2 * diag(qVec[k])
       lambda[[k]] <- mvtnorm::rmvnorm(1,
-        mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]] + alpha2 * diag(qVec[k]))),
-        sigma = kronecker(solve(sumCyyk), psy[[k]])
+        mean = c(Cxmyk[[k]] %*% solve(lambda_prec)),
+        sigma = kronecker(solve(lambda_prec), psy[[k]])
       )
       lambda[[k]] <- matrix(lambda[[k]], p, qVec[k])
     }
@@ -151,9 +152,10 @@ calculate_proposal_lambda <- function(hparam, thetaYList, CxyList, constraint, m
   } else if (constraint[1] == F & constraint[2] == F & constraint[3] == T) {
     ## model 7
     for (k in 1:m) {
+      lambda_prec <- Cyyk[[k]] + alpha2 * diag(qVec[k])
       lambda[[k]] <- mvtnorm::rmvnorm(1,
-        mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]] + alpha2 * diag(qVec[k]))),
-        sigma = kronecker(solve(sumCyyk), psy[[k]])
+        mean = c(Cxmyk[[k]] %*% solve(lambda_prec)),
+        sigma = kronecker(solve(lambda_prec), psy[[k]])
       )
       lambda[[k]] <- matrix(lambda[[k]], p, qVec[k])
     }
@@ -161,9 +163,10 @@ calculate_proposal_lambda <- function(hparam, thetaYList, CxyList, constraint, m
   } else if (constraint[1] == F & constraint[2] == F & constraint[3] == F) {
     ## model 8
     for (k in 1:m) {
+      lambda_prec <- Cyyk[[k]] + alpha2 * diag(qVec[k])
       lambda[[k]] <- mvtnorm::rmvnorm(1,
-        mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]] + alpha2 * diag(qVec[k]))),
-        sigma = kronecker(solve(sumCyyk), psy[[k]])
+        mean = c(Cxmyk[[k]] %*% solve(lambda_prec)),
+        sigma = kronecker(solve(lambda_prec), psy[[k]])
       )
       lambda[[k]] <- matrix(lambda[[k]], p, qVec[k])
     }
@@ -299,9 +302,10 @@ evaluate_proposal_lambda <- function(hparam, thetaYList, CxyList, constraint, ne
   } else if (constraint[1] == F & constraint[2] == T & constraint[3] == T) {
     ## model 5
     for (k in 1:m) {
+      lambda_prec <- Cyyk[[k]] + alpha2 * diag(qVec[k])
       lambdaEval[k] <- mvtnorm::dmvnorm(
-        x = c(lambda[[k]]), mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]] + alpha2 * diag(qVec[k]))),
-        sigma = kronecker(solve(sumCyyk), psy[[k]]), log = T
+        x = c(lambda[[k]]), mean = c(Cxmyk[[k]] %*% solve(lambda_prec)),
+        sigma = kronecker(solve(lambda_prec), psy[[k]]), log = T
       )
     }
 
@@ -309,9 +313,10 @@ evaluate_proposal_lambda <- function(hparam, thetaYList, CxyList, constraint, ne
   } else if (constraint[1] == F & constraint[2] == T & constraint[3] == F) {
     ## model 6
     for (k in 1:m) {
+      lambda_prec <- Cyyk[[k]] + alpha2 * diag(qVec[k])
       lambdaEval[k] <- mvtnorm::dmvnorm(
-        x = c(lambda[[k]]), mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]] + alpha2 * diag(qVec[k]))),
-        sigma = kronecker(solve(sumCyyk), psy[[k]]), log = T
+        x = c(lambda[[k]]), mean = c(Cxmyk[[k]] %*% solve(lambda_prec)),
+        sigma = kronecker(solve(lambda_prec), psy[[k]]), log = T
       )
     }
 
@@ -319,18 +324,20 @@ evaluate_proposal_lambda <- function(hparam, thetaYList, CxyList, constraint, ne
   } else if (constraint[1] == F & constraint[2] == F & constraint[3] == T) {
     ## model 7
     for (k in 1:m) {
+      lambda_prec <- Cyyk[[k]] + alpha2 * diag(qVec[k])
       lambdaEval[k] <- mvtnorm::dmvnorm(
-        x = c(lambda[[k]]), mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]] + alpha2 * diag(qVec[k]))),
-        sigma = kronecker(solve(sumCyyk), psy[[k]]), log = T
+        x = c(lambda[[k]]), mean = c(Cxmyk[[k]] %*% solve(lambda_prec)),
+        sigma = kronecker(solve(lambda_prec), psy[[k]]), log = T
       )
     }
     ## end model 7
   } else if (constraint[1] == F & constraint[2] == F & constraint[3] == F) {
     ## model 8
     for (k in 1:m) {
+      lambda_prec <- Cyyk[[k]] + alpha2 * diag(qVec[k])
       lambdaEval[k] <- mvtnorm::dmvnorm(c(lambda[[k]]),
-        mean = c(Cxmyk[[k]] %*% solve(Cyyk[[k]] + alpha2 * diag(qVec[k]))),
-        sigma = kronecker(solve(sumCyyk), psy[[k]]), log = T
+        mean = c(Cxmyk[[k]] %*% solve(lambda_prec)),
+        sigma = kronecker(solve(lambda_prec), psy[[k]]), log = T
       )
     }
     ## end model 8

@@ -229,6 +229,177 @@ the product of allocated mixture weights:
 p(Z \mid \tau) = \prod_{i = 1}^{n} \tau_{z_i}.
 \]
 
+## Augmented representation and sufficient statistics
+
+The sampler augments each observation with latent factors and uses the stacked
+notation from the supplement. For cluster \(k\), define
+
+\[
+\tilde{y}_{ki} =
+\begin{pmatrix} 1 \\ y_{ki} \end{pmatrix},
+\qquad
+\tilde{\Lambda}_k = (\mu_k, \Lambda_k),
+\qquad
+A_k = \mathrm{diag}(\alpha_1, \alpha_2 I_{q_k}).
+\]
+
+Then the cluster likelihood can be written as
+
+\[
+x_i \mid z_i = k, \tilde{\Lambda}_k, \Psi_k
+  \sim N_p(\tilde{\Lambda}_k \tilde{y}_{ki}, \Psi_k).
+\]
+
+For allocated observations in cluster \(k\), the package accumulates
+
+\[
+C_{XXk} = \sum_{i: z_i = k} x_i x_i',
+\quad
+C_{X\tilde{Y}k} = \sum_{i: z_i = k} x_i \tilde{y}_{ki}',
+\quad
+C_{\tilde{Y}\tilde{Y}k} = \sum_{i: z_i = k} \tilde{y}_{ki} \tilde{y}_{ki}',
+\]
+
+\[
+C_{XYk} = \sum_{i: z_i = k} x_i y_{ki}',
+\quad
+C_{YYk} = \sum_{i: z_i = k} y_{ki} y_{ki}',
+\quad
+n_k = \sum_{i=1}^n \mathbf{1}(z_i = k).
+\]
+
+Completing the square gives the quadratic form used in every \(\Psi_k\) and
+\(\Lambda_k\) update:
+
+\[
+\sum_{i: z_i = k}
+(x_i - \tilde{\Lambda}_k \tilde{y}_{ki})(x_i - \tilde{\Lambda}_k \tilde{y}_{ki})'
+=
+C_{XXk} - 2 C_{X\tilde{Y}k} \tilde{\Lambda}_k'
+  + \tilde{\Lambda}_k C_{\tilde{Y}\tilde{Y}k} \tilde{\Lambda}_k'.
+\]
+
+## Latent scores, means, and mixture weights
+
+Given allocations, the supplement gives the following Gibbs updates.
+
+Latent scores for allocated observations:
+
+\[
+y_{ki} \mid x_i, z_i = k, \Theta
+  \sim N_{q_k}\!\big(D_k (x_i - \mu_k), \Sigma_k\big),
+\qquad
+D_k = \Lambda_k' \Psi_k^{-1},
+\qquad
+\Sigma_k = (\Lambda_k' \Psi_k^{-1} \Lambda_k + I_{q_k})^{-1}.
+\]
+
+Unallocated observations draw from the prior:
+
+\[
+y_i \mid z_i = 0 \sim N(0, I_{q_{\mathrm{new}}}).
+\]
+
+Cluster means:
+
+\[
+\mu_k \mid \cdots \sim N_p\!\big(\bar{x}, \alpha_1^{-1} \Psi_k\big),
+\]
+
+where \(\bar{x}\) is the prior mean on the working scale. `pgmm_rjmcmc()` centers
+\(X\) internally so \(\bar{x} = 0\) on the centered scale, matching the
+augmented loading posterior in Supplement A.1; sampled means are returned on the
+original data scale.
+
+Mixture weights:
+
+\[
+\tau \mid Z \sim \mathrm{Dirichlet}(n_1 + \gamma, \ldots, n_m + \gamma).
+\]
+
+## Hyperparameter updates
+
+The package samples \((\alpha_1, \alpha_2, \beta)\) with gamma hyperpriors
+controlled by `d_vec` and `s_vec`. With total latent dimension
+\(q = \sum_{k=1}^m q_k\),
+
+\[
+\alpha_1 \mid \cdots \sim
+\mathrm{Gamma}\!\left(
+  \tfrac{mp}{2} + d_{\alpha_1},
+  \tfrac{1}{2}\sum_k \mathrm{tr}(\Lambda_k' \Psi_k^{-1} \Lambda_k) + s_{\alpha_1}
+\right),
+\]
+
+\[
+\alpha_2 \mid \cdots \sim
+\mathrm{Gamma}\!\left(
+  \tfrac{qp}{2} + d_{\alpha_2},
+  \tfrac{1}{2}\sum_k \mathrm{tr}(\Lambda_k' \Psi_k^{-1} \Lambda_k) + s_{\alpha_2}
+\right),
+\]
+
+\[
+\beta \mid \cdots \sim
+\mathrm{Gamma}\!\left(
+  mp\delta + d_\beta,
+  \sum_k \mathrm{tr}(\Psi_k^{-1}) + s_\beta
+\right).
+\]
+
+## PGMM conditional posteriors (corrected forms)
+
+The eight covariance labels differ in whether \(\Lambda_k\), \(\Psi_k\), and the
+diagonal of \(\Psi_k\) are shared across clusters. The table below records the
+prior scaling that enters the \(\Psi_k^{-1}\) rate after completing the square.
+All models use the \(-2\) cross term and \(+1\) quadratic term on
+\((C_{\tilde{Y}\tilde{Y}k} + \text{prior adjustment})\); model 7 (UUC) is
+implemented with this corrected form rather than the misprinted coefficients in
+Appendix A.2.
+
+| Model | Shared \(\Lambda\)? | Shared \(\Psi\)? | Isotropic \(\Psi_k\)? | Prior adjustment in \(\Psi_k^{-1}\) rate |
+|---|---|---|---|---|
+| CCC | yes | yes | yes | \(C_{\tilde{Y}\tilde{Y}k} + A_k/m\), \(\beta/(mp)\) |
+| CCU | yes | yes | no | \(C_{\tilde{Y}\tilde{Y}k} + A_k/m\), \(\beta/m\) |
+| CUC | yes | no | yes | \(C_{\tilde{Y}\tilde{Y}k} + A_k/m\), \(\beta/p\) |
+| CUU | yes | no | no | \(C_{\tilde{Y}\tilde{Y}k} + A_k/m\), \(\beta\) |
+| UCC | no | yes | yes | \(C_{\tilde{Y}\tilde{Y}k} + A_k\), \(\beta/(mp)\) |
+| UCU | no | yes | no | \(C_{\tilde{Y}\tilde{Y}k} + A_k\), \(\beta/m\) |
+| UUC | no | no | yes | \(C_{\tilde{Y}\tilde{Y}k} + A_k\), \(\beta/p\) |
+| UUU | no | no | no | \(C_{\tilde{Y}\tilde{Y}k} + A_k\), \(\beta\) |
+
+For shared \(\Lambda\), the loading update pools information across clusters, for
+example in model 1 (CCC):
+
+\[
+\Lambda \mid \cdots \sim
+N\!\left(
+  \Big(\sum_k C_{X\tilde{Y}k}\Big)
+  \Big(\sum_k C_{\tilde{Y}\tilde{Y}k} + \tfrac{\alpha_2}{m} I\Big)^{-1},
+  \;\;
+  \Big(\sum_k C_{\tilde{Y}\tilde{Y}k} + \tfrac{\alpha_2}{m} I\Big)^{-1}
+  \otimes \Psi_k
+\right),
+\]
+
+with the same \(\Lambda\) copied to every cluster. For cluster-specific
+loadings (models 5–8),
+
+\[
+\Lambda_k \mid \cdots \sim
+N\!\left(
+  C_{X\tilde{Y}k}
+  \big(C_{\tilde{Y}\tilde{Y}k} + \alpha_2 I\big)^{-1},
+  \;
+  \big(C_{\tilde{Y}\tilde{Y}k} + \alpha_2 I\big)^{-1}
+  \otimes \Psi_k
+\right).
+\]
+
+Isotropic and shared-\(\Psi\) cases replace matrix Gamma draws by scalar or
+diagonal Gamma draws with the shape and rate formulas in Appendix A.2; the
+stay-step sampler in `calculate_post_lambda_psi()` implements these forms.
+
 ## RJMCMC moves
 
 RJMCMC is used because the number of parameters changes when the number of
@@ -277,9 +448,43 @@ for dimension-changing moves such as split/combine. Birth/death and
 split/combine change \(m\); covariance moves change the constraint label
 \(v \in \{\mathrm{CCC}, \ldots, \mathrm{UUU}\}\).
 
-## Interface mapping
+### Birth and death
 
-The formula terms map to package output fields as follows:
+Birth adds an empty cluster with weight \(\tau_{m+1} \sim \mathrm{Beta}(1, m)\)
+and rescales existing weights by \(1 - \tau_{m+1}\). Death removes one empty
+cluster and reverses the weight transformation. The acceptance ratio includes
+the Jacobian exponent \(m\) for birth and \(m-1\) for death, as in Green (1995).
+
+### Split and combine
+
+Split proposes two new clusters from one occupied component. Let \(\tau_{j^*}\)
+and \(\mu_{j^*}\) denote the merged weight and mean. With
+\(\tau_{j_1} = w \tau_{j^*}\), \(\tau_{j_2} = (1-w)\tau_{j^*}\),
+\(w \sim \mathrm{Beta}(2,2)\), and per-coordinate signs
+\(s_i \in \{-1,+1\}\),
+
+\[
+\mu_{j_1,i} = \mu_{j^*,i}
+  + s_i a_{2i} \Sigma_{j^*,i} \sqrt{\tau_{j_2}/\tau_{j_1}},
+\qquad
+\mu_{j_2,i} = \mu_{j^*,i}
+  - s_i a_{2i} \Sigma_{j^*,i} \sqrt{\tau_{j_1}/\tau_{j_2}},
+\]
+
+with \(a_{2i} \sim \mathrm{Gamma}(1,2)\). The \(p\) independent signs contribute
+a factor \(2^{-p}\) to the split proposal density. Combine merges two occupied
+components, runs intermediate Gibbs sweeps, and uses the reverse proposal in
+the acceptance ratio.
+
+### Covariance-structure moves
+
+The `v_step` toggles one letter in the covariance label at a time. Extension
+proposes new loadings and noise matrices under the less constrained model;
+contraction proposes under the more constrained model. When the proposal
+distribution is symmetric in the auxiliary variables, the acceptance ratio
+reduces to a ratio of posterior ordinals, as noted in Section 4.4 of the paper.
+
+## Interface mapping
 
 | Paper notation | Package argument or output |
 |---|---|
