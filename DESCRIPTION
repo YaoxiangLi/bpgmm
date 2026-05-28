@@ -17,13 +17,13 @@ Imports:
     fabMix (>= 5.0),
     mclust (>= 5.4.3)
 Authors@R: c(
-    person(given = "Yaoxiang", family = "Li",  role = c("aut","cre"),email = "yl814@georgetown.edu"),
+    person(given = "Yaoxiang", family = "Li",  role = c("aut","cre"),email = "liyaoxiang@outlook.com"),
     person(given = "Xiang",  family = "Lu",    role = "aut"),
     person(given = "Tanzy",  family = "Love",  role = "aut"))
 Author: Yaoxiang Li [aut, cre],
     Xiang Lu [aut],
     Tanzy Love [aut]
-Maintainer: Yaoxiang Li <yl814@georgetown.edu>
+Maintainer: Yaoxiang Li <liyaoxiang@outlook.com>
 Description: Model-based clustering using Bayesian parsimonious Gaussian mixture models.
   MCMC (Markov chain Monte Carlo) are used for parameter estimation. The RJMCMC (Reversible-jump Markov chain Monte Carlo) is used for model selection. 
   GREEN et al. (1995) <doi:10.1093/biomet/82.4.711>.
