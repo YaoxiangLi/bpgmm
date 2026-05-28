@@ -28,7 +28,7 @@ differences, and variable six is weak noise.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 simulate_screening_data <- function(n_per_cluster = 18, p = 6) {
   means <- rbind(
@@ -105,7 +105,7 @@ tail(fit_log, 1)
 
 fit_summary <- summarize_pgmm_rjmcmc(fit, true_cluster = true_cluster)
 fit_summary$ari
-#> [1] 0.5278689
+#> [1] 0.5395626
 ```
 
 ## Rank variables by posterior allocation separation
@@ -144,11 +144,11 @@ separation_table <- data.frame(
 separation_table[order(separation_table$separation, decreasing = TRUE), ]
 #>     variable separation
 #> 2 variable_2      0.810
-#> 3 variable_3      0.704
-#> 6 variable_6      0.182
-#> 4 variable_4      0.114
+#> 3 variable_3      0.708
+#> 4 variable_4      0.166
+#> 6 variable_6      0.163
 #> 5 variable_5      0.036
-#> 1 variable_1      0.002
+#> 1 variable_1      0.026
 ```
 
 ``` r
@@ -227,12 +227,12 @@ loading_table <- data.frame(
 )
 loading_table[order(loading_table$mean_abs_loading, decreasing = TRUE), ]
 #>     variable mean_abs_loading
-#> 1 variable_1            1.143
-#> 5 variable_5            0.425
-#> 3 variable_3            0.415
-#> 2 variable_2            0.287
-#> 4 variable_4            0.267
-#> 6 variable_6            0.247
+#> 1 variable_1            0.799
+#> 3 variable_3            0.461
+#> 4 variable_4            0.395
+#> 5 variable_5            0.373
+#> 6 variable_6            0.276
+#> 2 variable_2            0.207
 ```
 
 ``` r

@@ -15,7 +15,7 @@ dimensions.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 

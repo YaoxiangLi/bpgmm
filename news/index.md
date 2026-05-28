@@ -1,6 +1,22 @@
 # Changelog
 
+## bpgmm 1.3.2
+
+- Fixed the `beta` hyperparameter Gibbs update so the Gamma rate uses
+  the rate hyperprior `s_vec[3]` (`s_beta`) instead of the shape
+  hyperprior `d_vec[3]`, matching the conditional posterior in Lu, Li,
+  and Love (2021, Appendix A.1.3). Results are unchanged under the
+  default symmetric hyperpriors `d_vec = s_vec = c(1, 1, 1)` but are
+  corrected for user-supplied asymmetric `beta` hyperpriors.
+- Fixed the native latent-score update so unallocated observations draw
+  from `N(0, I_q)` as specified in the paper’s conditional for the
+  scores, rather than from the component score covariance. These scores
+  are not used in any downstream sufficient statistic, so posterior
+  results are unaffected.
+
 ## bpgmm 1.3.1
+
+CRAN release: 2026-05-28
 
 - Revised the vignette set to reduce repeated examples across vignettes.
 - Made the model-and-sampler, data-preparation, model-selection,

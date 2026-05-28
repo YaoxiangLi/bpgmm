@@ -27,7 +27,7 @@ y_i \sim N_2(0, I_2),
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.1 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.2 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 simulate_mfa_data <- function(n_per_cluster = 20, p = 6, q = 2) {
   means <- rbind(
@@ -167,8 +167,8 @@ fit_summary$n_clusters
 #> 6
 fit_summary$n_constraints
 #> 
-#> UCC UCU UUU 
-#>   1   1   4
+#> UCU UUU 
+#>   5   1
 fit_summary$ari
 #> [1] 0.9495627
 ```
