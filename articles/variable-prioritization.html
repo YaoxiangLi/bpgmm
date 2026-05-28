@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -89,6 +89,20 @@ observed variables help explain the fitted clustering.</p>
 <p>These summaries are diagnostic and exploratory. Treat them as
 variable prioritization, not as formal posterior variable inclusion
 probabilities.</p>
+<p>For cluster
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+the loading matrix
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><mo>∈</mo><msup><mi>ℝ</mi><mrow><mi>p</mi><mo>×</mo><msub><mi>q</mi><mi>k</mi></msub></mrow></msup></mrow><annotation encoding="application/x-tex">\Lambda_k \in \mathbb{R}^{p \times q_k}</annotation></semantics></math>
+enters the covariance through
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mi>⊤</mi></msubsup></mrow><annotation encoding="application/x-tex">\Lambda_k \Lambda_k^\top</annotation></semantics></math>.
+A simple exploratory summary is the posterior mean absolute loading</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>λ</mi><mo accent="true">‾</mo></mover><mrow><mi>j</mi><mo>⋅</mo><mi>k</mi></mrow></msub><mo>=</mo><mfrac><mn>1</mn><mrow><msub><mi>q</mi><mi>k</mi></msub><mi>S</mi></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>s</mi><mo>=</mo><mn>1</mn></mrow><mi>S</mi></munderover><munderover><mo>∑</mo><mrow><mi>ℓ</mi><mo>=</mo><mn>1</mn></mrow><msub><mi>q</mi><mi>k</mi></msub></munderover><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">|</mo><msubsup><mi>λ</mi><mrow><mi>j</mi><mi>ℓ</mi><mi>k</mi></mrow><mrow><mo stretchy="false" form="prefix">(</mo><mi>s</mi><mo stretchy="false" form="postfix">)</mo></mrow></msubsup><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">|</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\bar{\lambda}_{j\cdot k} =
+\frac{1}{q_k S}\sum_{s=1}^{S}\sum_{\ell=1}^{q_k}
+\big|\lambda_{j\ell k}^{(s)}\big|,
+</annotation></semantics></math></p>
+<p>which ranks variables by average factor loading magnitude in cluster
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>.</p>
 <div class="section level2">
 <h2 id="simulate-data-with-informative-and-weak-variables">Simulate data with informative and weak variables<a class="anchor" aria-label="anchor" href="#simulate-data-with-informative-and-weak-variables"></a>
 </h2>
@@ -101,7 +115,7 @@ variables four and five have mostly covariance differences, and variable
 six is weak noise.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.3.4 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="va">simulate_screening_data</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">n_per_cluster</span> <span class="op">=</span> <span class="fl">18</span>, <span class="va">p</span> <span class="op">=</span> <span class="fl">6</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">means</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span></span>
@@ -289,12 +303,12 @@ not a posterior inclusion probability.</p>
 <span><span class="op">)</span></span>
 <span><span class="va">loading_table</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">loading_table</span><span class="op">$</span><span class="va">mean_abs_loading</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>, <span class="op">]</span></span>
 <span><span class="co">#&gt;     variable mean_abs_loading</span></span>
-<span><span class="co">#&gt; 5 variable_5            0.465</span></span>
-<span><span class="co">#&gt; 4 variable_4            0.399</span></span>
-<span><span class="co">#&gt; 6 variable_6            0.397</span></span>
-<span><span class="co">#&gt; 3 variable_3            0.211</span></span>
-<span><span class="co">#&gt; 2 variable_2            0.082</span></span>
-<span><span class="co">#&gt; 1 variable_1            0.071</span></span></code></pre></div>
+<span><span class="co">#&gt; 5 variable_5            0.413</span></span>
+<span><span class="co">#&gt; 4 variable_4            0.346</span></span>
+<span><span class="co">#&gt; 6 variable_6            0.330</span></span>
+<span><span class="co">#&gt; 3 variable_3            0.194</span></span>
+<span><span class="co">#&gt; 1 variable_1            0.071</span></span>
+<span><span class="co">#&gt; 2 variable_2            0.070</span></span></code></pre></div>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ordered_loading</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/order.html" class="external-link">order</a></span><span class="op">(</span><span class="va">loading_score</span>, decreasing <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html" class="external-link">barplot</a></span><span class="op">(</span></span>

@@ -17,6 +17,20 @@ These summaries are diagnostic and exploratory. Treat them as variable
 prioritization, not as formal posterior variable inclusion
 probabilities.
 
+For cluster $`k`$, the loading matrix
+$`\Lambda_k \in \mathbb{R}^{p \times q_k}`$ enters the covariance
+through $`\Lambda_k \Lambda_k^\top`$. A simple exploratory summary is
+the posterior mean absolute loading
+
+``` math
+\bar{\lambda}_{j\cdot k} =
+\frac{1}{q_k S}\sum_{s=1}^{S}\sum_{\ell=1}^{q_k}
+\big|\lambda_{j\ell k}^{(s)}\big|,
+```
+
+which ranks variables by average factor loading magnitude in cluster
+$`k`$.
+
 ## Simulate data with informative and weak variables
 
 The simulation differs from the model-selection example. The aim is not
@@ -28,7 +42,7 @@ differences, and variable six is weak noise.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.4 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 simulate_screening_data <- function(n_per_cluster = 18, p = 6) {
   means <- rbind(
@@ -227,12 +241,12 @@ loading_table <- data.frame(
 )
 loading_table[order(loading_table$mean_abs_loading, decreasing = TRUE), ]
 #>     variable mean_abs_loading
-#> 5 variable_5            0.465
-#> 4 variable_4            0.399
-#> 6 variable_6            0.397
-#> 3 variable_3            0.211
-#> 2 variable_2            0.082
+#> 5 variable_5            0.413
+#> 4 variable_4            0.346
+#> 6 variable_6            0.330
+#> 3 variable_3            0.194
 #> 1 variable_1            0.071
+#> 2 variable_2            0.070
 ```
 
 ``` r

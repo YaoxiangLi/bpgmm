@@ -26,7 +26,7 @@ applied analyses should use larger `burn` and `niter` values.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.4 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -94,6 +94,11 @@ fast. The important arguments are:
 - `m_step = 1` allows RJMCMC updates for the number of clusters.
 - `v_step = 1` allows RJMCMC updates across covariance-constraint
   models.
+
+The model-and-sampler vignette records the corrected Gibbs and RJMCMC
+formulas from Lu, Li, and Love (2021), including the eight PGMM
+covariance structures, hyperparameter updates, and the split/combine
+move with per-coordinate signs.
 
 ## Summarize posterior samples
 

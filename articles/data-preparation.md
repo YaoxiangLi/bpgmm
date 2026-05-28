@@ -29,7 +29,7 @@ $`x_i`$.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.4 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 iris_numeric <- as.matrix(iris[, 1:4])
 iris_labels <- as.integer(iris$Species)
@@ -100,6 +100,19 @@ round(apply(X_scaled, 1, sd), 6)
 The package does not scale internally because some scientific
 applications need the original measurement scale. Scaling should be an
 explicit analysis choice.
+
+[`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md)
+also centers the data internally before sampling. On the centered scale
+the cluster-mean prior mean is $`\bar{x} = 0`$, consistent with the
+augmented loading posterior in Supplement A.1. Sampled means in the
+output are returned on the original scale.
+
+## Hyperprior defaults
+
+The default symmetric hyperpriors are `d_vec = s_vec = c(1, 1, 1)` with
+`delta = 3` and `ggamma = 1`. These control the gamma hyperpriors on
+$`\alpha_1`$, $`\alpha_2`$, and $`\beta`$ described in the
+model-and-sampler vignette.
 
 ## Choose `q_new`
 

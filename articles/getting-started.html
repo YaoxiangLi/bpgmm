@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,7 +131,7 @@ applied analyses should use larger <code>burn</code> and
 <code>niter</code> values.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.3.4 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">2026</span><span class="op">)</span></span>
 <span></span>
@@ -200,6 +200,10 @@ clusters.</li>
 <code>v_step = 1</code> allows RJMCMC updates across
 covariance-constraint models.</li>
 </ul>
+<p>The model-and-sampler vignette records the corrected Gibbs and RJMCMC
+formulas from Lu, Li, and Love (2021), including the eight PGMM
+covariance structures, hyperparameter updates, and the split/combine
+move with per-coordinate signs.</p>
 </div>
 <div class="section level2">
 <h2 id="summarize-posterior-samples">Summarize posterior samples<a class="anchor" aria-label="anchor" href="#summarize-posterior-samples"></a>

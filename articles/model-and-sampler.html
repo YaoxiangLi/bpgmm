@@ -22,7 +22,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">bpgmm</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.3.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -243,7 +243,7 @@ for unconstrained.</p>
 <p>The eight PGMM models are:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/YaoxiangLi/bpgmm" class="external-link">bpgmm</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
+<span><span class="co">#&gt; bpgmm 1.3.4 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").</span></span>
 <span></span>
 <span><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"CCC"</span>, <span class="st">"CCU"</span>, <span class="st">"CUC"</span>, <span class="st">"CUU"</span>, <span class="st">"UCC"</span>, <span class="st">"UCU"</span>, <span class="st">"UUC"</span>, <span class="st">"UUU"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span></span>
@@ -342,6 +342,278 @@ p(Z \mid \tau) = \prod_{i = 1}^{n} \tau_{z_i}.
 </annotation></semantics></math></p>
 </div>
 <div class="section level2">
+<h2 id="augmented-representation-and-sufficient-statistics">Augmented representation and sufficient statistics<a class="anchor" aria-label="anchor" href="#augmented-representation-and-sufficient-statistics"></a>
+</h2>
+<p>The sampler augments each observation with latent factors and uses
+the stacked notation from the supplement. For cluster
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+define</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mover><mi>y</mi><mo accent="true">̃</mo></mover><mrow><mi>k</mi><mi>i</mi></mrow></msub><mo>=</mo><mrow><mo stretchy="true" form="prefix">(</mo><mtable><mtr><mtd columnalign="center" style="text-align: center"><mn>1</mn></mtd></mtr><mtr><mtd columnalign="center" style="text-align: center"><msub><mi>y</mi><mrow><mi>k</mi><mi>i</mi></mrow></msub></mtd></mtr></mtable><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo><mspace width="2.0em"></mspace><msub><mover><mi mathvariant="normal">Λ</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>μ</mi><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>A</mi><mi>k</mi></msub><mo>=</mo><mrow><mi mathvariant="normal">d</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">g</mi></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>α</mi><mn>1</mn></msub><mo>,</mo><msub><mi>α</mi><mn>2</mn></msub><msub><mi>I</mi><msub><mi>q</mi><mi>k</mi></msub></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\tilde{y}_{ki} =
+\begin{pmatrix} 1 \\ y_{ki} \end{pmatrix},
+\qquad
+\tilde{\Lambda}_k = (\mu_k, \Lambda_k),
+\qquad
+A_k = \mathrm{diag}(\alpha_1, \alpha_2 I_{q_k}).
+</annotation></semantics></math></p>
+<p>Then the cluster likelihood can be written as</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>x</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo>,</mo><msub><mover><mi mathvariant="normal">Λ</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><mo>,</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo>∼</mo><msub><mi>N</mi><mi>p</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mover><mi mathvariant="normal">Λ</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><msub><mover><mi>y</mi><mo accent="true">̃</mo></mover><mrow><mi>k</mi><mi>i</mi></mrow></msub><mo>,</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+x_i \mid z_i = k, \tilde{\Lambda}_k, \Psi_k
+  \sim N_p(\tilde{\Lambda}_k \tilde{y}_{ki}, \Psi_k).
+</annotation></semantics></math></p>
+<p>For allocated observations in cluster
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>k</mi><annotation encoding="application/x-tex">k</annotation></semantics></math>,
+the package accumulates</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi>X</mi><mi>X</mi><mi>k</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi></mrow></munder><msub><mi>x</mi><mi>i</mi></msub><msubsup><mi>x</mi><mi>i</mi><mo>′</mo></msubsup><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>C</mi><mrow><mi>X</mi><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi></mrow></munder><msub><mi>x</mi><mi>i</mi></msub><msubsup><mover><mi>y</mi><mo accent="true">̃</mo></mover><mrow><mi>k</mi><mi>i</mi></mrow><mo>′</mo></msubsup><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi></mrow></munder><msub><mover><mi>y</mi><mo accent="true">̃</mo></mover><mrow><mi>k</mi><mi>i</mi></mrow></msub><msubsup><mover><mi>y</mi><mo accent="true">̃</mo></mover><mrow><mi>k</mi><mi>i</mi></mrow><mo>′</mo></msubsup><mo>,</mo></mrow><annotation encoding="application/x-tex">
+C_{XXk} = \sum_{i: z_i = k} x_i x_i',
+\quad
+C_{X\tilde{Y}k} = \sum_{i: z_i = k} x_i \tilde{y}_{ki}',
+\quad
+C_{\tilde{Y}\tilde{Y}k} = \sum_{i: z_i = k} \tilde{y}_{ki} \tilde{y}_{ki}',
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mi>X</mi><mi>Y</mi><mi>k</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi></mrow></munder><msub><mi>x</mi><mi>i</mi></msub><msubsup><mi>y</mi><mrow><mi>k</mi><mi>i</mi></mrow><mo>′</mo></msubsup><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>C</mi><mrow><mi>Y</mi><mi>Y</mi><mi>k</mi></mrow></msub><mo>=</mo><munder><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi></mrow></munder><msub><mi>y</mi><mrow><mi>k</mi><mi>i</mi></mrow></msub><msubsup><mi>y</mi><mrow><mi>k</mi><mi>i</mi></mrow><mo>′</mo></msubsup><mo>,</mo><mspace width="1.0em"></mspace><msub><mi>n</mi><mi>k</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>n</mi></munderover><mn>𝟏</mn><mo stretchy="false" form="prefix">(</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+C_{XYk} = \sum_{i: z_i = k} x_i y_{ki}',
+\quad
+C_{YYk} = \sum_{i: z_i = k} y_{ki} y_{ki}',
+\quad
+n_k = \sum_{i=1}^n \mathbf{1}(z_i = k).
+</annotation></semantics></math></p>
+<p>Completing the square gives the quadratic form used in every
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Psi_k</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Lambda_k</annotation></semantics></math>
+update:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><munder><mo>∑</mo><mrow><mi>i</mi><mo>:</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi></mrow></munder><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi mathvariant="normal">Λ</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><msub><mover><mi>y</mi><mo accent="true">̃</mo></mover><mrow><mi>k</mi><mi>i</mi></mrow></msub><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><msub><mover><mi mathvariant="normal">Λ</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><msub><mover><mi>y</mi><mo accent="true">̃</mo></mover><mrow><mi>k</mi><mi>i</mi></mrow></msub><msup><mo stretchy="false" form="postfix">)</mo><mo>′</mo></msup><mo>=</mo><msub><mi>C</mi><mrow><mi>X</mi><mi>X</mi><mi>k</mi></mrow></msub><mo>−</mo><mn>2</mn><msub><mi>C</mi><mrow><mi>X</mi><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><msubsup><mover><mi mathvariant="normal">Λ</mi><mo accent="true">̃</mo></mover><mi>k</mi><mo>′</mo></msubsup><mo>+</mo><msub><mover><mi mathvariant="normal">Λ</mi><mo accent="true">̃</mo></mover><mi>k</mi></msub><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><msubsup><mover><mi mathvariant="normal">Λ</mi><mo accent="true">̃</mo></mover><mi>k</mi><mo>′</mo></msubsup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\sum_{i: z_i = k}
+(x_i - \tilde{\Lambda}_k \tilde{y}_{ki})(x_i - \tilde{\Lambda}_k \tilde{y}_{ki})'
+=
+C_{XXk} - 2 C_{X\tilde{Y}k} \tilde{\Lambda}_k'
+  + \tilde{\Lambda}_k C_{\tilde{Y}\tilde{Y}k} \tilde{\Lambda}_k'.
+</annotation></semantics></math></p>
+</div>
+<div class="section level2">
+<h2 id="latent-scores-means-and-mixture-weights">Latent scores, means, and mixture weights<a class="anchor" aria-label="anchor" href="#latent-scores-means-and-mixture-weights"></a>
+</h2>
+<p>Given allocations, the supplement gives the following Gibbs
+updates.</p>
+<p>Latent scores for allocated observations:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mrow><mi>k</mi><mi>i</mi></mrow></msub><mo>∣</mo><msub><mi>x</mi><mi>i</mi></msub><mo>,</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mi>k</mi><mo>,</mo><mi mathvariant="normal">Θ</mi><mo>∼</mo><msub><mi>N</mi><msub><mi>q</mi><mi>k</mi></msub></msub><mspace width="-0.167em"></mspace><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msub><mi>D</mi><mi>k</mi></msub><mo stretchy="false" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><msub><mi>μ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>,</mo><msub><mi mathvariant="normal">Σ</mi><mi>k</mi></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>D</mi><mi>k</mi></msub><mo>=</mo><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mo>′</mo></msubsup><msubsup><mi mathvariant="normal">Ψ</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo>,</mo><mspace width="2.0em"></mspace><msub><mi mathvariant="normal">Σ</mi><mi>k</mi></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mo>′</mo></msubsup><msubsup><mi mathvariant="normal">Ψ</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><mo>+</mo><msub><mi>I</mi><msub><mi>q</mi><mi>k</mi></msub></msub><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mi>.</mi></mrow><annotation encoding="application/x-tex">
+y_{ki} \mid x_i, z_i = k, \Theta
+  \sim N_{q_k}\!\big(D_k (x_i - \mu_k), \Sigma_k\big),
+\qquad
+D_k = \Lambda_k' \Psi_k^{-1},
+\qquad
+\Sigma_k = (\Lambda_k' \Psi_k^{-1} \Lambda_k + I_{q_k})^{-1}.
+</annotation></semantics></math></p>
+<p>Unallocated observations draw from the prior:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>y</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>z</mi><mi>i</mi></msub><mo>=</mo><mn>0</mn><mo>∼</mo><mi>N</mi><mo stretchy="false" form="prefix">(</mo><mn>0</mn><mo>,</mo><msub><mi>I</mi><msub><mi>q</mi><mrow><mi mathvariant="normal">n</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">w</mi></mrow></msub></msub><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+y_i \mid z_i = 0 \sim N(0, I_{q_{\mathrm{new}}}).
+</annotation></semantics></math></p>
+<p>Cluster means:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mi>k</mi></msub><mo>∣</mo><mi>⋯</mi><mo>∼</mo><msub><mi>N</mi><mi>p</mi></msub><mspace width="-0.167em"></mspace><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><mover><mi>x</mi><mo accent="true">‾</mo></mover><mo>,</mo><msubsup><mi>α</mi><mn>1</mn><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mu_k \mid \cdots \sim N_p\!\big(\bar{x}, \alpha_1^{-1} \Psi_k\big),
+</annotation></semantics></math></p>
+<p>where
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mover><mi>x</mi><mo accent="true">‾</mo></mover><annotation encoding="application/x-tex">\bar{x}</annotation></semantics></math>
+is the prior mean on the working scale. <code><a href="../reference/pgmm_rjmcmc.html">pgmm_rjmcmc()</a></code>
+centers
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>X</mi><annotation encoding="application/x-tex">X</annotation></semantics></math>
+internally so
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mover><mi>x</mi><mo accent="true">‾</mo></mover><mo>=</mo><mn>0</mn></mrow><annotation encoding="application/x-tex">\bar{x} = 0</annotation></semantics></math>
+on the centered scale, matching the augmented loading posterior in
+Supplement A.1; sampled means are returned on the original data
+scale.</p>
+<p>Mixture weights:</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>τ</mi><mo>∣</mo><mi>Z</mi><mo>∼</mo><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">r</mi><mi mathvariant="normal">i</mi><mi mathvariant="normal">c</mi><mi mathvariant="normal">h</mi><mi mathvariant="normal">l</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi></mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>n</mi><mn>1</mn></msub><mo>+</mo><mi>γ</mi><mo>,</mo><mi>…</mi><mo>,</mo><msub><mi>n</mi><mi>m</mi></msub><mo>+</mo><mi>γ</mi><mo stretchy="false" form="postfix">)</mo><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\tau \mid Z \sim \mathrm{Dirichlet}(n_1 + \gamma, \ldots, n_m + \gamma).
+</annotation></semantics></math></p>
+</div>
+<div class="section level2">
+<h2 id="hyperparameter-updates">Hyperparameter updates<a class="anchor" aria-label="anchor" href="#hyperparameter-updates"></a>
+</h2>
+<p>The package samples
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>α</mi><mn>1</mn></msub><mo>,</mo><msub><mi>α</mi><mn>2</mn></msub><mo>,</mo><mi>β</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(\alpha_1, \alpha_2, \beta)</annotation></semantics></math>
+with gamma hyperpriors controlled by <code>d_vec</code> and
+<code>s_vec</code>. With total latent dimension
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>q</mi><mo>=</mo><msubsup><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mi>m</mi></msubsup><msub><mi>q</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">q = \sum_{k=1}^m q_k</annotation></semantics></math>,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>1</mn></msub><mo>∣</mo><mi>⋯</mi><mo>∼</mo><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><mrow><mi>m</mi><mi>p</mi></mrow><mn>2</mn></mfrac></mstyle><mo>+</mo><msub><mi>d</mi><msub><mi>α</mi><mn>1</mn></msub></msub><mo>,</mo><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><munder><mo>∑</mo><mi>k</mi></munder><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mo>′</mo></msubsup><msubsup><mi mathvariant="normal">Ψ</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>s</mi><msub><mi>α</mi><mn>1</mn></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\alpha_1 \mid \cdots \sim
+\mathrm{Gamma}\!\left(
+  \tfrac{mp}{2} + d_{\alpha_1},
+  \tfrac{1}{2}\sum_k \mathrm{tr}(\Lambda_k' \Psi_k^{-1} \Lambda_k) + s_{\alpha_1}
+\right),
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mn>2</mn></msub><mo>∣</mo><mi>⋯</mi><mo>∼</mo><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mstyle displaystyle="false"><mfrac><mrow><mi>q</mi><mi>p</mi></mrow><mn>2</mn></mfrac></mstyle><mo>+</mo><msub><mi>d</mi><msub><mi>α</mi><mn>2</mn></msub></msub><mo>,</mo><mstyle displaystyle="false"><mfrac><mn>1</mn><mn>2</mn></mfrac></mstyle><munder><mo>∑</mo><mi>k</mi></munder><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi mathvariant="normal">Λ</mi><mi>k</mi><mo>′</mo></msubsup><msubsup><mi mathvariant="normal">Ψ</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>s</mi><msub><mi>α</mi><mn>2</mn></msub></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\alpha_2 \mid \cdots \sim
+\mathrm{Gamma}\!\left(
+  \tfrac{qp}{2} + d_{\alpha_2},
+  \tfrac{1}{2}\sum_k \mathrm{tr}(\Lambda_k' \Psi_k^{-1} \Lambda_k) + s_{\alpha_2}
+\right),
+</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mo>∣</mo><mi>⋯</mi><mo>∼</mo><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi></mrow><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mi>m</mi><mi>p</mi><mi>δ</mi><mo>+</mo><msub><mi>d</mi><mi>β</mi></msub><mo>,</mo><munder><mo>∑</mo><mi>k</mi></munder><mrow><mi mathvariant="normal">t</mi><mi mathvariant="normal">r</mi></mrow><mo stretchy="false" form="prefix">(</mo><msubsup><mi mathvariant="normal">Ψ</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><mo stretchy="false" form="postfix">)</mo><mo>+</mo><msub><mi>s</mi><mi>β</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\beta \mid \cdots \sim
+\mathrm{Gamma}\!\left(
+  mp\delta + d_\beta,
+  \sum_k \mathrm{tr}(\Psi_k^{-1}) + s_\beta
+\right).
+</annotation></semantics></math></p>
+</div>
+<div class="section level2">
+<h2 id="pgmm-conditional-posteriors-corrected-forms">PGMM conditional posteriors (corrected forms)<a class="anchor" aria-label="anchor" href="#pgmm-conditional-posteriors-corrected-forms"></a>
+</h2>
+<p>The eight covariance labels differ in whether
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Lambda_k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Psi_k</annotation></semantics></math>,
+and the diagonal of
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Psi_k</annotation></semantics></math>
+are shared across clusters. The table below records the prior scaling
+that enters the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="normal">Ψ</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><annotation encoding="application/x-tex">\Psi_k^{-1}</annotation></semantics></math>
+rate after completing the square. All models use the
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>−</mi><mn>2</mn></mrow><annotation encoding="application/x-tex">-2</annotation></semantics></math>
+cross term and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>+</mi><mn>1</mn></mrow><annotation encoding="application/x-tex">+1</annotation></semantics></math>
+quadratic term on
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false" form="prefix">(</mo><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><mtext mathvariant="normal">prior adjustment</mtext><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">(C_{\tilde{Y}\tilde{Y}k} + \text{prior adjustment})</annotation></semantics></math>;
+model 7 (UUC) is implemented with this corrected form rather than the
+misprinted coefficients in Appendix A.2.</p>
+<table class="table">
+<colgroup>
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+<col width="20%">
+</colgroup>
+<thead><tr class="header">
+<th>Model</th>
+<th>Shared
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>?</th>
+<th>Shared
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Ψ</mi><annotation encoding="application/x-tex">\Psi</annotation></semantics></math>?</th>
+<th>Isotropic
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><annotation encoding="application/x-tex">\Psi_k</annotation></semantics></math>?</th>
+<th>Prior adjustment in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msubsup><mi mathvariant="normal">Ψ</mi><mi>k</mi><mrow><mi>−</mi><mn>1</mn></mrow></msubsup><annotation encoding="application/x-tex">\Psi_k^{-1}</annotation></semantics></math>
+rate</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td>CCC</td>
+<td>yes</td>
+<td>yes</td>
+<td>yes</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>A</mi><mi>k</mi></msub><mi>/</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">C_{\tilde{Y}\tilde{Y}k} + A_k/m</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\beta/(mp)</annotation></semantics></math>
+</td>
+</tr>
+<tr class="even">
+<td>CCU</td>
+<td>yes</td>
+<td>yes</td>
+<td>no</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>A</mi><mi>k</mi></msub><mi>/</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">C_{\tilde{Y}\tilde{Y}k} + A_k/m</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mi>/</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">\beta/m</annotation></semantics></math>
+</td>
+</tr>
+<tr class="odd">
+<td>CUC</td>
+<td>yes</td>
+<td>no</td>
+<td>yes</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>A</mi><mi>k</mi></msub><mi>/</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">C_{\tilde{Y}\tilde{Y}k} + A_k/m</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mi>/</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">\beta/p</annotation></semantics></math>
+</td>
+</tr>
+<tr class="even">
+<td>CUU</td>
+<td>yes</td>
+<td>no</td>
+<td>no</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>A</mi><mi>k</mi></msub><mi>/</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">C_{\tilde{Y}\tilde{Y}k} + A_k/m</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
+</td>
+</tr>
+<tr class="odd">
+<td>UCC</td>
+<td>no</td>
+<td>yes</td>
+<td>yes</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>A</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">C_{\tilde{Y}\tilde{Y}k} + A_k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mi>/</mi><mo stretchy="false" form="prefix">(</mo><mi>m</mi><mi>p</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\beta/(mp)</annotation></semantics></math>
+</td>
+</tr>
+<tr class="even">
+<td>UCU</td>
+<td>no</td>
+<td>yes</td>
+<td>no</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>A</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">C_{\tilde{Y}\tilde{Y}k} + A_k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mi>/</mi><mi>m</mi></mrow><annotation encoding="application/x-tex">\beta/m</annotation></semantics></math>
+</td>
+</tr>
+<tr class="odd">
+<td>UUC</td>
+<td>no</td>
+<td>no</td>
+<td>yes</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>A</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">C_{\tilde{Y}\tilde{Y}k} + A_k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mi>/</mi><mi>p</mi></mrow><annotation encoding="application/x-tex">\beta/p</annotation></semantics></math>
+</td>
+</tr>
+<tr class="even">
+<td>UUU</td>
+<td>no</td>
+<td>no</td>
+<td>no</td>
+<td>
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>A</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">C_{\tilde{Y}\tilde{Y}k} + A_k</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>β</mi><annotation encoding="application/x-tex">\beta</annotation></semantics></math>
+</td>
+</tr>
+</tbody>
+</table>
+<p>For shared
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>,
+the loading update pools information across clusters, for example in
+model 1 (CCC):</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Λ</mi><mo>∣</mo><mi>⋯</mi><mo>∼</mo><mi>N</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>C</mi><mrow><mi>X</mi><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><mstyle displaystyle="false"><mfrac><msub><mi>α</mi><mn>2</mn></msub><mi>m</mi></mfrac></mstyle><mi>I</mi><msup><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>,</mo><mspace width="0.278em"></mspace><mspace width="0.278em"></mspace><mo minsize="180%" maxsize="180%" stretchy="true" form="prefix">(</mo><munder><mo>∑</mo><mi>k</mi></munder><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><mstyle displaystyle="false"><mfrac><msub><mi>α</mi><mn>2</mn></msub><mi>m</mi></mfrac></mstyle><mi>I</mi><msup><mo minsize="180%" maxsize="180%" stretchy="true" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>⊗</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\Lambda \mid \cdots \sim
+N\!\left(
+  \Big(\sum_k C_{X\tilde{Y}k}\Big)
+  \Big(\sum_k C_{\tilde{Y}\tilde{Y}k} + \tfrac{\alpha_2}{m} I\Big)^{-1},
+  \;\;
+  \Big(\sum_k C_{\tilde{Y}\tilde{Y}k} + \tfrac{\alpha_2}{m} I\Big)^{-1}
+  \otimes \Psi_k
+\right),
+</annotation></semantics></math></p>
+<p>with the same
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Λ</mi><annotation encoding="application/x-tex">\Lambda</annotation></semantics></math>
+copied to every cluster. For cluster-specific loadings (models 5–8),</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="normal">Λ</mi><mi>k</mi></msub><mo>∣</mo><mi>⋯</mi><mo>∼</mo><mi>N</mi><mspace width="-0.167em"></mspace><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>C</mi><mrow><mi>X</mi><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>α</mi><mn>2</mn></msub><mi>I</mi><msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>,</mo><mspace width="0.278em"></mspace><mo minsize="120%" maxsize="120%" stretchy="true" form="prefix">(</mo><msub><mi>C</mi><mrow><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mover><mi>Y</mi><mo accent="true">̃</mo></mover><mi>k</mi></mrow></msub><mo>+</mo><msub><mi>α</mi><mn>2</mn></msub><mi>I</mi><msup><mo minsize="120%" maxsize="120%" stretchy="true" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><mo>⊗</mo><msub><mi mathvariant="normal">Ψ</mi><mi>k</mi></msub><mo stretchy="true" form="postfix">)</mo></mrow><mi>.</mi></mrow><annotation encoding="application/x-tex">
+\Lambda_k \mid \cdots \sim
+N\!\left(
+  C_{X\tilde{Y}k}
+  \big(C_{\tilde{Y}\tilde{Y}k} + \alpha_2 I\big)^{-1},
+  \;
+  \big(C_{\tilde{Y}\tilde{Y}k} + \alpha_2 I\big)^{-1}
+  \otimes \Psi_k
+\right).
+</annotation></semantics></math></p>
+<p>Isotropic and
+shared-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi mathvariant="normal">Ψ</mi><annotation encoding="application/x-tex">\Psi</annotation></semantics></math>
+cases replace matrix Gamma draws by scalar or diagonal Gamma draws with
+the shape and rate formulas in Appendix A.2; the stay-step sampler in
+<code>calculate_post_lambda_psi()</code> implements these forms.</p>
+</div>
+<div class="section level2">
 <h2 id="rjmcmc-moves">RJMCMC moves<a class="anchor" aria-label="anchor" href="#rjmcmc-moves"></a>
 </h2>
 <p>RJMCMC is used because the number of parameters changes when the
@@ -426,11 +698,64 @@ Birth/death and split/combine change
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>;
 covariance moves change the constraint label
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mrow><mi mathvariant="normal">C</mi><mi mathvariant="normal">C</mi><mi mathvariant="normal">C</mi></mrow><mo>,</mo><mi>…</mi><mo>,</mo><mrow><mi mathvariant="normal">U</mi><mi mathvariant="normal">U</mi><mi mathvariant="normal">U</mi></mrow><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">v \in \{\mathrm{CCC}, \ldots, \mathrm{UUU}\}</annotation></semantics></math>.</p>
+<div class="section level3">
+<h3 id="birth-and-death">Birth and death<a class="anchor" aria-label="anchor" href="#birth-and-death"></a>
+</h3>
+<p>Birth adds an empty cluster with weight
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>∼</mo><mrow><mi mathvariant="normal">B</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mi>m</mi><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">\tau_{m+1} \sim \mathrm{Beta}(1, m)</annotation></semantics></math>
+and rescales existing weights by
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>1</mn><mo>−</mo><msub><mi>τ</mi><mrow><mi>m</mi><mo>+</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">1 - \tau_{m+1}</annotation></semantics></math>.
+Death removes one empty cluster and reverses the weight transformation.
+The acceptance ratio includes the Jacobian exponent
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>m</mi><annotation encoding="application/x-tex">m</annotation></semantics></math>
+for birth and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mo>−</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">m-1</annotation></semantics></math>
+for death, as in Green (1995).</p>
+</div>
+<div class="section level3">
+<h3 id="split-and-combine">Split and combine<a class="anchor" aria-label="anchor" href="#split-and-combine"></a>
+</h3>
+<p>Split proposes two new clusters from one occupied component. Let
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>τ</mi><msup><mi>j</mi><mo>*</mo></msup></msub><annotation encoding="application/x-tex">\tau_{j^*}</annotation></semantics></math>
+and
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>μ</mi><msup><mi>j</mi><mo>*</mo></msup></msub><annotation encoding="application/x-tex">\mu_{j^*}</annotation></semantics></math>
+denote the merged weight and mean. With
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><msub><mi>j</mi><mn>1</mn></msub></msub><mo>=</mo><mi>w</mi><msub><mi>τ</mi><msup><mi>j</mi><mo>*</mo></msup></msub></mrow><annotation encoding="application/x-tex">\tau_{j_1} = w \tau_{j^*}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>τ</mi><msub><mi>j</mi><mn>2</mn></msub></msub><mo>=</mo><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>−</mo><mi>w</mi><mo stretchy="false" form="postfix">)</mo><msub><mi>τ</mi><msup><mi>j</mi><mo>*</mo></msup></msub></mrow><annotation encoding="application/x-tex">\tau_{j_2} = (1-w)\tau_{j^*}</annotation></semantics></math>,
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>w</mi><mo>∼</mo><mrow><mi mathvariant="normal">B</mi><mi mathvariant="normal">e</mi><mi mathvariant="normal">t</mi><mi mathvariant="normal">a</mi></mrow><mo stretchy="false" form="prefix">(</mo><mn>2</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">w \sim \mathrm{Beta}(2,2)</annotation></semantics></math>,
+and per-coordinate signs
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>s</mi><mi>i</mi></msub><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mi>−</mi><mn>1</mn><mo>,</mo><mi>+</mi><mn>1</mn><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">s_i \in \{-1,+1\}</annotation></semantics></math>,</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>μ</mi><mrow><msub><mi>j</mi><mn>1</mn></msub><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>μ</mi><mrow><msup><mi>j</mi><mo>*</mo></msup><mo>,</mo><mi>i</mi></mrow></msub><mo>+</mo><msub><mi>s</mi><mi>i</mi></msub><msub><mi>a</mi><mrow><mn>2</mn><mi>i</mi></mrow></msub><msub><mi mathvariant="normal">Σ</mi><mrow><msup><mi>j</mi><mo>*</mo></msup><mo>,</mo><mi>i</mi></mrow></msub><msqrt><mrow><msub><mi>τ</mi><msub><mi>j</mi><mn>2</mn></msub></msub><mi>/</mi><msub><mi>τ</mi><msub><mi>j</mi><mn>1</mn></msub></msub></mrow></msqrt><mo>,</mo><mspace width="2.0em"></mspace><msub><mi>μ</mi><mrow><msub><mi>j</mi><mn>2</mn></msub><mo>,</mo><mi>i</mi></mrow></msub><mo>=</mo><msub><mi>μ</mi><mrow><msup><mi>j</mi><mo>*</mo></msup><mo>,</mo><mi>i</mi></mrow></msub><mo>−</mo><msub><mi>s</mi><mi>i</mi></msub><msub><mi>a</mi><mrow><mn>2</mn><mi>i</mi></mrow></msub><msub><mi mathvariant="normal">Σ</mi><mrow><msup><mi>j</mi><mo>*</mo></msup><mo>,</mo><mi>i</mi></mrow></msub><msqrt><mrow><msub><mi>τ</mi><msub><mi>j</mi><mn>1</mn></msub></msub><mi>/</mi><msub><mi>τ</mi><msub><mi>j</mi><mn>2</mn></msub></msub></mrow></msqrt><mo>,</mo></mrow><annotation encoding="application/x-tex">
+\mu_{j_1,i} = \mu_{j^*,i}
+  + s_i a_{2i} \Sigma_{j^*,i} \sqrt{\tau_{j_2}/\tau_{j_1}},
+\qquad
+\mu_{j_2,i} = \mu_{j^*,i}
+  - s_i a_{2i} \Sigma_{j^*,i} \sqrt{\tau_{j_1}/\tau_{j_2}},
+</annotation></semantics></math></p>
+<p>with
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mrow><mn>2</mn><mi>i</mi></mrow></msub><mo>∼</mo><mrow><mi mathvariant="normal">G</mi><mi mathvariant="normal">a</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">m</mi><mi mathvariant="normal">a</mi></mrow><mo stretchy="false" form="prefix">(</mo><mn>1</mn><mo>,</mo><mn>2</mn><mo stretchy="false" form="postfix">)</mo></mrow><annotation encoding="application/x-tex">a_{2i} \sim \mathrm{Gamma}(1,2)</annotation></semantics></math>.
+The
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>p</mi><annotation encoding="application/x-tex">p</annotation></semantics></math>
+independent signs contribute a factor
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msup><mn>2</mn><mrow><mi>−</mi><mi>p</mi></mrow></msup><annotation encoding="application/x-tex">2^{-p}</annotation></semantics></math>
+to the split proposal density. Combine merges two occupied components,
+runs intermediate Gibbs sweeps, and uses the reverse proposal in the
+acceptance ratio.</p>
+</div>
+<div class="section level3">
+<h3 id="covariance-structure-moves">Covariance-structure moves<a class="anchor" aria-label="anchor" href="#covariance-structure-moves"></a>
+</h3>
+<p>The <code>v_step</code> toggles one letter in the covariance label at
+a time. Extension proposes new loadings and noise matrices under the
+less constrained model; contraction proposes under the more constrained
+model. When the proposal distribution is symmetric in the auxiliary
+variables, the acceptance ratio reduces to a ratio of posterior
+ordinals, as noted in Section 4.4 of the paper.</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="interface-mapping">Interface mapping<a class="anchor" aria-label="anchor" href="#interface-mapping"></a>
 </h2>
-<p>The formula terms map to package output fields as follows:</p>
 <table class="table">
 <thead><tr class="header">
 <th>Paper notation</th>

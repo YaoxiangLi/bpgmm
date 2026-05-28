@@ -15,7 +15,7 @@ dimensions.
 ``` r
 
 library(bpgmm)
-#> bpgmm 1.3.3 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
+#> bpgmm 1.3.4 loaded. If you use bpgmm in published work, please cite it with citation("bpgmm").
 
 set.seed(2026)
 
@@ -66,7 +66,16 @@ N_p(x_i \mid \mu_k, \Lambda_k\Lambda_k^\top + \Psi_k).
 ```
 
 For model selection across $`m`$ and covariance labels, use the separate
-model-selection vignette.
+model-selection vignette. The augmented likelihood term for an allocated
+observation in cluster $`k`$ is
+
+``` math
+\log N(x_i \mid \tilde{\Lambda}_k \tilde{y}_{ki}, \Psi_k),
+```
+
+with $`\tilde{\Lambda}_k = (\mu_k, \Lambda_k)`$ and
+$`\tilde{y}_{ki} = (1, y_{ki}')'`$. See the model-and-sampler vignette
+for the full Gibbs and RJMCMC formulas.
 
 ``` r
 
@@ -184,11 +193,11 @@ fit$tau_samples[[last]]
 fit$mean_samples[[last]]
 #> [[1]]
 #>           [,1]      [,2]
-#> [1,] -2.321318 -1.896106
+#> [1,] -2.339545 -1.881641
 #> 
 #> [[2]]
 #>          [,1]     [,2]
-#> [1,] 1.093742 1.289018
+#> [1,] 1.116826 1.319229
 #> 
 #> [[3]]
 #> [1] NA

@@ -1,5 +1,23 @@
 # Changelog
 
+## bpgmm 1.3.4
+
+- Implemented model 3 (CUC) with the corrected $`\Psi_k`$ rate term
+  $`C_{\tilde{Y}\tilde{Y}k} + A_k/m`$, consistent with the other
+  shared-loading models and the model-3 log posterior in Lu, Li, and
+  Love (2021, Supplement A.2).
+- Fixed the covariance-structure RJMCMC loading proposal for models UCC,
+  UCU, UUC, and UUU so the proposal covariance uses the per-cluster
+  precision $`(C_{YYk} + \alpha_2 I_{q_k})^{-1}`$ rather than a pooled
+  inverse.
+- Fixed the $`\alpha_2`$ hyperparameter Gibbs update so the Gamma shape
+  uses $`q p/2 + d_{\alpha_2}`$ with $`q = \sum_k q_k`$ computed from
+  the active loading matrices, rather than treating a single `q_new`
+  value as the total latent dimension.
+- Expanded the vignette set with the corrected Gibbs updates,
+  hyperparameter formulas, eight PGMM covariance structures, and the
+  reversible split/combine move.
+
 ## bpgmm 1.3.3
 
 - Made the cluster-mean prior and its Gibbs update consistent.
