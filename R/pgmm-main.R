@@ -125,7 +125,14 @@ pgmm_rjmcmc <- function(X,
 
   hparamInit <- hparam
 
-  muBar <- X[, sample.int(n, 1)]
+  # Center the data so the cluster-mean prior is N(0, alpha1^-1 Psi_k), matching
+  # the conditional posterior used in update_post_theta_y (and the augmented
+  # Lambda-tilde posterior in Lu, Li, and Love (2021, Supplement A.1)). The
+  # cluster-mean prior mean xbar is therefore 0 on the centered scale; sampled
+  # means are shifted back to the original scale before being returned.
+  data_mean <- rowMeans(X)
+  X <- X - data_mean
+  muBar <- rep(0, p)
 
   ## cluster indicator
   clusInd <- rep(0, m_range[2])
@@ -215,6 +222,16 @@ pgmm_rjmcmc <- function(X,
     factor_score_samples[[h]] <- thetaYList@Y
     allocation_samples[[h]] <- ZOneDim
     constraint_samples[[h]] <- constraint
+  }
+
+  # Return cluster means on the original (uncentered) data scale.
+  for (h in seq_len(niter)) {
+    for (k in seq_along(mean_samples[[h]])) {
+      mk <- mean_samples[[h]][[k]]
+      if (is.numeric(mk) && length(mk) == p) {
+        mean_samples[[h]][[k]] <- mk + data_mean
+      }
+    }
   }
 
   list(

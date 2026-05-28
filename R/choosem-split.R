@@ -341,9 +341,14 @@ evaluate_split_clusters <- function(X, thetaYList, splitedThetaYList, hparam, sp
     evallambda <- evaluate_prior_lambda(p, 2, alpha2, qVec[splitedClusInd], psy, lambda, constraint, c(1, 1))
   }
 
-  # signEval = log(0.5 ^ p)
-  # print(c(EVALa1, EVALa2, evalpsy, evallambda))
-  return(sum(EVALa1, EVALa2, evalpsy, evallambda))
+  # The split proposes one independent sign per coordinate (see
+  # propose_split_clusters), so the mean displacement of each coordinate is
+  # equally likely to be positive or negative. This contributes a 2^-p factor
+  # to the proposal density that the |.|-based recovery of a2 above drops; it is
+  # required for the split/combine move to be reversible when the two merged
+  # clusters are not uniformly ordered across coordinates.
+  signEval <- p * log(0.5)
+  return(sum(EVALa1, EVALa2, evalpsy, evallambda, signEval))
 }
 
 

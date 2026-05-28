@@ -83,6 +83,52 @@ test_that("joint prior uses product of allocation probabilities", {
   )
 })
 
+test_that("split proposal density includes the per-coordinate sign factor", {
+  set.seed(11)
+  p <- 3; n <- 20; q <- 1
+  constraint <- c(1, 1, 0) # shared lambda & psi => lambda/psi eval terms are 0
+  hparam <- new("Hparam", alpha1 = .6, alpha2 = 1.1, delta = 2, ggamma = 2, bbeta = 3)
+  psi <- diag(1 / rgamma(p, 2, 3))
+  lam <- matrix(rnorm(p * q), p, q)
+  theta <- new("ThetaYList",
+    tao = 0.5, psy = list(psi, psi),
+    M = list(matrix(rnorm(p), 1, p), NA),
+    lambda = list(lam, lam),
+    Y = list(matrix(rnorm(q * n), q, n), matrix(rnorm(q * n), q, n))
+  )
+  x <- matrix(rnorm(p * n), p, n)
+  qv <- c(q, q)
+
+  set.seed(3)
+  sp <- bpgmm:::propose_split_clusters(x, theta, hparam, 1, c(1, 2), qv, constraint)
+  ev <- bpgmm:::evaluate_split_clusters(x, theta, sp, hparam, 1, c(1, 2), qv, constraint)
+
+  w <- theta@tao[1]; w1 <- sp@tao[1]; w2 <- sp@tao[2]
+  sd_vec <- sqrt(diag(theta@psy[[1]] + lam %*% t(lam)))
+  a2 <- abs((sp@M[[1]] - theta@M[[1]]) / (sd_vec * sqrt(w2 / w1)))
+  closed <- dbeta(w1 / w, 2, 2, log = TRUE) + sum(dgamma(a2, 1, 2, log = TRUE)) + p * log(0.5)
+  expect_equal(ev, closed, tolerance = 1e-8)
+})
+
+test_that("evaluate_prior handles non-contiguous active clusters", {
+  p <- 2
+  theta <- new("ThetaYList",
+    tao = c(0.5, 0, 0.5),
+    psy = list(diag(c(1.2, 1.4)), NA, diag(c(1.1, 1.3))),
+    M = list(matrix(c(-0.5, 0.25), 1), NA, matrix(c(0.75, -0.2), 1)),
+    lambda = list(matrix(c(0.2, -0.1), 2), NA, matrix(c(-0.15, 0.25), 2)),
+    Y = list(matrix(rnorm(4), 1, 4), NA, matrix(rnorm(4), 1, 4))
+  )
+  hparam <- test_hparam()
+  qvec <- c(1, 0, 1)
+  clus <- c(1, 0, 1)
+  z <- c(1, 1, 3, 3)
+  for (constraint in test_constraints) {
+    val <- bpgmm:::evaluate_prior(2, p, c(0, 0), hparam, theta, z, qvec, constraint, clus)
+    expect_true(is.finite(val))
+  }
+})
+
 test_that("proposal generators and evaluators cover all PGMM covariance constraints", {
   p <- 2
   m <- 2

@@ -87,6 +87,17 @@ evaluate_prior <- function(m,
 
   loopm <- which(clusInd == 1)
 
+  # The cluster-number RJMCMC (m-step) passes full-length, possibly
+  # non-contiguous clusInd/qVec (e.g. after an interior cluster dies). The
+  # native lambda/psi prior evaluators iterate over the first m list entries, so
+  # compact to the active clusters (preserving order) before calling them; this
+  # matches the contiguous layout the v-step already supplies.
+  m_active <- length(loopm)
+  psy_active <- thetaYList@psy[loopm]
+  lambda_active <- thetaYList@lambda[loopm]
+  qVec_active <- qVec[loopm]
+  clus_active <- rep(1, m_active)
+
   ## 2.2: Y
   # Yval = 0
   # for(k in loopm){
@@ -120,12 +131,12 @@ evaluate_prior <- function(m,
 
   ## 2.8: lambda
   lambdaVal <- evaluate_prior_lambda(
-    p, m, alpha2, qVec, thetaYList@psy, thetaYList@lambda, constraint,
-    clusInd
+    p, m_active, alpha2, qVec_active, psy_active, lambda_active, constraint,
+    clus_active
   )
 
   ## 2.9: psy
-  psyVal <- evaluate_prior_psi(thetaYList@psy, p, m, delta, bbeta, constraint, clusInd)
+  psyVal <- evaluate_prior_psi(psy_active, p, m_active, delta, bbeta, constraint, clus_active)
 
 
   # print(Zval)

@@ -60,7 +60,9 @@ Rcpp::List update_latent_scores_native(arma::mat X,
   validate_positive_int(n, "n");
   validate_positive_int(p, "p");
   validate_positive_int(m, "m");
-  validate_q_vec(q_vec, m);
+  // q_vec is passed at full (m_range) length during RJMCMC split/combine and
+  // birth/death moves, with zeros for inactive clusters. Inactive clusters are
+  // skipped below, so only the active clusters' factor counts are validated.
 
   if (z.n_elem != static_cast<arma::uword>(n)) {
     Rcpp::stop("length of z must equal the number of observations");
@@ -90,7 +92,11 @@ Rcpp::List update_latent_scores_native(arma::mat X,
       continue;
     }
 
-    const int q = static_cast<int>(q_vec(k));
+    const double q_raw = q_vec(k);
+    if (!std::isfinite(q_raw) || q_raw < 1 || q_raw != std::floor(q_raw)) {
+      Rcpp::stop("q_vec entries must be positive integers");
+    }
+    const int q = static_cast<int>(q_raw);
     arma::mat lambda = as_finite_matrix(lambda_list, k, p, q, "lambda");
     arma::mat psy = as_finite_matrix(psy_list, k, p, p, "psy");
     arma::vec mean = as_finite_vector(mean_list, k, p, "M");

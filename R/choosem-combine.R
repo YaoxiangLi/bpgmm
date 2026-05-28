@@ -260,7 +260,7 @@ evaluate_combined_clusters <- function(X, combinedThetaYList, hparam, combinedCl
   lambda <- combinedThetaYList@lambda[combinedClusInd]
   evallambda <- 0
   if (constraint[1] == 0) {
-    evallambda <- evaluate_prior_lambda(p, 1, alpha2, qVec, psy, lambda, constraint, 1)
+    evallambda <- evaluate_prior_lambda(p, 1, alpha2, qVec[combinedClusInd], psy, lambda, constraint, 1)
   }
 
 
