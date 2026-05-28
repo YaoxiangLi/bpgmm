@@ -114,8 +114,10 @@ Rcpp::List update_latent_scores_native(arma::mat X,
       arma::vec score_mean = arma::zeros<arma::vec>(q);
       if (static_cast<int>(label) == k + 1) {
         score_mean = D * (X.col(i) - mean);
+        component_scores.col(i) = rmvnorm_chol(score_mean, sigma);
+      } else {
+        component_scores.col(i) = rmvnorm_chol(score_mean, arma::eye<arma::mat>(q, q));
       }
-      component_scores.col(i) = rmvnorm_chol(score_mean, sigma);
     }
 
     scores[k] = component_scores;

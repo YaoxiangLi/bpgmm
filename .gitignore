@@ -9,5 +9,7 @@ src/*.so
 src/*.dll
 src/symbols.rds
 paper_text.txt
+paper_original.pdf
 docs/
 .pkgdown/
+agents.md

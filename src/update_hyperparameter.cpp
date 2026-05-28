@@ -101,7 +101,7 @@ S4 update_hyperparameter_native(
     bbetaRateTemp = arma::inv(psyk);
     bbetaRate  += sum(bbetaRateTemp.diag());
   }
-  bbetaRate += d_vec(2);
+  bbetaRate += s_vec(2);
 
   double bbetaShape = m*p*delta + d_vec(2);
   double bbetaScale = 1.0/bbetaRate;
