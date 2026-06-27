@@ -4,7 +4,7 @@
 
 - Implemented model 3 (CUC) with the corrected $`\Psi_k`$ rate term
   $`C_{\tilde{Y}\tilde{Y}k} + A_k/m`$, consistent with the other
-  shared-loading models and the model-3 log posterior in Lu, Li, and
+  shared-loading models and the model-3 log posterior in Li, Lu, and
   Love (2021, Supplement A.2).
 - Fixed the covariance-structure RJMCMC loading proposal for models UCC,
   UCU, UUC, and UUU so the proposal covariance uses the per-cluster
@@ -23,8 +23,8 @@
 - Made the cluster-mean prior and its Gibbs update consistent.
   [`pgmm_rjmcmc()`](https://yaoxiangli.github.io/bpgmm/reference/pgmm_rjmcmc.md)
   now centers the data internally so the cluster-mean prior mean `xbar`
-  is `0` (the value implied by the augmented loading posterior in Lu,
-  Li, and Love (2021, Supplement A.1)), matching the zero-mean
+  is `0` (the value implied by the augmented loading posterior in Li,
+  Lu, and Love (2021, Supplement A.1)), matching the zero-mean
   conditional already used by the sampler. Previously the prior mean was
   set to a single random observation while the update used `0`, so the
   two were inconsistent. Sampled means are returned on the original
@@ -49,7 +49,7 @@
 
 - Fixed the `beta` hyperparameter Gibbs update so the Gamma rate uses
   the rate hyperprior `s_vec[3]` (`s_beta`) instead of the shape
-  hyperprior `d_vec[3]`, matching the conditional posterior in Lu, Li,
+  hyperprior `d_vec[3]`, matching the conditional posterior in Li, Lu,
   and Love (2021, Appendix A.1.3). Results are unchanged under the
   default symmetric hyperpriors `d_vec = s_vec = c(1, 1, 1)` but are
   corrected for user-supplied asymmetric `beta` hyperpriors.
@@ -66,7 +66,7 @@ CRAN release: 2026-05-28
 - Revised the vignette set to reduce repeated examples across vignettes.
 - Made the model-and-sampler, data-preparation, model-selection,
   variable-prioritization, and diagnostics vignettes more
-  formula-focused and closer to the notation in Lu, Li, and Love (2021).
+  formula-focused and closer to the notation in Li, Lu, and Love (2021).
 - Changed the variable-prioritization simulation so it no longer
   duplicates the larger MFA model-selection example.
 

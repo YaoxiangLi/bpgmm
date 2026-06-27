@@ -2,7 +2,7 @@
 
 `bpgmm` fits Bayesian parsimonious Gaussian mixture models for
 model-based clustering. It targets three posterior inference goals
-described by Lu, Li, and Love (2021): the partition of observations, the
+described by Li, Lu, and Love (2021): the partition of observations, the
 number of clusters, and the cluster covariance structure.
 
 The vignettes have separate roles:
@@ -96,7 +96,7 @@ fast. The important arguments are:
   models.
 
 The model-and-sampler vignette records the corrected Gibbs and RJMCMC
-formulas from Lu, Li, and Love (2021), including the eight PGMM
+formulas from Li, Lu, and Love (2021), including the eight PGMM
 covariance structures, hyperparameter updates, and the split/combine
 move with per-coordinate signs.
 
@@ -181,7 +181,7 @@ methodology paper:
 citation("bpgmm")
 #> To cite package 'bpgmm' in publications use:
 #> 
-#>   Lu X, Li Y, Love T (2021). On Bayesian Analysis of
+#>   Li Y, Lu X, Love T (2021). On Bayesian Analysis of
 #>   Parsimonious Gaussian Mixture Models. Journal of
 #>   Classification, 38, 576-593. doi:10.1007/s00357-021-09391-8
 #> 
@@ -189,7 +189,7 @@ citation("bpgmm")
 #> 
 #>   @Article{,
 #>     title = {On Bayesian Analysis of Parsimonious Gaussian Mixture Models},
-#>     author = {Xiang Lu and Yaoxiang Li and Tanzy Love},
+#>     author = {Yaoxiang Li and Xiang Lu and Tanzy Love},
 #>     journal = {Journal of Classification},
 #>     year = {2021},
 #>     volume = {38},
@@ -198,6 +198,6 @@ citation("bpgmm")
 #>   }
 ```
 
-Lu, X., Li, Y., & Love, T. (2021). On Bayesian Analysis of Parsimonious
+Li, Y., Lu, X., & Love, T. (2021). On Bayesian Analysis of Parsimonious
 Gaussian Mixture Models. *Journal of Classification*, 38, 576-593.
 <https://doi.org/10.1007/s00357-021-09391-8>

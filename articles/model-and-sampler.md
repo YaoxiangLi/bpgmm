@@ -1,6 +1,6 @@
 # Model and sampler details
 
-This section connects the notation in Lu, Li, and Love (2021) to the
+This section connects the notation in Li, Lu, and Love (2021) to the
 `bpgmm` interface. It describes the fitted model, the covariance labels,
 and the RJMCMC switches used by the sampler. Full fitted examples are
 given in the getting-started and worked-example vignettes.
@@ -533,7 +533,7 @@ fit <- pgmm_rjmcmc(
 
 If you use these methods, cite:
 
-Lu, X., Li, Y., & Love, T. (2021). On Bayesian Analysis of Parsimonious
+Li, Y., Lu, X., & Love, T. (2021). On Bayesian Analysis of Parsimonious
 Gaussian Mixture Models. *Journal of Classification*, 38, 576-593.
 <https://doi.org/10.1007/s00357-021-09391-8>
 
@@ -544,7 +544,7 @@ In R:
 citation("bpgmm")
 #> To cite package 'bpgmm' in publications use:
 #> 
-#>   Lu X, Li Y, Love T (2021). On Bayesian Analysis of
+#>   Li Y, Lu X, Love T (2021). On Bayesian Analysis of
 #>   Parsimonious Gaussian Mixture Models. Journal of
 #>   Classification, 38, 576-593. doi:10.1007/s00357-021-09391-8
 #> 
@@ -552,7 +552,7 @@ citation("bpgmm")
 #> 
 #>   @Article{,
 #>     title = {On Bayesian Analysis of Parsimonious Gaussian Mixture Models},
-#>     author = {Xiang Lu and Yaoxiang Li and Tanzy Love},
+#>     author = {Yaoxiang Li and Xiang Lu and Tanzy Love},
 #>     journal = {Journal of Classification},
 #>     year = {2021},
 #>     volume = {38},
