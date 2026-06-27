@@ -140,7 +140,7 @@ constraint_to_model(c(1, 0, 0))
 
 The methodology behind this package is described in:
 
-> Lu, X., Li, Y., & Love, T. (2021). On Bayesian Analysis of Parsimonious
+> Li, Y., Lu, X., & Love, T. (2021). On Bayesian Analysis of Parsimonious
 > Gaussian Mixture Models. *Journal of Classification*, 38, 576-593.
 > https://doi.org/10.1007/s00357-021-09391-8
 
@@ -162,7 +162,7 @@ BibTeX for the paper:
 
 ```bibtex
 @article{lu2021bayesian,
-  author = {Lu, Xiang and Li, Yaoxiang and Love, Tanzy},
+  author = {Li, Yaoxiang and Lu, Xiang and Love, Tanzy},
   title = {On Bayesian Analysis of Parsimonious Gaussian Mixture Models},
   journal = {Journal of Classification},
   year = {2021},

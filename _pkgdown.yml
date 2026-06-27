@@ -22,8 +22,8 @@ home:
       authors_ordered:
         title: Authors
         text: |
-          - Xiang Lu
           - Yaoxiang Li
+          - Xiang Lu
           - Tanzy Love
 
 footer:
@@ -31,7 +31,7 @@ footer:
     left: developed_by
     right: built_with
   components:
-    developed_by: "Developed by Xiang Lu, Yaoxiang Li, and Tanzy Love."
+    developed_by: "Developed by Yaoxiang Li, Xiang Lu, and Tanzy Love."
 
 reference:
   - title: Model fitting

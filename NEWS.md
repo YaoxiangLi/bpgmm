@@ -1,25 +1,25 @@
 # bpgmm 1.3.4
 
-* Implemented model 3 (CUC) with the corrected $\Psi_k$ rate term $C_{\tilde{Y}\tilde{Y}k} + A_k/m$, consistent with the other shared-loading models and the model-3 log posterior in Lu, Li, and Love (2021, Supplement A.2).
+* Implemented model 3 (CUC) with the corrected $\Psi_k$ rate term $C_{\tilde{Y}\tilde{Y}k} + A_k/m$, consistent with the other shared-loading models and the model-3 log posterior in Li, Lu, and Love (2021, Supplement A.2).
 * Fixed the covariance-structure RJMCMC loading proposal for models UCC, UCU, UUC, and UUU so the proposal covariance uses the per-cluster precision $(C_{YYk} + \alpha_2 I_{q_k})^{-1}$ rather than a pooled inverse.
 * Fixed the $\alpha_2$ hyperparameter Gibbs update so the Gamma shape uses $q p/2 + d_{\alpha_2}$ with $q = \sum_k q_k$ computed from the active loading matrices, rather than treating a single `q_new` value as the total latent dimension.
 * Expanded the vignette set with the corrected Gibbs updates, hyperparameter formulas, eight PGMM covariance structures, and the reversible split/combine move.
 
 # bpgmm 1.3.3
 
-* Made the cluster-mean prior and its Gibbs update consistent. `pgmm_rjmcmc()` now centers the data internally so the cluster-mean prior mean `xbar` is `0` (the value implied by the augmented loading posterior in Lu, Li, and Love (2021, Supplement A.1)), matching the zero-mean conditional already used by the sampler. Previously the prior mean was set to a single random observation while the update used `0`, so the two were inconsistent. Sampled means are returned on the original (uncentered) data scale.
+* Made the cluster-mean prior and its Gibbs update consistent. `pgmm_rjmcmc()` now centers the data internally so the cluster-mean prior mean `xbar` is `0` (the value implied by the augmented loading posterior in Li, Lu, and Love (2021, Supplement A.1)), matching the zero-mean conditional already used by the sampler. Previously the prior mean was set to a single random observation while the update used `0`, so the two were inconsistent. Sampled means are returned on the original (uncentered) data scale.
 * Corrected the split/combine acceptance ratio. The split proposes one independent sign per coordinate for the new component means, so its proposal density carries a `2^-p` factor (`p = nrow(X)`) that `evaluate_split_clusters()` had dropped. This factor is required for the split/combine move to be reversible when the two merged components are not uniformly ordered across coordinates. The corresponding deterministic split in the paper omits this sign randomization; see the package errata notes.
 * Fixed an error (`q_vec entries must be positive integers`) that aborted the cluster-number RJMCMC (`m_step = 1`, and especially `split_combine = 1`) whenever the active clusters became non-contiguous, for example after an interior empty cluster was removed. The prior evaluators now compact to the active clusters, the native latent-score update validates only active clusters, and the combine evaluator uses the merged cluster's own factor count.
 
 # bpgmm 1.3.2
 
-* Fixed the `beta` hyperparameter Gibbs update so the Gamma rate uses the rate hyperprior `s_vec[3]` (`s_beta`) instead of the shape hyperprior `d_vec[3]`, matching the conditional posterior in Lu, Li, and Love (2021, Appendix A.1.3). Results are unchanged under the default symmetric hyperpriors `d_vec = s_vec = c(1, 1, 1)` but are corrected for user-supplied asymmetric `beta` hyperpriors.
+* Fixed the `beta` hyperparameter Gibbs update so the Gamma rate uses the rate hyperprior `s_vec[3]` (`s_beta`) instead of the shape hyperprior `d_vec[3]`, matching the conditional posterior in Li, Lu, and Love (2021, Appendix A.1.3). Results are unchanged under the default symmetric hyperpriors `d_vec = s_vec = c(1, 1, 1)` but are corrected for user-supplied asymmetric `beta` hyperpriors.
 * Fixed the native latent-score update so unallocated observations draw from `N(0, I_q)` as specified in the paper's conditional for the scores, rather than from the component score covariance. These scores are not used in any downstream sufficient statistic, so posterior results are unaffected.
 
 # bpgmm 1.3.1
 
 * Revised the vignette set to reduce repeated examples across vignettes.
-* Made the model-and-sampler, data-preparation, model-selection, variable-prioritization, and diagnostics vignettes more formula-focused and closer to the notation in Lu, Li, and Love (2021).
+* Made the model-and-sampler, data-preparation, model-selection, variable-prioritization, and diagnostics vignettes more formula-focused and closer to the notation in Li, Lu, and Love (2021).
 * Changed the variable-prioritization simulation so it no longer duplicates the larger MFA model-selection example.
 
 # bpgmm 1.3.0

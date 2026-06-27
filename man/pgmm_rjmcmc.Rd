@@ -75,7 +75,7 @@ selection.
 }
 \details{
 The `constraint` argument follows the three-letter PGMM model notation used
-in Lu, Li, and Love (2021). The first entry indicates whether loading
+in Li, Lu, and Love (2021). The first entry indicates whether loading
 matrices are shared across clusters, the second whether noise covariance
 matrices are shared across clusters, and the third whether the noise
 covariance is isotropic within each cluster. Use [model_to_constraint()] to

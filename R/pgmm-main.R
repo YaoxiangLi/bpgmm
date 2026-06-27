@@ -5,7 +5,7 @@
 #' selection.
 #'
 #' The `constraint` argument follows the three-letter PGMM model notation used
-#' in Lu, Li, and Love (2021). The first entry indicates whether loading
+#' in Li, Lu, and Love (2021). The first entry indicates whether loading
 #' matrices are shared across clusters, the second whether noise covariance
 #' matrices are shared across clusters, and the third whether the noise
 #' covariance is isotropic within each cluster. Use [model_to_constraint()] to
@@ -127,7 +127,7 @@ pgmm_rjmcmc <- function(X,
 
   # Center the data so the cluster-mean prior is N(0, alpha1^-1 Psi_k), matching
   # the conditional posterior used in update_post_theta_y (and the augmented
-  # Lambda-tilde posterior in Lu, Li, and Love (2021, Supplement A.1)). The
+  # Lambda-tilde posterior in Li, Lu, and Love (2021, Supplement A.1)). The
   # cluster-mean prior mean xbar is therefore 0 on the centered scale; sampled
   # means are shifted back to the original scale before being returned.
   data_mean <- rowMeans(X)

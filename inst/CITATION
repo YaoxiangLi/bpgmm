@@ -2,8 +2,8 @@ bibentry(
   bibtype = "Article",
   title = "On Bayesian Analysis of Parsimonious Gaussian Mixture Models",
   author = c(
-    person("Xiang", "Lu"),
     person("Yaoxiang", "Li"),
+    person("Xiang", "Lu"),
     person("Tanzy", "Love")
   ),
   journal = "Journal of Classification",
@@ -12,7 +12,7 @@ bibentry(
   pages = "576--593",
   doi = "10.1007/s00357-021-09391-8",
   textVersion = paste(
-    "Lu X, Li Y, Love T (2021).",
+    "Li Y, Lu X, Love T (2021).",
     "On Bayesian Analysis of Parsimonious Gaussian Mixture Models.",
     "Journal of Classification, 38, 576-593.",
     "doi:10.1007/s00357-021-09391-8"
