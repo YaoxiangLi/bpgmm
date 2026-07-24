@@ -80,6 +80,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// update_hyperparameter_native
+S4 update_hyperparameter_native(int m, int p, int q, Rcpp::S4 hparam, Rcpp::S4 theta_y_list, arma::vec d_vec, arma::vec s_vec);
+RcppExport SEXP _bpgmm_update_hyperparameter_native(SEXP mSEXP, SEXP pSEXP, SEXP qSEXP, SEXP hparamSEXP, SEXP theta_y_listSEXP, SEXP d_vecSEXP, SEXP s_vecSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type m(mSEXP);
+    Rcpp::traits::input_parameter< int >::type p(pSEXP);
+    Rcpp::traits::input_parameter< int >::type q(qSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type hparam(hparamSEXP);
+    Rcpp::traits::input_parameter< Rcpp::S4 >::type theta_y_list(theta_y_listSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type d_vec(d_vecSEXP);
+    Rcpp::traits::input_parameter< arma::vec >::type s_vec(s_vecSEXP);
+    rcpp_result_gen = Rcpp::wrap(update_hyperparameter_native(m, p, q, hparam, theta_y_list, d_vec, s_vec));
+    return rcpp_result_gen;
+END_RCPP
+}
 // update_latent_scores_native
 Rcpp::List update_latent_scores_native(arma::mat X, Rcpp::S4 theta_y_list, arma::vec z, arma::vec clus_ind, arma::vec q_vec);
 RcppExport SEXP _bpgmm_update_latent_scores_native(SEXP XSEXP, SEXP theta_y_listSEXP, SEXP zSEXP, SEXP clus_indSEXP, SEXP q_vecSEXP) {
@@ -106,23 +123,6 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< int >::type n(nSEXP);
     Rcpp::traits::input_parameter< Rcpp::S4 >::type theta_y_list(theta_y_listSEXP);
     rcpp_result_gen = Rcpp::wrap(update_post_z_native(X, m, n, theta_y_list));
-    return rcpp_result_gen;
-END_RCPP
-}
-// update_hyperparameter_native
-S4 update_hyperparameter_native(int m, int p, int q, Rcpp::S4 hparam, Rcpp::S4 theta_y_list, arma::vec d_vec, arma::vec s_vec);
-RcppExport SEXP _bpgmm_update_hyperparameter_native(SEXP mSEXP, SEXP pSEXP, SEXP qSEXP, SEXP hparamSEXP, SEXP theta_y_listSEXP, SEXP d_vecSEXP, SEXP s_vecSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< int >::type m(mSEXP);
-    Rcpp::traits::input_parameter< int >::type p(pSEXP);
-    Rcpp::traits::input_parameter< int >::type q(qSEXP);
-    Rcpp::traits::input_parameter< Rcpp::S4 >::type hparam(hparamSEXP);
-    Rcpp::traits::input_parameter< Rcpp::S4 >::type theta_y_list(theta_y_listSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type d_vec(d_vecSEXP);
-    Rcpp::traits::input_parameter< arma::vec >::type s_vec(s_vecSEXP);
-    rcpp_result_gen = Rcpp::wrap(update_hyperparameter_native(m, p, q, hparam, theta_y_list, d_vec, s_vec));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -171,9 +171,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_bpgmm_calculate_post_lambda_psi_native", (DL_FUNC) &_bpgmm_calculate_post_lambda_psi_native, 7},
     {"_bpgmm_evaluate_prior_psi_native", (DL_FUNC) &_bpgmm_evaluate_prior_psi_native, 7},
     {"_bpgmm_evaluate_prior_lambda_native", (DL_FUNC) &_bpgmm_evaluate_prior_lambda_native, 8},
+    {"_bpgmm_update_hyperparameter_native", (DL_FUNC) &_bpgmm_update_hyperparameter_native, 7},
     {"_bpgmm_update_latent_scores_native", (DL_FUNC) &_bpgmm_update_latent_scores_native, 5},
     {"_bpgmm_update_post_z_native", (DL_FUNC) &_bpgmm_update_post_z_native, 4},
-    {"_bpgmm_update_hyperparameter_native", (DL_FUNC) &_bpgmm_update_hyperparameter_native, 7},
     {"_bpgmm_get_z_matrix_native", (DL_FUNC) &_bpgmm_get_z_matrix_native, 3},
     {"_bpgmm_multivariate_normal_density_native", (DL_FUNC) &_bpgmm_multivariate_normal_density_native, 4},
     {"_bpgmm_calculate_ratio_native", (DL_FUNC) &_bpgmm_calculate_ratio_native, 2},

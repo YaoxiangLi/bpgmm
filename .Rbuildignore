@@ -2,6 +2,9 @@
 ^\.Rproj\.user$
 ^paper_text\.txt$
 ^paper_original\.pdf$
+^paper-errata-notes\.md$
+^paper-errata-notes\.pdf$
+^email-draft-love\.md$
 ^_pkgdown\.yml$
 ^docs$
 ^\.github$

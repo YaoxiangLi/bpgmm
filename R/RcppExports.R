@@ -17,16 +17,16 @@ evaluate_prior_lambda_native <- function(p, m, alpha2, q_vec, psy, lambda, const
     .Call(`_bpgmm_evaluate_prior_lambda_native`, p, m, alpha2, q_vec, psy, lambda, constraint, clus_ind)
 }
 
+update_hyperparameter_native <- function(m, p, q, hparam, theta_y_list, d_vec, s_vec) {
+    .Call(`_bpgmm_update_hyperparameter_native`, m, p, q, hparam, theta_y_list, d_vec, s_vec)
+}
+
 update_latent_scores_native <- function(X, theta_y_list, z, clus_ind, q_vec) {
     .Call(`_bpgmm_update_latent_scores_native`, X, theta_y_list, z, clus_ind, q_vec)
 }
 
 update_post_z_native <- function(X, m, n, theta_y_list) {
     .Call(`_bpgmm_update_post_z_native`, X, m, n, theta_y_list)
-}
-
-update_hyperparameter_native <- function(m, p, q, hparam, theta_y_list, d_vec, s_vec) {
-    .Call(`_bpgmm_update_hyperparameter_native`, m, p, q, hparam, theta_y_list, d_vec, s_vec)
 }
 
 get_z_matrix_native <- function(z, m, n) {

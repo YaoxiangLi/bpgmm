@@ -10,6 +10,9 @@ src/*.dll
 src/symbols.rds
 paper_text.txt
 paper_original.pdf
+paper-errata-notes.md
+paper-errata-notes.pdf
+email-draft-love.md
 docs/
 .pkgdown/
 agents.md
